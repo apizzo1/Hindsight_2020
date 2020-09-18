@@ -16,4 +16,4 @@ var borders = "-128.778687,24.634217,-66.552124,49.913868";
 var outputFormat = "application/json"
 
 // current URL is too many queries (limit = 500/hour)
-queryUrl = `${baseUrl}startDate=${startDate}T00&endDate=${endDate}T02&parameters=${pollutants}&BBOX=${borders}&dataType=B&format=${outputFormat}&verbose=0&nowcastonly=0&API_KEY=${API_Key}`
+queryUrl = `${baseUrl}startDate=${startDate}T00&endDate=${endDate}T02&parameters=${pollutants}&BBOX=${borders}&dataType=B&format=${outputFormat}&verbose=0&nowcastonly=0&API_KEY=${AirNow_API_Key}`
