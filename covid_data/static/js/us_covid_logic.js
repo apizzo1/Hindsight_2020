@@ -2,7 +2,7 @@
 var dt = luxon.DateTime;
 
 // create fxn that takes date input
-function us_cases (date) {
+function us_fxn (date) {
 
     // format date; end result should be yyyymmdd for API calls
     var luxon_date = dt.fromISO (date);
@@ -46,23 +46,25 @@ function us_cases (date) {
         us_new_cases.push (0);
         us_new_deaths.push (0);
 
-        console.log (us_new_deaths);
-
-        var ctx = document.getElementById('us_cases_chart').getContext('2d');
-        var test_chart = new Chart (ctx, {
-            type: 'bar',
-            data: {
-                labels: state_abbrs, 
-                datasets: [{
-                    label: 'total cases',
-                    data: state_cases_totals
-                }]
-            },
-            options: {},
-            lineAtIndex: [2,4]
-        });
+        // var ctx = document.getElementById('us_cases_chart').getContext('2d');
+        // var test_chart = new Chart (ctx, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: state_abbrs, 
+        //         datasets: [{
+        //             label: 'total cases',
+        //             data: state_cases_totals
+        //         }]
+        //     },
+        //     options: {},
+        //     lineAtIndex: [2,4]
+        // });
     })
+
+    console.log (us_dates);
 }
+
+
 
 function state_cases (date) {
     
@@ -153,5 +155,5 @@ Chart.plugins.register(verticalLinePlugin);
 
 
 
-us_cases ('2020-09-05');
+us_fxn ('2020-09-05');
 // state_cases ('2020-09-05'); // only returns a console.log rn
