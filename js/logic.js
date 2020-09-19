@@ -3,8 +3,6 @@
 // choose dataset
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 
-console.log("TESTING!!")
-
 var url2 = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
 var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
 
@@ -44,8 +42,6 @@ function style(feature) {
     };
 }
 
-// L.geoJson(statesData, {style: style}).addTo(myMap);
-
 
 var myStyle = {
         "color": "#ff7800",
@@ -67,7 +63,7 @@ var active = L.geoJSON(null, {
 
 // Get GeoJSON data and create features.
 // source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
-$.getJSON(url, function(data) {
+$.getJSON("../data/Wildfire_Perimeters.geojson", function(data) {
 active.addData(data);
 });
 
@@ -82,13 +78,29 @@ $.getJSON(url2, function(data) {
     });
 
 
+// protest data
+
+// var protestMarkers = [];
+// d3.csv("../data/USA_2020_Sep12.csv", function(data) {
+//     console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
+//     for (var i=0; i<10;i++) {
+//         // console.log(data[i].LOCATION);
+//         protestMarkers.push(
+//             L.marker([data[i].LATITUDE,data[i].LONGITUDE])
+// )}
+//     });
+
+// var protestLayer = L.layerGroup(protestMarkers);
+
+
 var baseMaps = {
     Streetview: street
 }
 
 var overlayMaps = {
     Active: active,
-    Contained: archived_fires
+    // Contained: archived_fires
+    // Protests: protestLayer
 }
 
 // create map object
@@ -99,9 +111,20 @@ var myMap = L.map("map", {
     layers: [street, active]
 });
 
+d3.csv("../data/USA_2020_Sep12.csv", function(data) {
+        console.log(data);
+        for (var i=0; i<10;i++) {
+            // console.log(data[i].LOCATION);
+            // protestMarkers.push(
+                L.marker([data[i].LATITUDE,data[i].LONGITUDE]).addTo(myMap);
+                }
+    })
+
+// L.geoJson(statesData, {style: style}).addTo(myMap);
+
 L.control.layers(baseMaps, overlayMaps).addTo(myMap);
  
-
+// ******************OLD or unneeded below*************************
 
 //     // plot all fires 
 // L.geoJSON(test, {
