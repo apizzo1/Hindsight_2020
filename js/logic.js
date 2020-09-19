@@ -3,25 +3,19 @@
 // choose dataset
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 
-// create map object
-var myMap = L.map("map", {
-    // center of the United States
-    center: [39.8, -98.6], 
-    zoom: 5
-});
 
 // add tile layer 
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: API_KEY
-}).addTo(myMap);
+});
 
 // https://leafletjs.com/examples/choropleth/
-L.geoJson(statesData).addTo(myMap);
+// L.geoJson(statesData).addTo(myMap);
 
 function getColor(d) {
     return d > 1000 ? '#800026' :
@@ -45,22 +39,56 @@ function style(feature) {
     };
 }
 
-L.geoJson(statesData, {style: style}).addTo(myMap);
+// L.geoJson(statesData, {style: style}).addTo(myMap);
 
-d3.json(url, function(response) {
- 
-    console.log(response);
 
-    var myStyle = {
+var myStyle = {
         "color": "#ff7800",
         "weight": 5,
         "opacity": 0.65
     };
     
-    // plot all fires as circles
-    L.geoJSON(response, {
-        style: myStyle
-    }).addTo(myMap);
+
+// source: https://gis.stackexchange.com/questions/149378/adding-multiple-json-layers-to-leaflet-map
+var active = L.geoJSON(null, {
+    style: myStyle
+        
+  });
+
+// Get GeoJSON data and create features.
+// source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
+$.getJSON(url, function(data) {
+active.addData(data);
+});
+
+
+
+var baseMaps = {
+    Streetview: street
+}
+
+var overlayMaps = {
+    Active: active
+}
+
+// create map object
+var myMap = L.map("map", {
+    // center of the United States
+    center: [39.8, -98.6], 
+    zoom: 5,
+    layers: [street, active]
+});
+
+L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+ 
+
+
+//     // plot all fires 
+// L.geoJSON(test, {
+//     style: myStyle
+// }).addTo(myMap);
+
+
 
     // https://stackoverflow.com/questions/27804460/show-a-marker-for-polygons-from-a-geojson-file-in-leaflet
     // var geoJsonLayer = L.geoJson(response, {
@@ -112,4 +140,3 @@ d3.json(url, function(response) {
         // Add map legend
         // starter code from https://leafletjs.com/examples/choropleth/
 
-});
