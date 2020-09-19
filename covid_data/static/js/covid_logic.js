@@ -8,27 +8,59 @@ function us_cases (date) {
     var luxon_date = dt.fromISO (date);
     var api_date = luxon_date.toFormat ('yyyyLLdd');
 
-    // find total cases in US up to selected date
-    var us_url = `https://api.covidtracking.com/v1/us/${api_date}.json`;    
+    var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
+    var us_dates = [];
+    var us_cases = [];
+    var us_deaths = [];
+    var us_new_cases = [];
+    var us_new_deaths = [];
 
     d3.json (us_url, (response) => {
-        var total_cases = response.positive;
-        var total_deaths = response.death;
+        for (var x = 0; x < response.length; x++) {
+            var date = dt.fromISO (response[x].date).toFormat ('yyyy-LL-dd');
+            var cases = response[x].positive;
+            var deaths = response[x].death;
 
-        d3.select ('#us_total_cases').text (total_cases);
-        d3.select ('#us_total_deaths').text (total_deaths);
-
-        // find daily increase of cases on selected date
-        var prior_date = luxon_date.plus ({days: -1}).toFormat ('yyyyLLdd');
-        var prior_us_url = `https://api.covidtracking.com/v1/us/${prior_date}.json`;
+            us_dates.push (date);
+            us_cases.push (cases);
+            us_deaths.push (deaths);
         
-        d3.json (prior_us_url, (response2) => {
-            var new_cases = total_cases - response2.positive;
-            var new_deaths = total_deaths - response2.death;
 
-            d3.select ('#us_new_cases').text (new_cases);
-            d3.select ('#us_new_deaths').text (new_deaths);
-        })
+            if (response[x].date == api_date) {
+                var select_cases = response[x].positive;
+                var select_deaths = response[x].death;
+
+                d3.select ('#us_total_cases').text (select_cases);
+                d3.select ('#us_total_deaths').text (select_deaths);
+            }
+        }
+        
+        for (var x = 0; x < (us_cases.length - 1); x++) {
+            var case_inc = us_cases[x] - us_cases[x + 1];
+            var death_inc = us_deaths[x] - us_deaths[x + 1];
+
+            us_new_cases.push (case_inc);
+            us_new_deaths.push (death_inc);
+        }
+
+        us_new_cases.push (0);
+        us_new_deaths.push (0);
+
+        console.log (us_new_deaths);
+
+        var ctx = document.getElementById('us_cases_chart').getContext('2d');
+        var test_chart = new Chart (ctx, {
+            type: 'bar',
+            data: {
+                labels: state_abbrs, 
+                datasets: [{
+                    label: 'total cases',
+                    data: state_cases_totals
+                }]
+            },
+            options: {},
+            lineAtIndex: [2,4]
+        });
     })
 }
 
@@ -85,5 +117,41 @@ function state_cases (date) {
     })
 }
 
+// taken from https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
+const verticalLinePlugin = {
+    getLinePosition: function (chart, pointIndex) {
+        const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
+        const data = meta.data;
+        return data[pointIndex]._model.x;
+    },
+    renderVerticalLine: function (chartInstance, pointIndex) {
+        const lineLeftOffset = this.getLinePosition(chartInstance, pointIndex);
+        const scale = chartInstance.scales['y-axis-0'];
+        const context = chartInstance.chart.ctx;
+  
+        // render vertical line
+        context.beginPath();
+        context.strokeStyle = '#ff0000';
+        context.moveTo(lineLeftOffset, scale.top);
+        context.lineTo(lineLeftOffset, scale.bottom);
+        context.stroke();
+  
+        // write label
+        context.fillStyle = "#ff0000";
+        context.textAlign = 'center';
+        context.fillText('MY TEXT', lineLeftOffset, (scale.bottom - scale.top) / 2 + scale.top);
+    },
+  
+    afterDatasetsDraw: function (chart, easing) {
+        if (chart.config.lineAtIndex) {
+            chart.config.lineAtIndex.forEach(pointIndex => this.renderVerticalLine(chart, pointIndex));
+        }
+    }
+};
+  
+Chart.plugins.register(verticalLinePlugin);
+
+
+
 us_cases ('2020-09-05');
-state_cases ('2020-09-05'); // only returns a console.log rn
+// state_cases ('2020-09-05'); // only returns a console.log rn
