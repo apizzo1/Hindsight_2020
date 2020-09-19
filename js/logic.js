@@ -3,6 +3,11 @@
 // choose dataset
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 
+console.log("TESTING!!")
+
+var url2 = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
+var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
+
 
 // add tile layer 
 var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -48,11 +53,16 @@ var myStyle = {
         "opacity": 0.65
     };
     
+    var myStyle2 = {
+        "color": "blue",
+        "weight": 5,
+        "opacity": 0.65
+    };
+    
 
 // source: https://gis.stackexchange.com/questions/149378/adding-multiple-json-layers-to-leaflet-map
 var active = L.geoJSON(null, {
     style: myStyle
-        
   });
 
 // Get GeoJSON data and create features.
@@ -61,6 +71,15 @@ $.getJSON(url, function(data) {
 active.addData(data);
 });
 
+var archived_fires = L.geoJSON(null, {
+    style: myStyle2
+  });
+
+  // Get GeoJSON data and create features.
+// source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
+$.getJSON(url2, function(data) {
+    archived_fires.addData(data);
+    });
 
 
 var baseMaps = {
@@ -68,7 +87,8 @@ var baseMaps = {
 }
 
 var overlayMaps = {
-    Active: active
+    Active: active,
+    Contained: archived_fires
 }
 
 // create map object
