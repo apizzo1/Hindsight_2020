@@ -3,8 +3,8 @@
 // choose dataset
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 
-var url2 = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
-var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
+var url2 = "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'2020-06-02%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'2020-06-03%2000%3A00%3A00'&outFields=*&outSR=4326&f=json";
+// var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
 
 
 // add tile layer 
@@ -67,9 +67,9 @@ $.getJSON("../data/Wildfire_Perimeters.geojson", function(data) {
 active.addData(data);
 });
 
-var archived_fires = L.geoJSON(null, {
-    style: myStyle2
-  });
+// var archived_fires = L.geoJSON(null, {
+//     style: myStyle2
+//   });
 
 //   Get GeoJSON data and create features.
 // source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
@@ -77,7 +77,19 @@ var archived_fires = L.geoJSON(null, {
 //     archived_fires.addData(data);
 //     });
 
+var contained_fires =[];
+d3.json(url2, function(response) {
 
+    console.log(response.features[1].geometry.rings[0][0]);
+    for (var i =0;i<response.features.length;i++) {
+        console.log(response.features[i].geometry.rings[0][0]);
+        contained_fires.push(
+            L.circle(response.features[i].geometry.rings[0][0], {radius:200})
+        )
+        
+    }
+})
+console.log(contained_fires);
 // protest data
 
 var protestMarkers = [];
@@ -89,30 +101,49 @@ d3.csv("../data/USA_2020_Sep12.csv", function(data) {
         protestMarkers.push(
             L.marker([data[i].LATITUDE,data[i].LONGITUDE]).bindPopup(data[i].LOCATION))
     }
+
+
+// console.log(protestMarkers);
+    var protestLayer = L.layerGroup(protestMarkers);
+
+    var contained_fires =[];
+    d3.json(url2, function(response) {
+
+        // console.log(response.features[1].geometry.rings[0][0][0]);
+        for (var i =0;i<response.features.length;i++) {
+            console.log(response.features[i].geometry.rings[0][0]);
+            contained_fires.push(
+                L.circle([response.features[i].geometry.rings[0][0][1],response.features[i].geometry.rings[0][0][0]], {radius:20000})
+        )
+        
+    }
+
+    console.log(contained_fires);
+    var containedFireLayer = L.layerGroup(contained_fires);
+
+    var baseMaps = {
+        Streetview: street
+    };
+
+    var overlayMaps = {
+        Active: active,
+        Contained: containedFireLayer,
+        Protests: protestLayer
+    };
+
+    // create map object
+    var myMap = L.map("map", {
+        // center of the United States
+        center: [39.8, -98.6], 
+        zoom: 5,
+        layers: [street, active]
+    });
+
+    L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
+    // console.log(protestMarkers[0]);
+    // console.log(protestMarkers);
+})
 });
-
-
-var protestLayer = L.layerGroup(protestMarkers);
-
-
-var baseMaps = {
-    Streetview: street
-};
-
-var overlayMaps = {
-    Active: active,
-    // Contained: archived_fires,
-    Protests: protestLayer
-};
-
-// create map object
-var myMap = L.map("map", {
-    // center of the United States
-    center: [39.8, -98.6], 
-    zoom: 5,
-    layers: [street, active]
-});
-
 // d3.csv("../data/USA_2020_Sep12.csv", function(data) {
 //         // console.log(data);
 //         for (var i=0; i<10;i++) {
@@ -125,9 +156,7 @@ var myMap = L.map("map", {
 
 // L.geoJson(statesData, {style: style}).addTo(myMap);
 
-L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
-console.log(protestMarkers[0]);
-console.log(protestMarkers);
+
  
 // ******************OLD or unneeded below*************************
 
