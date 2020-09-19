@@ -71,37 +71,39 @@ var archived_fires = L.geoJSON(null, {
     style: myStyle2
   });
 
-  // Get GeoJSON data and create features.
+//   Get GeoJSON data and create features.
 // source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
-$.getJSON(url2, function(data) {
-    archived_fires.addData(data);
-    });
+// $.getJSON(url2, function(data) {
+//     archived_fires.addData(data);
+//     });
 
 
 // protest data
 
-// var protestMarkers = [];
-// d3.csv("../data/USA_2020_Sep12.csv", function(data) {
-//     console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
-//     for (var i=0; i<10;i++) {
-//         // console.log(data[i].LOCATION);
-//         protestMarkers.push(
-//             L.marker([data[i].LATITUDE,data[i].LONGITUDE])
-// )}
-//     });
+var protestMarkers = [];
+d3.csv("../data/USA_2020_Sep12.csv", function(data) {
+    console.log(data);
+    // console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
+    for (var i=0; i<10;i++) {
+        // console.log(data[i].LOCATION);
+        protestMarkers.push(
+            L.marker([data[i].LATITUDE,data[i].LONGITUDE]).bindPopup(data[i].LOCATION))
+    }
+});
 
-// var protestLayer = L.layerGroup(protestMarkers);
+
+var protestLayer = L.layerGroup(protestMarkers);
 
 
 var baseMaps = {
     Streetview: street
-}
+};
 
 var overlayMaps = {
     Active: active,
-    // Contained: archived_fires
-    // Protests: protestLayer
-}
+    // Contained: archived_fires,
+    Protests: protestLayer
+};
 
 // create map object
 var myMap = L.map("map", {
@@ -111,18 +113,21 @@ var myMap = L.map("map", {
     layers: [street, active]
 });
 
-d3.csv("../data/USA_2020_Sep12.csv", function(data) {
-        console.log(data);
-        for (var i=0; i<10;i++) {
-            // console.log(data[i].LOCATION);
-            // protestMarkers.push(
-                L.marker([data[i].LATITUDE,data[i].LONGITUDE]).addTo(myMap);
-                }
-    })
+// d3.csv("../data/USA_2020_Sep12.csv", function(data) {
+//         // console.log(data);
+//         for (var i=0; i<10;i++) {
+//             // console.log(data[i].LOCATION);
+//             // protestMarkers.push(
+//                 var testing = L.marker([data[i].LATITUDE,data[i].LONGITUDE]).bindPopup(data[i].LOCATION).addTo(myMap);
+//                 console.log(testing)
+//                 }
+//     })
 
 // L.geoJson(statesData, {style: style}).addTo(myMap);
 
-L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
+console.log(protestMarkers[0]);
+console.log(protestMarkers);
  
 // ******************OLD or unneeded below*************************
 
