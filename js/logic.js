@@ -1,14 +1,17 @@
+// date set
 
+var date_start = '2020-08-06';
+var date_end = '2020-08-07';
+var csv_date = '01-Sep-2020';
 
 // choose dataset
+var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 
-var date_start = '2020-06-06';
-var date_end = '2020-06-07';
-var url2 = "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'2020-06-06%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'2020-06-07%2000%3A00%3A00'&outFields=*&outSR=4326&f=json";
-// var url2 = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+// var url2 = "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'2020-06-06%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'2020-06-07%2000%3A00%3A00'&outFields=*&outSR=4326&f=json";
+var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
 // var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
-var csv_date = '01-Sep-2020';
+
 
 // add tile layer 
 var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -19,9 +22,6 @@ var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y
     zoomOffset: -1,
     accessToken: API_KEY
 });
-
-// https://leafletjs.com/examples/choropleth/
-// L.geoJson(statesData).addTo(myMap);
 
 function getColor(d) {
     return d > 1000 ? '#800026' :
@@ -34,55 +34,51 @@ function getColor(d) {
                       '#FFEDA0';
 }
 
+// map boundary styling
 function style(feature) {
     return {
         // fillColor: getColor(feature.properties.density),
-        // fillColor: "none"
+        fillColor: "white",
         weight: 2,
-        opacity: 1,
-        // color: 'white',
+        // opacity: 1,
+        color: 'black',
         dashArray: '3',
-        fillOpacity: 0.7
+        fillOpacity: 0.1
     };
 }
 
-
+// active fire styling
 var myStyle = {
         "color": "#ff7800",
         "weight": 5,
         "opacity": 0.65
     };
-    
+
+// contained fire styling
 var myStyle2 = {
         "color": "blue",
         "weight": 5,
         "opacity": 0.65
     };
-    
 
+
+// active fire data
 // source: https://gis.stackexchange.com/questions/149378/adding-multiple-json-layers-to-leaflet-map
 var active = L.geoJSON(null, {
     style: myStyle
   });
 
+  
 // Get GeoJSON data and create features.
 // source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
 $.getJSON("../data/Wildfire_Perimeters.geojson", function(data) {
 active.addData(data);
+console.log(data)
 });
 
-// var archived_fires = L.geoJSON(null, {
-//     style: myStyle2
-//   });
-
-//   Get GeoJSON data and create features.
-// source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
-// $.getJSON(url2, function(data) {
-//     archived_fires.addData(data);
-//     });
-
+// contained fire data
 var contained_fires =[];
-d3.json(url2).then(function(data) {
+d3.json(contained_fire_url).then(function(data) {
     // console.log(data.features);
     // console.log(response.features[1].geometry.rings[0][0]);
     for (var i =0;i<data.features.length;i++) {
@@ -92,8 +88,20 @@ d3.json(url2).then(function(data) {
         )
         
     }
- 
 
+    
+    // active fire data
+    var active_fires = [];
+    d3.json(active_fire_url).then(function(data) {
+        console.log(data);
+        // for (var i =0; data.features.length;i++) {
+
+            // active_fires.push(
+            //     L.circle([data.features[i].geometry.rings[0][0][1],data.features[i].geometry.rings[0][0][0]], {color:"red", radius:20000})
+            // )
+        // }
+    
+ 
     // protest data
 
     var protestMarkers = [];
@@ -117,79 +125,89 @@ d3.json(url2).then(function(data) {
         }
 
        
-// console.log(protestMarkers);
-    var protestLayer = L.layerGroup(protestMarkers);
+        // creating protest layer
+        var protestLayer = L.layerGroup(protestMarkers);
 
-    var containedFireLayer = L.layerGroup(contained_fires);
+        // creating contained fire layer
+        var containedFireLayer = L.layerGroup(contained_fires);
 
-    var baseMaps = {
-        Streetview: street
-    };
+        // creating active fire layer
+        var activeFireLayer = L.layerGroup(active_fires);
 
-    var overlayMaps = {
-        Active: active,
-        Contained: containedFireLayer,
-        Protests: protestLayer
-    };
+        // adding basemap to map
+        var baseMaps = {
+            Streetview: street
+        };
 
- 
+        // adding overlay layers for user to select
+        var overlayMaps = {
+            // Active: active,
+            Active: activeFireLayer,
+            Contained: containedFireLayer,
+            Protests: protestLayer
+        };
 
-    // create map object
-    var myMap = L.map("map", {
-        // center of the United States
-        center: [39.8, -98.6], 
-        zoom: 5,
-        layers: [street, active]
-    });
-
-    // d3.json("../us-states.js").then(function(data) {
-    //     L.geoJSON(data).addTo(myMap);
-    // })
-
-    L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
-
-    // make map interactive 
-    // source: https://leafletjs.com/examples/choropleth/
-    var stategeoJson;
-
-    function zoomToFeature(e) {
-        myMap.fitBounds(e.target.getBounds());
-    }
-
-    function resetHighlight(e) {
-        stategeoJson.resetStyle(e.target);
-    }
-
-    function highlightFeature(e) {
-        var layer = e.target;
-    
-        layer.setStyle({
-            weight: 5,
-            color: '#666',
-            dashArray: '',
-            fillOpacity: 0.7
+        // create map object
+        var myMap = L.map("map", {
+            // center of the United States
+            center: [39.8, -98.6], 
+            zoom: 5,
+            layers: [street, active]
         });
-    
-        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-            layer.bringToFront();
+
+        // adding layer control to map
+        L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
+
+        // make map interactive 
+        // source: https://leafletjs.com/examples/choropleth/
+        var stategeoJson;
+
+        // function to zoom into a state when the user clicks the state
+        function zoomToFeature(e) {
+            myMap.fitBounds(e.target.getBounds());
         }
-    }
 
-    function onEachFeature(feature, layer) {
-        layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight,
-            click: zoomToFeature
-        });
-    }
-    
+  
+        // function when user mouses over feature
+        function highlightFeature(e) {
+            var layer = e.target;
+        
+            layer.setStyle({
+                weight: 5,
+                color: 'blue',
+                dashArray: '',
+                fillOpacity: 0.3
+            });
+        
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+        }
 
-    stategeoJson = L.geoJson(statesData, {
-        style:style,
-        onEachFeature: onEachFeature
-    }).addTo(myMap);
+        // function when user mouses out of a feature
+        function resetHighlight(e) {
+            stategeoJson.resetStyle(e.target);
+        }
 
-})
+
+        // use onEachFeature function to call event functions
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: zoomToFeature
+            });
+        }
+        
+        // add state boundaries
+        // source: https://leafletjs.com/examples/choropleth/
+        stategeoJson = L.geoJson(statesData, {
+            style:style,
+            onEachFeature: onEachFeature
+        }).addTo(myMap);
+
+        })
+    })
 }) 
   
 
@@ -200,11 +218,6 @@ d3.json(url2).then(function(data) {
 
  
 // ******************OLD or unneeded below*************************
-
-//     // plot all fires 
-// L.geoJSON(test, {
-//     style: myStyle
-// }).addTo(myMap);
 
 
 
@@ -255,6 +268,4 @@ d3.json(url2).then(function(data) {
     //         return (`Location: ${layer.feature.properties.place} <br> Magnitude: ${layer.feature.properties.mag}`);
     //     }).addTo(myMap);
 
-        // Add map legend
-        // starter code from https://leafletjs.com/examples/choropleth/
 
