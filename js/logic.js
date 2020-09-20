@@ -36,10 +36,11 @@ function getColor(d) {
 
 function style(feature) {
     return {
-        fillColor: getColor(feature.properties.density),
+        // fillColor: getColor(feature.properties.density),
+        // fillColor: "none"
         weight: 2,
         opacity: 1,
-        color: 'white',
+        // color: 'white',
         dashArray: '3',
         fillOpacity: 0.7
     };
@@ -119,8 +120,6 @@ d3.json(url2).then(function(data) {
 // console.log(protestMarkers);
     var protestLayer = L.layerGroup(protestMarkers);
 
-
-    // console.log(contained_fires);
     var containedFireLayer = L.layerGroup(contained_fires);
 
     var baseMaps = {
@@ -133,6 +132,8 @@ d3.json(url2).then(function(data) {
         Protests: protestLayer
     };
 
+ 
+
     // create map object
     var myMap = L.map("map", {
         // center of the United States
@@ -141,25 +142,60 @@ d3.json(url2).then(function(data) {
         layers: [street, active]
     });
 
+    // d3.json("../us-states.js").then(function(data) {
+    //     L.geoJSON(data).addTo(myMap);
+    // })
+
     L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
+
+    // make map interactive 
+    // source: https://leafletjs.com/examples/choropleth/
+    var stategeoJson;
+
+    function zoomToFeature(e) {
+        myMap.fitBounds(e.target.getBounds());
+    }
+
+    function resetHighlight(e) {
+        stategeoJson.resetStyle(e.target);
+    }
+
+    function highlightFeature(e) {
+        var layer = e.target;
+    
+        layer.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.7
+        });
+    
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layer.bringToFront();
+        }
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: zoomToFeature
+        });
+    }
+    
+
+    stategeoJson = L.geoJson(statesData, {
+        style:style,
+        onEachFeature: onEachFeature
+    }).addTo(myMap);
 
 })
 }) 
-    // console.log(protestMarkers[0]);
-    // console.log(protestMarkers);
-// })
-// });
-// d3.csv("../data/USA_2020_Sep12.csv", function(data) {
-//         // console.log(data);
-//         for (var i=0; i<10;i++) {
-//             // console.log(data[i].LOCATION);
-//             // protestMarkers.push(
-//                 var testing = L.marker([data[i].LATITUDE,data[i].LONGITUDE]).bindPopup(data[i].LOCATION).addTo(myMap);
-//                 console.log(testing)
-//                 }
-//     })
+  
 
-// L.geoJson(statesData, {style: style}).addTo(myMap);
+
+
+
 
 
  
