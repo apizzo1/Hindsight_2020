@@ -4,6 +4,7 @@ var dt = luxon.DateTime;
 // create list of 50 states + DC
 var state_abbrs = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"];
 
+// create fxn that draws sparklines; https://omnipotent.net/jquery.sparkline/#s-docs
 function state_lines_fxn(date) {
 
     // format date; end result should be yyyymmdd for API calls
@@ -63,7 +64,6 @@ function state_data_fxn() {
         state_data[state] = getStateData(state);
     }
 
-    // state_cases_totals['GA'].then ((data) => (console.log (data)));
     return state_data;
 }
 
@@ -90,6 +90,7 @@ async function getStateData(state) {
 }
 
 // taken from https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
+// not sure if we'll use chart.js for the state data
 const verticalLinePlugin = {
     getLinePosition: function (chart, pointIndex) {
         const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
@@ -123,7 +124,4 @@ const verticalLinePlugin = {
 
 Chart.plugins.register(verticalLinePlugin);
 
-
-
 state_lines_fxn('2020-05-15');
-

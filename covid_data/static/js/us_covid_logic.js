@@ -1,6 +1,17 @@
 // see https://moment.github.io/luxon/docs/manual/parsing.html for luxon parsing docs & accepted formats
 var dt = luxon.DateTime;
 
+// fxn for finding avg
+function find_avg (array) {
+    var sum = 0;
+    for (var x = 0; x < array.length; x++) {
+        sum += array[x];
+    }
+
+    var avg = Math.round (sum / array.length);
+    return avg;
+}
+
 // create fxn that takes date input
 function us_fxn (date) {
 
@@ -12,12 +23,10 @@ function us_fxn (date) {
     var us_dates = [];
     var us_cases = [];
     var us_deaths = [];
-    var us_new_cases = [];
-    var us_new_deaths = [];
 
-    d3.json (us_url, (response) => {
+    d3.json (us_url).then ((response) => {
         for (var x = 0; x < response.length; x++) {
-            var date = dt.fromISO (response[x].date).toFormat ('yyyy-LL-dd');
+            var date = dt.fromISO (response[x].date).toFormat ('LL-dd-yyyy');
             var cases = response[x].positive;
             var deaths = response[x].death;
 
@@ -27,6 +36,7 @@ function us_fxn (date) {
         
 
             if (response[x].date == api_date) {
+                var date_index = x;
                 var select_cases = response[x].positive;
                 var select_deaths = response[x].death;
 
@@ -34,8 +44,12 @@ function us_fxn (date) {
                 d3.select ('#us_total_deaths').text (select_deaths);
             }
         }
-        
-        for (var x = 0; x < (us_cases.length - 1); x++) {
+
+        // create arrays for daily increases in cases/deaths
+        var us_new_cases = [0];
+        var us_new_deaths = [0];
+
+        for (var x = (us_cases.length - 2); x > -1; x--) {
             var case_inc = us_cases[x] - us_cases[x + 1];
             var death_inc = us_deaths[x] - us_deaths[x + 1];
 
@@ -43,79 +57,50 @@ function us_fxn (date) {
             us_new_deaths.push (death_inc);
         }
 
-        us_new_cases.push (0);
-        us_new_deaths.push (0);
+        // create arrays for 7d moving avg for cases/deaths
+        var new_cases_avg = [];
+        var new_deaths_avg = [];
+        var reverse_new_cases = us_new_cases.reverse();
 
-        // var ctx = document.getElementById('us_cases_chart').getContext('2d');
-        // var test_chart = new Chart (ctx, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: state_abbrs, 
-        //         datasets: [{
-        //             label: 'total cases',
-        //             data: state_cases_totals
-        //         }]
-        //     },
-        //     options: {},
-        //     lineAtIndex: [2,4]
-        // });
-    })
+        for (var x = (reverse_new_cases.length - 1); x > -1; x--) {
+            var avg_array = [];
 
-    console.log (us_dates);
-}
-
-
-
-function state_cases (date) {
-    
-    // format date; end result should be yyyymmdd for API calls
-    var luxon_date = dt.fromISO (date);
-    var api_date = luxon_date.toFormat ('yyyyLLdd');
-    var prior_date = luxon_date.plus ({days: -1}).toFormat ('yyyyLLdd');
-
-    var state_url = `https://api.covidtracking.com/v1/states/daily.json`
-
-    var state_abbrs = [];
-    var state_cases_totals = [];
-    var state_deaths_totals = [];
-
-    var state_cases_prior = [];
-    var state_deaths_prior = [];
-
-    d3.json (state_url, (response) => {
-        for (var x = 0; x < response.length; x++) {
-            if (response[x].date == api_date) {
-                var state_abbr = response[x].state;
-                var state_cases = response[x].positive;
-                var state_deaths = response[x].death;
-
-                state_abbrs.push (state_abbr);
-                state_cases_totals.push (state_cases);
-                state_deaths_totals.push (state_deaths);
+            if (x > (reverse_new_cases.length - 8)) {
+                avg_array.push (reverse_new_cases[x]); // they all equal 0, so downstream avg calcs are moot
             }
 
-            else if (response[x].date == prior_date) {
-                var state_cases = response[x].positive;
-                var state_deaths = response[x].death;
-
-                state_cases_prior.push (state_cases);
-                state_deaths_prior.push (state_deaths);
+            else {
+                for (var y = 0; y < 7; y++) {
+                    avg_array.push (reverse_new_cases[x + y]);
+                }
             }
+            
+            // console.log (avg_array);
+            var avg = find_avg (avg_array);
+            new_cases_avg.push (avg);
         }
 
-        var state_cases_incs = [];
-        var state_deaths_incs = [];
+        console.log (new_cases_avg);
 
-        for (var y = 0; y < state_cases_totals.length; y++) {
-            state_cases_new = state_cases_totals[y] - state_cases_prior[y];
-            state_deaths_new = state_deaths_totals[y] - state_deaths_prior[y];
+        var ctx = document.getElementById('us_cases_chart').getContext('2d');
 
-            state_cases_incs.push (state_cases_new);
-            state_deaths_incs.push (state_deaths_new);
-        }
-
-        console.log (state_abbrs, state_cases_totals, state_cases_incs);
-        console.log (state_deaths_totals, state_deaths_incs);
+        var cases_chart = new Chart (ctx, {
+            type: 'bar',
+            data: {
+                datasets: [{
+                    label: 'daily case increase',
+                    data: us_new_cases.reverse()
+                }, {
+                    label: '7-day moving average',
+                    data: new_cases_avg,
+                    type: 'line',
+                    pointRadius: 0
+                }], 
+                labels: us_dates.reverse(), 
+            },
+            options: {},
+            lineAtIndex: [(us_dates.length - date_index)]
+        });
     })
 }
 
@@ -133,15 +118,15 @@ const verticalLinePlugin = {
   
         // render vertical line
         context.beginPath();
-        context.strokeStyle = '#ff0000';
+        context.strokeStyle = 'red';
         context.moveTo(lineLeftOffset, scale.top);
         context.lineTo(lineLeftOffset, scale.bottom);
         context.stroke();
   
         // write label
-        context.fillStyle = "#ff0000";
-        context.textAlign = 'center';
-        context.fillText('MY TEXT', lineLeftOffset, (scale.bottom - scale.top) / 2 + scale.top);
+        // context.fillStyle = "black";
+        // context.textAlign = 'center';
+        // context.fillText('MY TEXT', lineLeftOffset, (scale.bottom - scale.top) / 2 + scale.top);
     },
   
     afterDatasetsDraw: function (chart, easing) {
@@ -153,7 +138,4 @@ const verticalLinePlugin = {
   
 Chart.plugins.register(verticalLinePlugin);
 
-
-
 us_fxn ('2020-09-05');
-// state_cases ('2020-09-05'); // only returns a console.log rn
