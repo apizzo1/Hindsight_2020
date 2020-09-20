@@ -8,7 +8,7 @@ var date_end = '2020-06-07';
 var url2 = "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'2020-06-06%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'2020-06-07%2000%3A00%3A00'&outFields=*&outSR=4326&f=json";
 // var url2 = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
 // var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
-
+var csv_date = '01-Sep-2020';
 
 // add tile layer 
 var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -52,7 +52,7 @@ var myStyle = {
         "opacity": 0.65
     };
     
-    var myStyle2 = {
+var myStyle2 = {
         "color": "blue",
         "weight": 5,
         "opacity": 0.65
@@ -97,21 +97,30 @@ d3.json(url2).then(function(data) {
 
     var protestMarkers = [];
     d3.csv("../data/USA_2020_Sep12.csv").then(function(data) {
-        console.log(data);
-        // console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
-        for (var i=0; i<10;i++) {
+        // console.log(data);
+        // filter for user selected date
+        // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
+        var filteredData = data.filter(function(d) { 
+            if( d["EVENT_DATE"] == csv_date) { 
+                    return d;
+                } 
+        
+            })
+      
+        for (var i=0; i<filteredData.length;i++) {
             // console.log(data[i].LOCATION);
+           
             protestMarkers.push(
-                L.marker([data[i]["LATITUDE"],data[i]["LONGITUDE"]]).bindPopup(data[i]["LOCATION"]))
+                L.marker([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
+                // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
         }
 
-
-
+       
 // console.log(protestMarkers);
     var protestLayer = L.layerGroup(protestMarkers);
 
 
-    console.log(contained_fires);
+    // console.log(contained_fires);
     var containedFireLayer = L.layerGroup(contained_fires);
 
     var baseMaps = {
