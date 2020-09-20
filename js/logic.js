@@ -92,34 +92,24 @@ d3.json(url2).then(function(data) {
         
     }
  
-// console.log(contained_fires);
-// protest data
 
-// var protestMarkers = [];
-// d3.csv("../data/USA_2020_Sep12.csv", function(data) {
-//     console.log(data);
-//     // console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
-//     for (var i=0; i<10;i++) {
-//         // console.log(data[i].LOCATION);
-//         protestMarkers.push(
-//             L.marker([data[i]["LATITUDE"],data[i]["LONGITUDE"]]).bindPopup(data[i]["LOCATION"]))
-//     }
+    // protest data
+
+    var protestMarkers = [];
+    d3.csv("../data/USA_2020_Sep12.csv").then(function(data) {
+        console.log(data);
+        // console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
+        for (var i=0; i<10;i++) {
+            // console.log(data[i].LOCATION);
+            protestMarkers.push(
+                L.marker([data[i]["LATITUDE"],data[i]["LONGITUDE"]]).bindPopup(data[i]["LOCATION"]))
+        }
+
 
 
 // console.log(protestMarkers);
-    // var protestLayer = L.layerGroup(protestMarkers);
+    var protestLayer = L.layerGroup(protestMarkers);
 
-    // var contained_fires =[];
-    // d3.json(url2, function(response) {
-
-    //     console.log(response.features[1].geometry.rings[0][0][0]);
-    //     for (var i =0;i<response.features.length;i++) {
-    //         console.log(response.features[i].geometry.rings[0][0]);
-    //         contained_fires.push(
-    //             L.circle([response.features[i].geometry.rings[0][0][1],response.features[i].geometry.rings[0][0][0]], {radius:20000})
-    //     )
-        
-    // }
 
     console.log(contained_fires);
     var containedFireLayer = L.layerGroup(contained_fires);
@@ -131,7 +121,7 @@ d3.json(url2).then(function(data) {
     var overlayMaps = {
         Active: active,
         Contained: containedFireLayer,
-        // Protests: protestLayer
+        Protests: protestLayer
     };
 
     // create map object
@@ -144,6 +134,7 @@ d3.json(url2).then(function(data) {
 
     L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
 
+})
 }) 
     // console.log(protestMarkers[0]);
     // console.log(protestMarkers);
