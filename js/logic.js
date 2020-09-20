@@ -71,9 +71,9 @@ var active = L.geoJSON(null, {
   
 // Get GeoJSON data and create features.
 // source: https://gis.stackexchange.com/questions/336179/add-more-than-one-layer-of-geojson-data-to-leaflet
-$.getJSON("../data/Wildfire_Perimeters.geojson", function(data) {
+$.getJSON(url, function(data) {
 active.addData(data);
-console.log(data)
+// console.log(data)
 });
 
 // contained fire data
@@ -91,10 +91,10 @@ d3.json(contained_fire_url).then(function(data) {
 
     
     // active fire data
-    var active_fires = [];
-    d3.json(active_fire_url).then(function(data) {
-        console.log(data);
-        // for (var i =0; data.features.length;i++) {
+    // var active_fires = [];
+    // d3.json(active_fire_url).then(function(data) {
+    //     console.log(data);
+    //     // for (var i =0; data.features.length;i++) {
 
             // active_fires.push(
             //     L.circle([data.features[i].geometry.rings[0][0][1],data.features[i].geometry.rings[0][0][0]], {color:"red", radius:20000})
@@ -132,7 +132,7 @@ d3.json(contained_fire_url).then(function(data) {
         var containedFireLayer = L.layerGroup(contained_fires);
 
         // creating active fire layer
-        var activeFireLayer = L.layerGroup(active_fires);
+        // var activeFireLayer = L.layerGroup(active_fires);
 
         // adding basemap to map
         var baseMaps = {
@@ -141,8 +141,8 @@ d3.json(contained_fire_url).then(function(data) {
 
         // adding overlay layers for user to select
         var overlayMaps = {
-            // Active: active,
-            Active: activeFireLayer,
+            Active: active,
+            // Active: activeFireLayer,
             Contained: containedFireLayer,
             Protests: protestLayer
         };
@@ -207,11 +207,24 @@ d3.json(contained_fire_url).then(function(data) {
         }).addTo(myMap);
 
         })
-    })
+    // })
 }) 
-  
 
+// slider
+// Create a new date from a string, return as a timestamp.
+function timestamp(str) {
+    return new Date(str).getTime();
+}
 
+var slider = document.getElementById('slider');
+
+noUiSlider.create(slider, {
+    start: [80],
+    range: {
+        'min': [0],
+        'max': [100]
+    }
+});
 
 
 
