@@ -39,6 +39,8 @@ function us_fxn (date) {
                 var select_cases = response[x].positive;
                 var select_deaths = response[x].death;
 
+                // can probably push to a bootstrap card: https://getbootstrap.com/docs/4.5/components/card/
+                // or a jumbotron https://getbootstrap.com/docs/4.5/components/jumbotron/ 
                 d3.select ('#us_total_cases').text (select_cases);
                 d3.select ('#us_total_deaths').text (select_deaths);
             }
