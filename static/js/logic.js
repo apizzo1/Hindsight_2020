@@ -212,18 +212,61 @@ d3.json(contained_fire_url).then(function(data) {
 
 // slider
 // Create a new date from a string, return as a timestamp.
-function timestamp(str) {
-    return new Date(str).getTime();
+
+var select = document.getElementById('input-select');
+
+// Append the option elements
+for (var i = -20; i <= 40; i++) {
+
+    var option = document.createElement("option");
+    option.text = i;
+    option.value = i;
+
+    select.appendChild(option);
 }
 
-var slider = document.getElementById('slider');
+var html5Slider = document.getElementById('html5');
 
-noUiSlider.create(slider, {
-    start: [80],
+noUiSlider.create(html5Slider, {
+    start: 10,
+    connect: "lower",
+    step: 1,
     range: {
-        'min': [0],
-        'max': [100]
+        'min': -20,
+        'max': 40
     }
+});
+
+var input = html5Slider.noUiSlider.get();
+console.log(input);
+
+
+// var inputNumber = document.getElementById('input-number');
+
+html5Slider.noUiSlider.on('update', function (values, handle) {
+
+    var value = values[handle];
+    // console.log(value);
+    if (handle) {
+        inputNumber.value = value;
+        
+    } else {
+        select.value = Math.round(value);
+    }
+});
+
+html5Slider.noUiSlider.on('end', function (values, handle) {
+
+var value = values[handle];
+console.log(value);
+
+});
+
+select.addEventListener('change', function () {
+    
+    html5Slider.noUiSlider.set([this.value]);
+    
+    
 });
 
 
@@ -232,6 +275,23 @@ noUiSlider.create(slider, {
  
 // ******************OLD or unneeded below*************************
 
+// function timestamp(str) {
+//     return new Date(str).getTime();
+// }
+
+// var slider = document.getElementById('slider');
+
+// noUiSlider.create(slider, {
+//     start: [80],
+//     step: 1, 
+//     range: {
+//         'min': [0],
+//         'max': [100]
+//     }
+// });
+
+// var input_date = slider.noUiSlider.get();
+// console.log(input_date);
 
 
     // https://stackoverflow.com/questions/27804460/show-a-marker-for-polygons-from-a-geojson-file-in-leaflet
