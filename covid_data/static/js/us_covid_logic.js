@@ -12,7 +12,7 @@ function find_avg (array) {
     return avg;
 }
 
-// create fxn that takes date input
+// fxn to output US data that takes date input
 function us_fxn (date) {
 
     // format date; end result should be yyyymmdd for API calls
@@ -34,7 +34,6 @@ function us_fxn (date) {
             us_cases.push (cases);
             us_deaths.push (deaths);
         
-
             if (response[x].date == api_date) {
                 var date_index = x;
                 var select_cases = response[x].positive;
@@ -68,7 +67,6 @@ function us_fxn (date) {
             if (x > (reverse_new_cases.length - 8)) {
                 avg_array.push (reverse_new_cases[x]); // they all equal 0, so downstream avg calcs are moot
             }
-
             else {
                 for (var y = 0; y < 7; y++) {
                     avg_array.push (reverse_new_cases[x + y]);
@@ -80,31 +78,63 @@ function us_fxn (date) {
             new_cases_avg.push (avg);
         }
 
-        console.log (new_cases_avg);
-
         var ctx = document.getElementById('us_cases_chart').getContext('2d');
-
         var cases_chart = new Chart (ctx, {
             type: 'bar',
             data: {
                 datasets: [{
                     label: 'daily case increase',
-                    data: us_new_cases.reverse()
-                }, {
-                    label: '7-day moving average',
-                    data: new_cases_avg,
-                    type: 'line',
-                    pointRadius: 0
+                    data: us_new_cases.reverse(),
+                    backgroundColor: function (context) {
+                        var index = context.dataIndex;
+                        return index < (us_new_cases.length - date_index) ? 'rgba(13, 71, 161 , 0.4)'
+                        : 'rgba(120, 144, 156, 0.2)';
+                    },
+                    borderColor: 'grey',
+                    order: 1
+                // }, { // not sure if i should keep the line or not? chart.js doesn't allow changing the color in the middle
+                //     label: '7-day moving average',
+                //     data: new_cases_avg,
+                //     type: 'line',
+                //     pointRadius: 0,
+                //     backgroundColor: "rgba(230, 74, 25, 0.1)",
+                //     borderColor: "rgba(230, 74, 25, 0.5)",
+                //     fill: false,
+                //     order: 2
                 }], 
                 labels: us_dates.reverse(), 
             },
-            options: {},
+            options: {
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'date'
+                        },
+                        ticks: {
+                            maxTicksLimit: 15
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'number of cases'
+                        },
+                        gridLines: {
+                            color: "rgba(236, 239, 241, 0.7)"
+                        }
+                    }]
+                }
+            },
             lineAtIndex: [(us_dates.length - date_index)]
         });
     })
 }
 
-// taken from https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
+// plugin to create vertical line on chart.js; taken from https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
 const verticalLinePlugin = {
     getLinePosition: function (chart, pointIndex) {
         const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
@@ -118,7 +148,7 @@ const verticalLinePlugin = {
   
         // render vertical line
         context.beginPath();
-        context.strokeStyle = 'red';
+        context.strokeStyle = 'grey';
         context.moveTo(lineLeftOffset, scale.top);
         context.lineTo(lineLeftOffset, scale.bottom);
         context.stroke();
@@ -138,4 +168,6 @@ const verticalLinePlugin = {
   
 Chart.plugins.register(verticalLinePlugin);
 
-us_fxn ('2020-09-05');
+// fxn to 
+
+us_fxn ('2020-08-05');

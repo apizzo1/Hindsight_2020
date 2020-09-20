@@ -44,10 +44,6 @@ function state_lines_fxn(date) {
                     highlightLineColor: 'red'
                 });
             });
-
-            // console.log (state, case_array);
-            // d3.select ('#state_cases')
-            // .selectAll ()
         })
     })
 }
