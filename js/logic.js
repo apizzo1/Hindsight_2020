@@ -3,7 +3,10 @@
 // choose dataset
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 
-var url2 = "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'2020-06-02%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'2020-06-03%2000%3A00%3A00'&outFields=*&outSR=4326&f=json";
+var date_start = '2020-06-06';
+var date_end = '2020-06-07';
+var url2 = "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'2020-06-06%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'2020-06-07%2000%3A00%3A00'&outFields=*&outSR=4326&f=json";
+// var url2 = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_FROM_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_FROM_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
 // var archived_fire_data = "https://opendata.arcgis.com/datasets/bf373b4ff85e4f0299036ecc31a1bcbb_0.geojson";
 
 
@@ -78,45 +81,45 @@ active.addData(data);
 //     });
 
 var contained_fires =[];
-d3.json(url2, function(response) {
-
-    console.log(response.features[1].geometry.rings[0][0]);
-    for (var i =0;i<response.features.length;i++) {
-        console.log(response.features[i].geometry.rings[0][0]);
+d3.json(url2).then(function(data) {
+    // console.log(data.features);
+    // console.log(response.features[1].geometry.rings[0][0]);
+    for (var i =0;i<data.features.length;i++) {
+        // console.log(data.features[i].geometry.rings[0][0]);
         contained_fires.push(
-            L.circle(response.features[i].geometry.rings[0][0], {radius:200})
+            L.circle([data.features[i].geometry.rings[0][0][1],data.features[i].geometry.rings[0][0][0]], {radius:20000})
         )
         
     }
-})
-console.log(contained_fires);
+ 
+// console.log(contained_fires);
 // protest data
 
-var protestMarkers = [];
-d3.csv("../data/USA_2020_Sep12.csv", function(data) {
-    console.log(data);
-    // console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
-    for (var i=0; i<10;i++) {
-        // console.log(data[i].LOCATION);
-        protestMarkers.push(
-            L.marker([data[i].LATITUDE,data[i].LONGITUDE]).bindPopup(data[i].LOCATION))
-    }
+// var protestMarkers = [];
+// d3.csv("../data/USA_2020_Sep12.csv", function(data) {
+//     console.log(data);
+//     // console.log(`${[data[1].LATITUDE,data[1].LONGITUDE]}`);
+//     for (var i=0; i<10;i++) {
+//         // console.log(data[i].LOCATION);
+//         protestMarkers.push(
+//             L.marker([data[i]["LATITUDE"],data[i]["LONGITUDE"]]).bindPopup(data[i]["LOCATION"]))
+//     }
 
 
 // console.log(protestMarkers);
-    var protestLayer = L.layerGroup(protestMarkers);
+    // var protestLayer = L.layerGroup(protestMarkers);
 
-    var contained_fires =[];
-    d3.json(url2, function(response) {
+    // var contained_fires =[];
+    // d3.json(url2, function(response) {
 
-        // console.log(response.features[1].geometry.rings[0][0][0]);
-        for (var i =0;i<response.features.length;i++) {
-            console.log(response.features[i].geometry.rings[0][0]);
-            contained_fires.push(
-                L.circle([response.features[i].geometry.rings[0][0][1],response.features[i].geometry.rings[0][0][0]], {radius:20000})
-        )
+    //     console.log(response.features[1].geometry.rings[0][0][0]);
+    //     for (var i =0;i<response.features.length;i++) {
+    //         console.log(response.features[i].geometry.rings[0][0]);
+    //         contained_fires.push(
+    //             L.circle([response.features[i].geometry.rings[0][0][1],response.features[i].geometry.rings[0][0][0]], {radius:20000})
+    //     )
         
-    }
+    // }
 
     console.log(contained_fires);
     var containedFireLayer = L.layerGroup(contained_fires);
@@ -128,7 +131,7 @@ d3.csv("../data/USA_2020_Sep12.csv", function(data) {
     var overlayMaps = {
         Active: active,
         Contained: containedFireLayer,
-        Protests: protestLayer
+        // Protests: protestLayer
     };
 
     // create map object
@@ -140,10 +143,12 @@ d3.csv("../data/USA_2020_Sep12.csv", function(data) {
     });
 
     L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);
+
+}) 
     // console.log(protestMarkers[0]);
     // console.log(protestMarkers);
-})
-});
+// })
+// });
 // d3.csv("../data/USA_2020_Sep12.csv", function(data) {
 //         // console.log(data);
 //         for (var i=0; i<10;i++) {
