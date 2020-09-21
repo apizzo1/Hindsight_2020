@@ -212,8 +212,9 @@ d3.json(contained_fire_url).then(function(data) {
     // })
 }) 
 
+console.log("TESTING");
+
 // slider
-// Create a new date from a string, return as a timestamp.
 
 var select = document.getElementById('input-select');
 
@@ -243,7 +244,7 @@ var input = html5Slider.noUiSlider.get();
 console.log(input);
 
 
-// var inputNumber = document.getElementById('input-number');
+var inputNumber = document.getElementById('input-number');
 
 html5Slider.noUiSlider.on('update', function (values, handle) {
 
@@ -271,15 +272,48 @@ select.addEventListener('change', function () {
     
 });
 
+// =======================================================================
+// Create a new date from a string, return as a timestamp.
+function timestamp(str) {
+    return new Date(str).getTime();
+}
 
+console.log(timestamp("2020"));
+console.log(timestamp("09-jun-2020"));
 
+var dateSlider = document.getElementById('slider-date');
+
+noUiSlider.create(dateSlider, {
+// Create two timestamps to define a range.
+    range: {
+        min: timestamp('2020'),
+        max: timestamp('2021')
+    },
+
+// Steps of one week
+    // step: 7* 24 * 60 * 60 * 1000,
+
+// Two more timestamps indicate the handle starting positions.
+    start: timestamp('2020'),
+
+// No decimals
+    format: wNumb({
+        decimals: 0
+    })
+});
+
+dateSlider.noUiSlider.on('end', function (values, handle) {
+
+    var date_select = values[handle];
+    console.log(date_select);
+    // var correct_date = new Date(date_select*1000);
+    // console.log(correct_date);
+    
+    });
 
  
 // ******************OLD or unneeded below*************************
 
-// function timestamp(str) {
-//     return new Date(str).getTime();
-// }
 
 // var slider = document.getElementById('slider');
 
