@@ -176,7 +176,7 @@ d3.json(contained_fire_url).then(function(data) {
         var myMap = L.map("map", {
             // center of the United States
             center: [39.8, -98.6], 
-            zoom: 5,
+            zoom: 4,
             layers: [street, active]
         });
 
