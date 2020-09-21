@@ -345,14 +345,22 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
         var hour = a.getHours();
         var min = a.getMinutes();
         var sec = a.getSeconds();
-        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        var time = date + ' ' + month + ' ' + year  ;
         return time;
       }
     
     var user_selected_date = timeConverter(date_select/1000);
     console.log(user_selected_date);
+    d3.select("#date_select").text(`Date selected: ${user_selected_date}`)
+    
+    // console.log(date_display);
 
 });
+
+
+
+
 // ******************OLD or unneeded below*************************
 
 
