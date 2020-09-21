@@ -296,6 +296,9 @@ select.addEventListener('change', function () {
     
 });
 
+
+
+
 // =======================================================================
 // Create a new date from a string, return as a timestamp.
 function timestamp(str) {
@@ -326,16 +329,30 @@ noUiSlider.create(dateSlider, {
     })
 });
 
+// after user selects date, return date
 dateSlider.noUiSlider.on('end', function (values, handle) {
 
     var date_select = values[handle];
     console.log(date_select);
-    // var correct_date = new Date(date_select*1000);
-    // console.log(correct_date);
     
-    });
+    // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+    function timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp*1000);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        return time;
+      }
+    
+    var user_selected_date = timeConverter(date_select/1000);
+    console.log(user_selected_date);
 
- 
+});
 // ******************OLD or unneeded below*************************
 
 
