@@ -3,7 +3,7 @@ var dtx = document.getElementById('myChart2').getContext('2d');
 
 
 
-d3.csv('Resources/Google Mobility - National - Daily.csv').then(function (inputdata) {
+d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inputdata) {
 
     var datasets = [];
     inputdata.forEach(val => {
