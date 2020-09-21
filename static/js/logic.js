@@ -25,6 +25,27 @@ var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y
     accessToken: API_KEY
 });
 
+// satellite layer
+var satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/satellite-streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: API_KEY
+});
+
+// grayscale layer
+var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/dark-v10',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: API_KEY
+});
+
+
 function getColor(d) {
     return d > 1000 ? '#800026' :
            d > 500  ? '#BD0026' :
@@ -138,7 +159,9 @@ d3.json(contained_fire_url).then(function(data) {
 
         // adding basemap to map
         var baseMaps = {
-            Streetview: street
+            Streetview: street,
+            Satellite: satellite,
+            Grayscale: grayscale
         };
 
         // adding overlay layers for user to select
@@ -194,6 +217,7 @@ d3.json(contained_fire_url).then(function(data) {
 
         // use onEachFeature function to call event functions
         function onEachFeature(feature, layer) {
+            layer.bindPopup(`Insert chart here `),
             layer.on({
                 mouseover: highlightFeature,
                 mouseout: resetHighlight,
