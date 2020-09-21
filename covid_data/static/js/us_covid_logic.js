@@ -60,7 +60,7 @@ function us_fxn (date) {
 
         // create arrays for 7d moving avg for cases/deaths
         var new_cases_avg = [];
-        var new_deaths_avg = [];
+        // var new_deaths_avg = [];
         var reverse_new_cases = us_new_cases.reverse();
 
         for (var x = (reverse_new_cases.length - 1); x > -1; x--) {
@@ -74,8 +74,6 @@ function us_fxn (date) {
                     avg_array.push (reverse_new_cases[x + y]);
                 }
             }
-            
-            // console.log (avg_array);
             var avg = find_avg (avg_array);
             new_cases_avg.push (avg);
         }
@@ -89,7 +87,7 @@ function us_fxn (date) {
                     data: us_new_cases.reverse(),
                     backgroundColor: function (context) {
                         var index = context.dataIndex;
-                        return index < (us_new_cases.length - date_index) ? 'rgba(13, 71, 161 , 0.4)'
+                        return index < (us_new_cases.length - date_index) ? 'rgba(13, 71, 161 , 0.6)'
                         : 'rgba(120, 144, 156, 0.2)';
                     },
                     borderColor: 'grey',
@@ -169,7 +167,5 @@ const verticalLinePlugin = {
 };
   
 Chart.plugins.register(verticalLinePlugin);
-
-// fxn to 
 
 us_fxn ('2020-08-05');

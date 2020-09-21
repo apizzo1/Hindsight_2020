@@ -1,6 +1,17 @@
 // see https://moment.github.io/luxon/docs/manual/parsing.html for luxon parsing docs & accepted formats
 var dt = luxon.DateTime;
 
+// fxn for finding avg
+function find_avg (array) {
+    var sum = 0;
+    for (var x = 0; x < array.length; x++) {
+        sum += array[x];
+    }
+
+    var avg = Math.round (sum / array.length);
+    return avg;
+}
+
 // create list of 50 states + DC
 var state_abbrs = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"];
 
@@ -31,11 +42,29 @@ function state_lines_fxn(date) {
                 case_increases.push (increase);
             }
 
+            // find 7-day moving avgs for a smoother sparkline
+            var new_cases_avg = [];
+            for (var x = 0; x < case_increases.length; x++) {
+                var avg_array = [];
+                if (x > (case_increases.length - 8)) {
+                    for (var y = x; y < (case_increases.length); y++) {
+                        avg_array.push (case_increases[y]);
+                    }
+                }
+                else {
+                    for (var y = 0; y < 7; y++) {
+                        avg_array.push (case_increases[x + y]);
+                    }
+                }
+                var avg = find_avg (avg_array);
+                new_cases_avg.push (avg);
+            }
+
             d3.select ('#state_cases').append ('span').classed (`${state}spark`, true);
 
             // fxn for sparkline
             $(function() {
-                $(`.${state}spark`).sparkline(case_increases.reverse(), {
+                $(`.${state}spark`).sparkline(new_cases_avg.reverse(), {
                     width: '70px',
                     height: '40px',
                     minSpotColor: false,
@@ -85,39 +114,4 @@ async function getStateData(state) {
     }
 }
 
-// taken from https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
-// not sure if we'll use chart.js for the state data
-const verticalLinePlugin = {
-    getLinePosition: function (chart, pointIndex) {
-        const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
-        const data = meta.data;
-        return data[pointIndex]._model.x;
-    },
-    renderVerticalLine: function (chartInstance, pointIndex) {
-        const lineLeftOffset = this.getLinePosition(chartInstance, pointIndex);
-        const scale = chartInstance.scales['y-axis-0'];
-        const context = chartInstance.chart.ctx;
-
-        // render vertical line
-        context.beginPath();
-        context.strokeStyle = '#ff0000';
-        context.moveTo(lineLeftOffset, scale.top);
-        context.lineTo(lineLeftOffset, scale.bottom);
-        context.stroke();
-
-        // write label
-        context.fillStyle = "#ff0000";
-        context.textAlign = 'center';
-        context.fillText('MY TEXT', lineLeftOffset, (scale.bottom - scale.top) / 2 + scale.top);
-    },
-
-    afterDatasetsDraw: function (chart, easing) {
-        if (chart.config.lineAtIndex) {
-            chart.config.lineAtIndex.forEach(pointIndex => this.renderVerticalLine(chart, pointIndex));
-        }
-    }
-};
-
-Chart.plugins.register(verticalLinePlugin);
-
-state_lines_fxn('2020-05-15');
+state_lines_fxn('2020-08-15');
