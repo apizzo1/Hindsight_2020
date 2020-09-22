@@ -1,55 +1,104 @@
 
 
-function buildLinePlot(selection) {
-    dates = [];
-    unempMain = [];
-    unempSelect = [];
+function buildLinePlot(selection, userDate) {
+    selectDates = [];
+    selectMain = [];
+    selectSelect = [];
+    priorDates = [];
+    priorMain = [];
+    priorSelect = [];
+    postDates = [];
+    postMain = [];
+    postSelect = [];
     
     d3.csv('data/Unemployment/UNRATE.csv').then(function(unempData) {
-        // console.log(unempData);
-        startDate = unempData[0]['DATE'];
-        endDate = unempData[871]['DATE'];
-        // console.log(startDate, endDate);
+        startDate = Date.parse(unempData[0]['DATE']);
+        endDate = Date.parse(unempData[871]['DATE']);
+        console.log(userDate);
         for (i=0; i< unempData.length; i++) {
-            dates.push(unempData[i]['DATE']);
-            unempMain.push(unempData[i]['UNRATE']);
-            unempSelect.push(unempData[i][selection]);
+            currDate = Date.parse(unempData[i]['DATE']);
+            if (currDate < new Date('2020-01-01')) {
+                priorDates.push(currDate);
+                priorMain.push(unempData[i]['UNRATE']);
+                priorSelect.push(unempData[i][selection]);
+            }
+            else if (currDate < userDate) {
+                selectDates.push(currDate);
+                selectMain.push(unempData[i]['UNRATE']);
+                selectSelect.push(unempData[i][selection]);
+            }
+            else {
+                postDates.push(currDate);
+                postMain.push(unempData[i]['UNRATE']);
+                postSelect.push(unempData[i][selection]);
+            }
         }
-        // console.log(dates);
-        // console.log(unempMain);
+        console.log(priorDates);
+        console.log(selectDates);
+        console.log(postDates);
+
+
+        var priorTrace = {
+            type: 'line',
+            x: priorDates,
+            y: priorMain,
+            showlegend: false,
+        };
 
         var mainTrace = {
             type: 'line',
             name: 'National Unemployment',
-            x: dates,
-            y: unempMain,
+            x: selectDates,
+            y: selectMain,
         };
 
-        if (!(selection == '...')) {
-            var selectTrace = {
-                type: 'line',
-                name: `Unemployment for ${selection}`,
-                x: dates,
-                y: unempSelect,
-            };
+        var postTrace = {
+            type: 'line',
+            x: postDates,
+            y: postMain,
+            showlegend: false,
+        }
 
-            var data = [mainTrace, selectTrace];
+        if (!(selection == '...')) {
+
+            var priorSelTrace = {
+                type: 'line',
+                x: priorDates,
+                y: priorSelect,
+                showlegend: false,
+            };
+    
+            var mainSelTrace = {
+                type: 'line',
+                name: 'National Unemployment',
+                x: selectDates,
+                y: selectSelect,
+            };
+    
+            var postSelTrace = {
+                type: 'line',
+                x: postDates,
+                y: postSelect,
+                showlegend: false,
+            }
+
+            var data = [priorTrace, mainTrace, postTrace, priorSelTrace, mainSelTrace, postSelTrace];
         }
         else {
-            var data = [mainTrace];
+            var data = [priorTrace, mainTrace, postTrace];
         }
 
         var layout = {
             title: 'Unemployment Data',
+            colorway: ['99CCFF','#0000FF','99CCFF','#FFCC00','#FF9900','#FFCC00'],
             showlegend: true,
             legend: {
                 x: 0,
-                // xanchor: 'right',
                 y: 1
             },
             xaxis: {
                 range: [startDate, endDate],
-                // type: "date",
+                type: "date",
             },
             yaxis: {
                 title: {
@@ -81,10 +130,10 @@ function buildDropdown () {
 };
 
 function selectOption (chosen) {
-    // var selection = document.getElementById("compare").value;
     console.log(chosen);
-    buildLinePlot(chosen);
+    buildLinePlot(chosen, sliderDate);
 }
 
+sliderDate = new Date('2020-08-01');
 buildDropdown();
-buildLinePlot('...');
+buildLinePlot('...', sliderDate);
