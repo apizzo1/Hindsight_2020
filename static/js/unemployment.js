@@ -59,4 +59,21 @@ function buildLinePlot(selection) {
     });
 }
 
+function buildDropdown () {
+    var labels = ['Age 16-19','Age over 20',
+        'Race: African American','Race: Hispanic/Latino','Race: White',
+        'Gender: Male','Gender: Female',
+        'Education: No HS graduation','Education: HS, no college','Education: Bachelors Degree','Education: Masters Degree','Education: Doctoral Degree'];
+    var values = ['16-19','over20',
+        'AfricanAmer','Latinx','White',
+        'Men','Women',
+        'no-HS-grad','HS-no-college','Bachelors','Masters','Doctoral'];
+    var req_option = d3.select("#compare");
+    req_option.append("option").attr("value", "...").text("Select Comparison Option");
+    for (var j=0; j<values.length; j++) {
+        req_option.append("option").attr("value", values[j]).text(labels[j]);
+    }
+};
+
+buildDropdown();
 buildLinePlot('16-19');
