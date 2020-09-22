@@ -28,11 +28,9 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
     var day_change = Object.values(datasets[150]);
 
     var options = {
-        tooltips: { enabled: false },
-        hover: { mode: null },
         title: {
             display: true,
-            text: 'What Are You Doing?'
+            text: 'Custom Chart Title'
         }
     }
 
@@ -56,7 +54,7 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
         }]
     }
     var myDoughnutChart = new Chart(ctx, {
-        type: 'polarArea',
+        type: 'doughnut',
         data: data,
         opitons: options
     });
