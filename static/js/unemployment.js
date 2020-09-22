@@ -13,7 +13,7 @@ function buildLinePlot(selection) {
         for (i=0; i< unempData.length; i++) {
             dates.push(unempData[i]['DATE']);
             unempMain.push(unempData[i]['UNRATE']);
-            unempSelect.push(unempData[i][selection])
+            unempSelect.push(unempData[i][selection]);
         }
         // console.log(dates);
         // console.log(unempMain);
@@ -25,14 +25,19 @@ function buildLinePlot(selection) {
             y: unempMain,
         };
 
-        var selectTrace = {
-            type: 'line',
-            name: `Unemployment for ${selection}`,
-            x: dates,
-            y: unempSelect,
-        };
+        if (!(selection == '...')) {
+            var selectTrace = {
+                type: 'line',
+                name: `Unemployment for ${selection}`,
+                x: dates,
+                y: unempSelect,
+            };
 
-        var data = [mainTrace, selectTrace];
+            var data = [mainTrace, selectTrace];
+        }
+        else {
+            var data = [mainTrace];
+        }
 
         var layout = {
             title: 'Unemployment Data',
@@ -75,5 +80,11 @@ function buildDropdown () {
     }
 };
 
+function selectOption (chosen) {
+    // var selection = document.getElementById("compare").value;
+    console.log(chosen);
+    buildLinePlot(chosen);
+}
+
 buildDropdown();
-buildLinePlot('16-19');
+buildLinePlot('...');
