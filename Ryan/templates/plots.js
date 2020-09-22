@@ -1,108 +1,53 @@
-var ctx = document.getElementById('myChart').getContext('2d');
 
-d3.csv('Resources/Google Mobility - National - Daily.csv').then(function (inputdata) {
 
-    var labels=inputdata.map(tag => tag.month + ", " + tag.day + ", " + tag.year);
-    var home=inputdata.map(day => +day.gps_residential)
-    
-
-    var data={
-        labels:labels,
-        datasets:{
-            // label:"Variance",
-            data:home
-        }
-    }
-    console.log(data)
-    var myBarChart = new Chart(ctx, {
-        type: 'bar',
-        data: data
-        ,options: {
-            scales:{
-                xAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Date',
-                        fontSize: 20
-                    },
-                    //type: 'linear',
-                    position: 'bottom',
-                    gridLines: {
-                        display: false
-                    }
-                }],
-                yAxes:[{
-                    ticks:{
-                        suggestedMin:-0.3,
-                        suggestedMax:0.3
-                    }
-                }
-                ]
-            }
-        }
+d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inputdata) {
+    var datasets = [];
+    var residential_data=[]
+    inputdata.forEach(val => {
+        var retail = val.gps_retail_and_recreation;
+        var grocery = val.gps_grocery_and_pharmacy;
+        var parks = val.gps_parks;
+        var transit = val.gps_transit_stations;
+        var office = val.gps_workplaces;
+        var date =val.month + ", " + val.day + ", " + val.year
+        var day_dict = {
+            date:date,
+            retail: retail,
+            grocery: grocery,
+            parks: parks,
+            transit: transit,
+            office: office
+        };
+        datasets.push(day_dict);
     });
 
-    // var dates = inputdata.map(tag => tag.month + ", " + tag.day + ", " + tag.year);
-    // console.log(inputdata[0])
+    var chart_title=(Object.values(datasets[0])).slice(0,1)
+    var chart_labels = (Object.keys(datasets[0])).slice(1,6);
+    var chart_data = (Object.values(datasets[0])).slice(1,6);
+    var this_day = (Object.values(datasets[30])).slice(1,6);
 
-    // var data = inputdata.map(day => day.gps_residential)
-    // console.log(data)
+    var start_chart={
+        values: chart_data,
+        labels: chart_labels,
+        type: 'pie',
+        domain:{'x': [0.15, 0.85], 'y': [0.15, 0.85]},
+        hole: 0.7
+    };
 
+    var selected_day={
+        values: this_day,
+        labels: chart_labels,
+        type: 'pie',
+        hole: 0.5
+    };
 
-    // var points = []
-    // inputdata.forEach(day => {
-    //     var date = day.month + ", " + day.day + ", " + day.year
-    //     var home = +day.gps_residential
-    //     var point = {
-    //         x: new Date(date),
-    //         y: home
-    //     }
-    //     points.push(point)
-    // })
-    // console.log(points)
-
-    // // // console.log(data);
-
-
-    // var myLineChart = new Chart(ctx, {
-    //     type: 'line',
-    //     data: data
-    //     // options: options
-    // });
+    var data = [start_chart, selected_day];
 
 
+    var layout = {
+        height: 400,
+        width: 500
+    };
 
-    // var keys = Object.keys(inputdata[0]);
-    // console.log(keys)
-    // var labels = keys.slice(3, 10);
-    // var values = Object.values(inputdata[0]);
-    // var newValues = values.slice(3, 10);
-    // console.log(newValues)
-    // console.log(typeof (values))
-    // var color = ['red', 'green', 'blue', 'yellow', 'orange', 'brown', 'purple']
-
-
-    // var data = {
-    //     labels: labels,
-    //     datasets: [{
-    //         label: 'What Are You Doing?',
-    //         backgroundColor: color,
-    //         borderColor: color,
-    //         data: newValues
-    //     }]
-    // }
-    // var options= {
-    //     tooltips: {enabled: false},
-    //     hover: {mode: null},
-    //   }
-
-    // var myDoughnutChart = new Chart(ctx, {
-    //     type: 'doughnut',
-    //     data: data,
-    //     opitons: options
-    // });
-
-
-
-});
-
+    Plotly.newPlot('chart', data, layout);
+})
