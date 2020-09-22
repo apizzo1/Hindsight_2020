@@ -1,6 +1,3 @@
-// see https://moment.github.io/luxon/docs/manual/parsing.html for luxon parsing docs & accepted formats
-var dt = luxon.DateTime;
-
 // fxn for finding avg
 function find_avg (array) {
     var sum = 0;
@@ -19,8 +16,8 @@ var state_abbrs = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "
 function state_lines_fxn(date) {
 
     // format date; end result should be yyyymmdd for API calls
-    var luxon_date = dt.fromISO(date);
-    var api_date = luxon_date.toFormat('yyyyLLdd');
+    var moment_date = moment(date, 'YYYY-MM-DD');
+    var api_date = moment_date.format ('YYYYMMDD');
     // var prior_date = luxon_date.plus({ days: -1 }).toFormat('yyyyLLdd');
 
     var state_data = state_data_fxn();

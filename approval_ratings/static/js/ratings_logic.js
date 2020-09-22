@@ -55,81 +55,12 @@ function approval_fxn(date) {
             }
         }
 
-        // pull index number of input date
-        for (var x = 0; x < poll_dates.length; x++) {
-            if (poll_dates[x] == date_moment) {
-                var date_index = x;
-                break;
-            }
-        }
-
-        // create chart.js object
-        var ctx = document.getElementById('approval_chart').getContext('2d');
-        var approval_chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [{
-                    label: 'approval',
-                    data: approvals1.reverse(),
-                    pointRadius: 0,
-                    borderColor: 'green',
-                    fill: false
-                }, {
-                    label: 'approval',
-                    data: approvals2.reverse(),
-                    type: 'line',
-                    pointRadius: 0,
-                    borderColor: "grey",
-                    fill: false,
-                }, {
-                    label: 'disapproval',
-                    data: disapprovals1.reverse(),
-                    type: 'line',
-                    pointRadius: 0,
-                    borderColor: "red",
-                    fill: false,
-                }, {
-                    label: 'disapproval',
-                    data: disapprovals2.reverse(),
-                    type: 'line',
-                    pointRadius: 0,
-                    borderColor: "grey",
-                    fill: false,
-                }],
-                labels: poll_dates.reverse(),
-            },
-            options: {
-                scales: {
-                    xAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'date'
-                        },
-                        ticks: {
-                            maxTicksLimit: 15
-                        },
-                        gridLines: {
-                            display: false
-                        }
-                    }],
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: '% approval/disapproval'
-                        },
-                        gridLines: {
-                            color: "rgba(236, 239, 241, 0.7)"
-                        }
-                    }]
-                }
-            },
-            // lineAtIndex: [date_index]
-        });
+        var reverse_dates = poll_dates.reverse()
 
         // create plotly object
         var trace1 = {
-            x: poll_dates,
-            y: approvals1,
+            x: reverse_dates,
+            y: approvals1.reverse(),
             type: 'scatter',
             mode: 'lines',
             name: 'approval',
@@ -140,8 +71,8 @@ function approval_fxn(date) {
         };
 
         var trace2 = {
-            x: poll_dates,
-            y: approvals2,
+            x: reverse_dates,
+            y: approvals2.reverse(),
             type: 'scatter',
             mode: 'lines',
             name: 'approval',
@@ -153,8 +84,8 @@ function approval_fxn(date) {
         };
 
         var trace3 = {
-            x: poll_dates,
-            y: disapprovals1,
+            x: reverse_dates,
+            y: disapprovals1.reverse(),
             type: 'scatter',
             mode: 'lines',
             name: 'disapproval',
@@ -165,8 +96,8 @@ function approval_fxn(date) {
         };
 
         var trace4 = {
-            x: poll_dates,
-            y: disapprovals2,
+            x: reverse_dates,
+            y: disapprovals2.reverse(),
             type: 'scatter',
             mode: 'lines',
             name: 'disapproval',
@@ -238,42 +169,8 @@ function approval_fxn(date) {
             }
           }
 
-        Plotly.newPlot('plotly_chart', plotly_data, plotly_layout);
+        Plotly.newPlot('approval_plot', plotly_data, plotly_layout);
     })
 }
-
-// plugin to create vertical line on chart.js; taken from https://stackoverflow.com/questions/30256695/chart-js-drawing-an-arbitrary-vertical-line
-const verticalLinePlugin = {
-    getLinePosition: function (chart, pointIndex) {
-        const meta = chart.getDatasetMeta(0);
-        const data = meta.data;
-        return data[pointIndex]._model.x;
-    },
-    renderVerticalLine: function (chartInstance, pointIndex) {
-        const lineLeftOffset = this.getLinePosition(chartInstance, pointIndex);
-        const scale = chartInstance.scales['y-axis-0'];
-        const context = chartInstance.chart.ctx;
-  
-        // render vertical line
-        context.beginPath();
-        context.strokeStyle = 'grey';
-        context.moveTo(lineLeftOffset, scale.top);
-        context.lineTo(lineLeftOffset, scale.bottom);
-        context.stroke();
-  
-        // write label
-        // context.fillStyle = "#ff0000";
-        // context.textAlign = 'center';
-        // context.fillText('MY TEXT', lineLeftOffset, (scale.bottom - scale.top) / 2 + scale.top);
-    },
-  
-    afterDatasetsDraw: function (chart, easing) {
-        if (chart.config.lineAtIndex) {
-            chart.config.lineAtIndex.forEach(pointIndex => this.renderVerticalLine(chart, pointIndex));
-        }
-    }
-};
-  
-Chart.plugins.register(verticalLinePlugin);
 
 approval_fxn('06-15-2020');

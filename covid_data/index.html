@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    <!-- luxon for time -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/1.25.0/luxon.min.js"
-        integrity="sha512-OyrI249ZRX2hY/1CAD+edQR90flhuXqYqjNYFJAiflsKsMxpUYg5kbDDAVA8Vp0HMlPG/aAl1tFASi1h4eRoQw=="
-        crossorigin="anonymous"></script>
+    <!-- moment.js for time -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment.min.js"></script>
 
     <!-- jquery & jquery-sparklines for sparklines -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"
@@ -20,20 +18,16 @@
 <body>
     <div id = 'us_total_cases'></div>
     <div id = 'us_total_deaths'></div>
-    <span class = 'dynamicsparkline'></span>
     <div id = 'state_cases'></div>
-
-    <canvas id="us_cases_chart"></canvas>
+    
+    <div id='us_plot'></div>
 
     <!-- d3 v6 -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
-
-    <!-- chart.js -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
+    <!-- plotly js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <!-- math.js -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.2.0/math.min.js"></script>
-
     <!-- logics -->
     <script type="text/javascript" src="static/js/us_covid_logic.js"></script>
     <script type="text/javascript" src="static/js/state_covid_logic.js"></script>
