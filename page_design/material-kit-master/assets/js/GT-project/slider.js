@@ -51,7 +51,7 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     
     var user_selected_date = timeConverter(date_select/1000);
     // console.log(user_selected_date);
-    d3.select("#date_select").text(`Date selected: ${user_selected_date}`)
+    d3.select("#date_select").text(`Pick a date to observe: ${user_selected_date}`)
     
     // console.log(date_display);
 
