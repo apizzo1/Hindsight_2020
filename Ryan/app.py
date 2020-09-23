@@ -31,9 +31,9 @@ def welcome():
     return (
         f"Available Routes:<br/>"
         f"/api/v1.0/headlines<br/>"
-        f"/api/v1.0/national_mobility"
-        f"/api/v1.0/state_mobility"
-        f"/api/v1.0/national_ui"
+        f"/api/v1.0/national_mobility<br/>"
+        f"/api/v1.0/state_mobility<br/>"
+        f"/api/v1.0/national_ui<br/>"
     )
 
 @app.route("/api/v1.0/headlines")
@@ -47,5 +47,37 @@ def headlines():
     db_response=dict_creation(results,headers_list)
     return jsonify(db_response)
 
+@app.route("/api/v1.0/national_mobility")
+def national_mobility():
+    # Create our session (link) from Python to the DB
+
+    results = engine.execute('SELECT * FROM national_mobility').fetchall()
+    # dict keys
+    headers_list=['year', 'month', 'day', 'retail', 'grocery', 'parks', 'transit', 'work', 'residential', 'away_from_home']
+
+    db_response=dict_creation(results,headers_list)
+    return jsonify(db_response)
+
+@app.route("/api/v1.0/state_mobility")
+def state_mobility():
+    # Create our session (link) from Python to the DB
+
+    results = engine.execute('select sm.id, si.state_abbrev, sm.year, sm.month, sm.day, sm.gps_retail_and_recreation, sm.gps_grocery_and_pharmacy, sm.gps_parks, sm.gps_transit_stations, sm.gps_workplaces, sm.gps_residential, sm.gps_away_from_home from state_mobility as sm inner join state_ids as si on sm.id=si.id').fetchall()
+    # dict keys
+    headers_list=['id', 'state_abbrev', 'year', 'month', 'day', 'retail', 'grocery', 'parks', 'transit', 'work', 'residential', 'away_from_home']
+
+    db_response=dict_creation(results,headers_list)
+    return jsonify(db_response)
+
+# @app.route("/api/v1.0/national_ui")
+# def national_ui():
+#     # Create our session (link) from Python to the DB
+
+#     results = engine.execute('select sm.id, si.state_abbrev, sm.year, sm.month, sm.day, sm.gps_retail_and_recreation, sm.gps_grocery_and_pharmacy, sm.gps_parks, sm.gps_transit_stations, sm.gps_workplaces, sm.gps_residential, sm.gps_away_from_home from state_mobility as sm inner join state_ids as si on sm.id=si.id').fetchall()
+#     # dict keys
+#     headers_list=['id', 'state_abbrev', 'year', 'month', 'day', 'retail', 'grocery', 'parks', 'transit', 'work', 'residential', 'away_from_home']
+
+#     db_response=dict_creation(results,headers_list)
+#     return jsonify(db_response)
 if __name__ == '__main__':
     app.run(debug=True)
