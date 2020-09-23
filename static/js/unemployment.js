@@ -70,7 +70,7 @@ function buildLinePlot(selection, userDate) {
     
             var mainSelTrace = {
                 type: 'line',
-                name: 'National Unemployment',
+                name: `National Unemployment - ${selection}`,
                 x: selectDates,
                 y: selectSelect,
             };
