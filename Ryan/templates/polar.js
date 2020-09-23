@@ -169,8 +169,9 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
     title:"Baseline 2020",
     polar: {
       radialaxis: {
+        angle:90,
         visible: true,
-        range: [-2, 2]
+        range: [-1, 1]
       }
     },
     showlegend: true
@@ -179,8 +180,9 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
     title:`${datasets[180].date}`,
     polar: {
       radialaxis: {
+        angle:90,
         visible: true,
-        range: [-2, 2]
+        range: [-1, 1]
       }
     },
     showlegend: false
