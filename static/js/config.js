@@ -1,1 +1,2 @@
-AirNow_API_Key = "D67358AF-F977-4960-A9A8-2B17A9C36FA1"
+finnhub_API_Key = "btla6h748v6omckuq520"
+Polygon_API_Key = "KXQPHVRu6ZsaxBwaKuKQQPy_O8zQQSGn"
