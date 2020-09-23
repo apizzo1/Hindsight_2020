@@ -13,29 +13,29 @@
 
  */
 /*     brand Colors              */
-.carousel.carousel-full-navigation .left {
+/* .carousel.carousel-full-navigation .left {
   cursor: url("../../img/arrow-left.png"), url("../../img/arrow-left.cur"), default !important;
 }
 
 .carousel.carousel-full-navigation .right {
   cursor: url("../../img/arrow-right.png"), url("../../img/arrow-right.cur"), default !important;
-}
+} */
 
-.card {
+/* .card {
   font-size: .875rem;
-}
+} */
 
-*,
+/* *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
+} */
 
 html {
   font-family: sans-serif;
-  line-height: 1.15;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
+  /* line-height: 1.15; */
+  /* -webkit-text-size-adjust: 100%; */
+  /* -ms-text-size-adjust: 100%; */
   -ms-overflow-style: scrollbar;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -44,7 +44,7 @@ html {
   width: device-width;
 }
 
-article,
+/* article,
 aside,
 dialog,
 figcaption,
@@ -56,14 +56,14 @@ main,
 nav,
 section {
   display: block;
-}
+} */
 
 body {
   margin: 0;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-size: 1rem;
+  /* font-size: 1rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.5; */
   color: #212529;
   text-align: left;
   background-color: #fafafa;
@@ -73,13 +73,13 @@ body {
   outline: 0 !important;
 }
 
-hr {
+/* hr {
   box-sizing: content-box;
   height: 0;
   overflow: visible;
-}
+} */
 
-h1,
+/* h1,
 h2,
 h3,
 h4,
@@ -87,12 +87,12 @@ h5,
 h6 {
   margin-top: 0;
   margin-bottom: 0.5rem;
-}
+} */
 
-p {
+/* p {
   margin-top: 0;
   margin-bottom: 1rem;
-}
+} */
 
 abbr[title],
 abbr[data-original-title] {
@@ -7601,30 +7601,6 @@ button.bg-dark:focus {
   }
 }
 
-.sr-only,
-.bootstrap-datetimepicker-widget .btn[data-action="incrementHours"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="incrementMinutes"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="decrementHours"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="decrementMinutes"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="showHours"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="showMinutes"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="togglePeriod"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="clear"]::after,
-.bootstrap-datetimepicker-widget .btn[data-action="today"]::after,
-.bootstrap-datetimepicker-widget .picker-switch::after,
-.bootstrap-datetimepicker-widget table th.prev::after,
-.bootstrap-datetimepicker-widget table th.next::after {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  clip-path: inset(50%);
-  border: 0;
-}
-
 .sr-only-focusable:active,
 .sr-only-focusable:focus {
   position: static;
@@ -14480,11 +14456,11 @@ select.form-control {
   position: relative;
 }
 
-textarea {
+/* textarea {
   height: auto !important;
   resize: none;
   line-height: 1.428571 !important;
-}
+} */
 
 .form-group input[type=file] {
   opacity: 0;
@@ -15366,7 +15342,7 @@ h6,
 .h4 {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 300;
-  line-height: 1.5em;
+  /* line-height: 1.5em; */
 }
 
 h1,
@@ -15432,10 +15408,10 @@ h6,
   font-weight: 500;
 }
 
-p {
+/* p {
   font-size: 14px;
   margin: 0 0 10px;
-}
+} */
 
 b {
   font-weight: 700;
@@ -15514,7 +15490,7 @@ h2.title {
   color: #999999 !important;
 }
 
-.space {
+/* .space {
   height: 130px;
   display: block;
 }
@@ -15532,7 +15508,7 @@ h2.title {
 .space-70 {
   height: 70px;
   display: block;
-}
+} */
 
 .blockquote {
   padding: 10px 20px;
