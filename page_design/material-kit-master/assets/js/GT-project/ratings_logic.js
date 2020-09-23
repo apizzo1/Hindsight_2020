@@ -126,7 +126,7 @@ function approval_fxn(date) {
 
         var plotly_layout = {
             title: "president trump's 2020 approval ratings",
-            height: '600',
+            // height: '600',
             // legend/annotation config
             // legend: {'orientation': 'h'},
             showlegend: false,

@@ -119,7 +119,6 @@ function us_fxn (date) {
             x: reverse_dates,
             y: us_new_cases1,
             type: 'bar',
-            // mode: 'lines',
             name: 'new cases',
             marker: {
                 color: 'rgba(245, 127, 23, 0.9)'
@@ -130,7 +129,6 @@ function us_fxn (date) {
             x: reverse_dates,
             y: us_new_cases2,
             type: 'bar',
-            // mode: 'lines',
             name: 'new cases',
             showlegend: false,
             marker: {
@@ -181,10 +179,10 @@ function us_fxn (date) {
 
         var us_plot_layout = {
             title: "daily increase of COVID cases in the US",
-            height: '600',
+            // height: '600',
             // legend/annotation config
             legend: {
-                x: 0.3,
+                x: 0.5,
                 xanchor: 'right',
                 y: 0.95
             },

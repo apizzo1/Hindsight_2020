@@ -17,7 +17,7 @@ The above copyright notice and this permission notice shall be included in all c
 <head>
   <meta charset="utf-8" />
   <!-- <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png"> -->
-  <link rel="icon" type="image/png" href="./assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="./assets/img/hindsight_favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
     hindsight
@@ -56,21 +56,18 @@ The above copyright notice and this permission notice shall be included in all c
         <div class="col-md-6">
           <h1 class="title">Looking back on the year 2020</h1>
           <h4>An eventful period of time to say the least. Take a closer look at some of the major occurrences in the
-            United States this year, and how they shaped the country.<br><br>Start by selecting a date with the slider
-            above.</h4>
-          <br>
+            United States this year, and how they shaped the country.</h4>
+          <h4 id='NYT_headline'>Start by selecting a date with the slider above. **we can push the NYT headline here (along w/ credits ofc)**</h4>
         </div>
       </div>
     </div>
   </div>
   <div class="main main-raised">
     <div class="container">
-      <!-- <div class="section text-center"> -->
       <div class='row'>
         <div class='col-md-5'>
-          <!-- getty images carousel, max 5 images; maybe create one for every month -->
-          <h3 align='left'>Worth 1,000 words</h3>
-          <h5 class='description' align='left'>Five dramatic images in one year, courtesy of Getty Images.</h5>
+          <h3>Worth 1,000 words</h3>
+          <h5 class='description'>Select images for this month.</h5>
           <a id='8cDGyMtfQyhe_spkh4vHYg' class='gie-slideshow' href='http://www.gettyimages.com/detail/1198921166'
             target='_blank'
             style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed
@@ -78,10 +75,10 @@ The above copyright notice and this permission notice shall be included in all c
           <script>window.gie = window.gie || function (c) { (gie.q = gie.q || []).push(c) }; gie(function () { gie.widgets.load({ id: '8cDGyMtfQyhe_spkh4vHYg', sig: 'sw7OXsna6OJheqHdNpGl7q_w1wCd2SN2h6vPl_jqJFo=', w: '594px', h: '437px', items: '1198921166,1207384785,609664754,1212154390,1228639951', caption: true, tld: 'com', is360: false }) });</script>
           <script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>
         </div>
-        <div class='col-md-7'>
-          <h3 align='right'>A look at the country today</h3>
-          <h5 class='description' align='right'>Explore data on ongoing protests and wildfires.</h5>
-          <div id='map' align='right'>map could go here</div>
+        <div class='col-md-7' align='right'>
+          <h3>A look at the country today</h3>
+          <h5 class='description'>Explore data on ongoing protests and wildfires.</h5>
+          <p>map can go here</p>
         </div>
       </div>
       <div class="row">
@@ -93,49 +90,19 @@ The above copyright notice and this permission notice shall be included in all c
             <div class="card-body">
               <h5 class="card-title">State Info</h5>
               <h6 class="card-subtitle mb-2 text-muted">Select a state to view more specific data.</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+                content.</p>
               <div id='state_cases'></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class='row'>
+        <!-- <div class="row"> -->
         <div class='col-6'>
           <div id='approval_plot'></div>
         </div>
-      <div class="features">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="info">
-              <div class="icon icon-info">
-                <i class="material-icons">chat</i>
-              </div>
-              <h4 class="info-title">Free Chat</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="info">
-              <div class="icon icon-success">
-                <i class="material-icons">verified_user</i>
-              </div>
-              <h4 class="info-title">Verified Users</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="info">
-              <div class="icon icon-danger">
-                <i class="material-icons">fingerprint</i>
-              </div>
-              <h4 class="info-title">Fingerprint</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
-            </div>
-          </div>
-        </div>
+        <!-- </div> -->
       </div>
     </div>
   </div>
