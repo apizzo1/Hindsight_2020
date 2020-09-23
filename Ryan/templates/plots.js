@@ -24,29 +24,38 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
     var chart_title=(Object.values(datasets[0])).slice(0,1)
     var chart_labels = (Object.keys(datasets[0])).slice(1,6);
     var chart_data = (Object.values(datasets[0])).slice(1,6);
-    var this_day = (Object.values(datasets[30])).slice(1,6);
+    var this_day = (Object.values(datasets[180])).slice(1,6);
 
     var start_chart={
         values: chart_data,
         labels: chart_labels,
         type: 'pie',
-        domain:{'x': [0.15, 0.85], 'y': [0.15, 0.85]},
-        hole: 0.7
+        textposition: 'outside',
+        domain:{column:0},
+        hole: 0.6
     };
+    console.log(chart_data)
 
     var selected_day={
         values: this_day,
         labels: chart_labels,
+        domain:{column:1},
         type: 'pie',
         hole: 0.5
     };
-
+    console.log(this_day)
     var data = [start_chart, selected_day];
 
 
     var layout = {
+        title: "Change in Destination Volume",
         height: 400,
-        width: 500
+        width: 500,
+        grid: {rows: 1, columns: 2},
+        hovermode:false,
+        legend: {
+            'orientation':'h'
+          }
     };
 
     Plotly.newPlot('chart', data, layout);

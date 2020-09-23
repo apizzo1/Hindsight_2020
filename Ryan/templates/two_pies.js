@@ -12,7 +12,9 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
         var parks = val.gps_parks;
         var transit = val.gps_transit_stations;
         var office = val.gps_workplaces;
+        var date =val.month + ", " + val.day + ", " + val.year
         var day_dict = {
+            date:date,
             retail: retail,
             grocery: grocery,
             parks: parks,
@@ -22,12 +24,15 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
         datasets.push(day_dict);
     });
 
-    var color = ['red', 'green', 'blue', 'yellow', 'orange', 'brown', 'purple']
-    var labels = Object.keys(datasets[0]);
-    var values = Object.values(datasets[0]);
-    var day_change = Object.values(datasets[150]);
+    var color = ['red', 'green', 'blue', 'yellow', 'orange']
+    var chart_labels = (Object.keys(datasets[0])).slice(1,6);
+    var chart_data = (Object.values(datasets[0])).slice(1,6);
+    var this_day = (Object.values(datasets[180])).slice(1,6);
 
     var options = {
+        legend: {
+            display:false
+        },
         title: {
             display: true,
             text: 'Custom Chart Title'
@@ -35,33 +40,33 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
     }
 
     var data = {
-        labels: labels,
+        labels: chart_labels,
         datasets: [{
             label: 'What Are You Doing?',
             backgroundColor: color,
             borderColor: color,
-            data: values
+            data: chart_data
         }]
     }
 
     var data2 = {
-        labels: labels,
+        labels: chart_labels,
         datasets: [{
             label: 'What Are You Doing?',
             backgroundColor: color,
             borderColor: color,
-            data: day_change
+            data: this_day
         }]
     }
     var myDoughnutChart = new Chart(ctx, {
-        type: 'doughnut',
+        type: 'polarArea',
         data: data,
-        opitons: options
+        template: options
     });
     var myDoughnutChart2 = new Chart(dtx, {
         type: 'polarArea',
         data: data2,
-        opitons: options
+        template: options
     });
 
 
