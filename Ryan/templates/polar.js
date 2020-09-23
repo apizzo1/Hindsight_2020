@@ -1,4 +1,4 @@
-d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inputdata) {
+d3.json('http://localhost:5000/api/v1.0/national_mobility').then(function (inputdata) {
   var datasets = [];
   inputdata.forEach(val => {
     var retail = val.gps_retail_and_recreation;
@@ -26,7 +26,7 @@ d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inp
 function optionChanged(value) {
 
 
-  d3.csv('../Resources/Google Mobility - National - Daily.csv').then(function (inputdata) {
+  d3.json('http://localhost:5000/api/v1.0/national_mobility').then(function (inputdata) {
     var datasets = [];
     inputdata.forEach(val => {
       var retail = val.gps_retail_and_recreation;
