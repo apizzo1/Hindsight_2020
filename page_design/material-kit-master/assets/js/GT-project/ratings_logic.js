@@ -142,7 +142,7 @@ function approval_fxn(date) {
                 },
                 {
                   x: "1/18",
-                  y: "44",
+                  y: "45",
                   text: '% approval',
                   font: {color: 'green'},
                   showarrow: false

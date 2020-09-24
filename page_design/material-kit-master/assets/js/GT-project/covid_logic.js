@@ -252,7 +252,9 @@ function single_state_fxn(date, state) {
             }
         }
         
-        console.log(`total cases today: ${select_cases}, total deaths today: ${select_deaths}, new cases today: ${select_increase}`);
+        // console.log(`total cases today: ${select_cases}, total deaths today: ${select_deaths}, new cases today: ${select_increase}`);
+        d3.select ('#total_cases').text(select_cases.toLocaleString('en'));
+        d3.select ('#total_deaths').text(select_deaths.toLocaleString('en'));
 
         // find 7-day moving avgs for a smoother sparkline
         var new_cases_avg = [];

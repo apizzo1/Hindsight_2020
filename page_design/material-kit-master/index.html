@@ -57,54 +57,101 @@ The above copyright notice and this permission notice shall be included in all c
           <h1 class="title">Looking back on the year 2020</h1>
           <h4>An eventful period of time to say the least. Take a closer look at some of the major occurrences in the
             United States this year, and how they shaped the country.</h4>
-          <h4 id='NYT_headline'>Start by selecting a date with the slider above. **we can push the NYT headline here (along w/ credits ofc)**</h4>
+          <h4 id='NYT_headline'>Start by selecting a date with the slider above. **we can push the NYT headline here
+            (along w/ credits ofc)**</h4>
         </div>
       </div>
     </div>
   </div>
   <div class="main main-raised">
-    <div class="container">
-      <div class='row'>
-        <div class='col-md-5'>
-          <h3>Worth 1,000 words</h3>
-          <h5 class='description'>Select images for this month.</h5>
-          <a id='8cDGyMtfQyhe_spkh4vHYg' class='gie-slideshow' href='http://www.gettyimages.com/detail/1198921166'
-            target='_blank'
-            style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed
-            from Getty Images</a>
-          <script>window.gie = window.gie || function (c) { (gie.q = gie.q || []).push(c) }; gie(function () { gie.widgets.load({ id: '8cDGyMtfQyhe_spkh4vHYg', sig: 'sw7OXsna6OJheqHdNpGl7q_w1wCd2SN2h6vPl_jqJFo=', w: '594px', h: '437px', items: '1198921166,1207384785,609664754,1212154390,1228639951', caption: true, tld: 'com', is360: false }) });</script>
-          <script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>
+    <div class='section'>
+      <div class="container">
+        <div class='row'>
+          <div class='col-md-5'>
+            <h3>Worth 1,000 words</h3>
+            <h5 class='description'>Select images for this month.</h5>
+            <a id='8cDGyMtfQyhe_spkh4vHYg' class='gie-slideshow' href='http://www.gettyimages.com/detail/1198921166'
+              target='_blank'
+              style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed
+              from Getty Images</a>
+            <script>window.gie = window.gie || function (c) { (gie.q = gie.q || []).push(c) }; gie(function () { gie.widgets.load({ id: '8cDGyMtfQyhe_spkh4vHYg', sig: 'sw7OXsna6OJheqHdNpGl7q_w1wCd2SN2h6vPl_jqJFo=', w: '594px', h: '437px', items: '1198921166,1207384785,609664754,1212154390,1228639951', caption: true, tld: 'com', is360: false }) });</script>
+            <script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>
+          </div>
+          <div class='col-md-7' align='right'>
+            <h3>A look at the country today</h3>
+            <h5 class='description'>Explore data on ongoing protests and wildfires.</h5>
+            <p>map can go here</p>
+          </div>
         </div>
-        <div class='col-md-7' align='right'>
-          <h3>A look at the country today</h3>
-          <h5 class='description'>Explore data on ongoing protests and wildfires.</h5>
-          <p>map can go here</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class='col-7'>
-          <div id='us_plot'></div>
-        </div>
-        <div class='col-5'>
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">State Info</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Select a state to view more specific data.</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-                content.</p>
-              <div id='state_cases'></div>
+        <div class='row'>
+          <div class='col-7'>
+            <!-- Tabs with icons on Card -->
+            <br>
+            <div class="card card-nav-tabs">
+              <div class="card-header card-header-primary">
+                <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+                <div class="nav-tabs-navigation">
+                  <span class="navbar-brand">U.S. spread of COVID-19</span>
+                  <div class="nav-tabs-wrapper">
+                    <ul class="nav nav-tabs" data-tabs="tabs">
+                      <li class="nav-item">
+                        <a class="nav-link active" href="#case_increases" data-toggle="tab">
+                          Daily Growth Chart
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#totals" data-toggle="tab">
+                          Totals to Date
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body ">
+                <div class="tab-content text-center">
+                  <div class="tab-pane active" id="case_increases">
+                    <div id='us_plot'></div>
+                  </div>
+                  <div class="tab-pane" id="totals">
+                    <div>
+                      <h3>Total COVID cases to date:</h3>
+                      <h2 class='title' id='total_cases'>No data available until March 2020.</h2>
+                      <h3>Total COVID-related deaths to date:</h3>
+                      <h2 class='title' id='total_deaths'>No data available until March 2020.</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End Tabs with icons on Card -->
+          </div>
+          <div class='col-5'>
+            <h3>How has COVID impacted mobility?</h3>
+            <div id='mobility_plot'>insert plotly chart here</div>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">State Info</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Select a state to view more specific data.</h6>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                  card's
+                  content.</p>
+                <div id='state_cases'></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class='row'>
-        <!-- <div class="row"> -->
-        <div class='col-6'>
-          <div id='approval_plot'></div>
+        <div class="row">
+          <div class='col-7'>
+            <div id='approval_plot'></div>
+          </div>
+          <div class='col-5'>
+
+          </div>
         </div>
-        <!-- </div> -->
       </div>
     </div>
+  </div>
   </div>
   <footer class="footer footer-default">
     <div class="container">
@@ -161,7 +208,7 @@ The above copyright notice and this permission notice shall be included in all c
   <!--  slider & wnumb plugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.2/nouislider.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
-  <!-- created js libs -->
+  <!-- created js files -->
   <script src="./assets/js/GT-project/slider.js"></script>
   <script src="./assets/js/GT-project/covid_logic.js"></script>
   <script src="./assets/js/GT-project/ratings_logic.js"></script>
