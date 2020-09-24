@@ -1,11 +1,16 @@
 // date set
+var user_selected_date = 1577836801000;
 
-var date_start = '2020-04-17';
-var date_end = '2020-04-18';
+// needed for fire data
+var user_selected_date_plus_one = user_selected_date +(60*60*24*1000);
+
+var date_start = '2020-07-17';
+var date_end = '2020-07-18';
 var csv_date = '01-Sep-2020';
 
 // choose dataset
 var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
 var url ="https://opendata.arcgis.com/datasets/5da472c6d27b4b67970acc7b5044c862_0.geojson";
 var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
 // var retest = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-29%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
@@ -114,14 +119,14 @@ d3.json(contained_fire_url).then(function(data) {
 
     
     // active fire data
-    // var active_fires = [];
-    // d3.json(active_fire_url).then(function(data) {
-    //     console.log(data);
-    //     // for (var i =0; data.features.length;i++) {
+    var active_fires = [];
+    d3.json(active_fire_url).then(function(data) {
+        console.log(data);
+        // for (var i =0; data.features.length;i++) {
 
-            // active_fires.push(
-            //     L.circle([data.features[i].geometry.rings[0][0][1],data.features[i].geometry.rings[0][0][0]], {color:"red", radius:20000})
-            // )
+        //     active_fires.push(
+        //         L.circle([data.features[i].geometry.rings[0][0][1],data.features[i].geometry.rings[0][0][0]], {color:"red", radius:20000})
+        //     )
         // }
     
  
@@ -190,6 +195,7 @@ d3.json(contained_fire_url).then(function(data) {
         // function to zoom into a state when the user clicks the state
         function zoomToFeature(e) {
             myMap.fitBounds(e.target.getBounds());
+            console.log(e);
         }
 
   
@@ -221,7 +227,8 @@ d3.json(contained_fire_url).then(function(data) {
             layer.on({
                 mouseover: highlightFeature,
                 mouseout: resetHighlight,
-                click: zoomToFeature
+                click: zoomToFeature,
+                
             });
         }
         
@@ -233,68 +240,68 @@ d3.json(contained_fire_url).then(function(data) {
         }).addTo(myMap);
 
         })
-    // })
+    })
 }) 
 
 console.log("TESTING");
 
 // slider
 
-var select = document.getElementById('input-select');
+// var select = document.getElementById('input-select');
 
-// Append the option elements
-for (var i = -20; i <= 40; i++) {
+// // Append the option elements
+// for (var i = -20; i <= 40; i++) {
 
-    var option = document.createElement("option");
-    option.text = i;
-    option.value = i;
+//     var option = document.createElement("option");
+//     option.text = i;
+//     option.value = i;
 
-    select.appendChild(option);
-}
+//     select.appendChild(option);
+// }
 
-var html5Slider = document.getElementById('html5');
+// var html5Slider = document.getElementById('html5');
 
-noUiSlider.create(html5Slider, {
-    start: 10,
-    connect: "lower",
-    step: 1,
-    range: {
-        'min': -20,
-        'max': 40
-    }
-});
+// noUiSlider.create(html5Slider, {
+//     start: 10,
+//     connect: "lower",
+//     step: 1,
+//     range: {
+//         'min': -20,
+//         'max': 40
+//     }
+// });
 
-var input = html5Slider.noUiSlider.get();
-console.log(input);
+// var input = html5Slider.noUiSlider.get();
+// console.log(input);
 
 
-var inputNumber = document.getElementById('input-number');
+// var inputNumber = document.getElementById('input-number');
 
-html5Slider.noUiSlider.on('update', function (values, handle) {
+// html5Slider.noUiSlider.on('update', function (values, handle) {
 
-    var value = values[handle];
-    // console.log(value);
-    if (handle) {
-        inputNumber.value = value;
+//     var value = values[handle];
+//     // console.log(value);
+//     if (handle) {
+//         inputNumber.value = value;
         
-    } else {
-        select.value = Math.round(value);
-    }
-});
+//     } else {
+//         select.value = Math.round(value);
+//     }
+// });
 
-html5Slider.noUiSlider.on('end', function (values, handle) {
+// html5Slider.noUiSlider.on('end', function (values, handle) {
 
-var value = values[handle];
-console.log(value);
+// var value = values[handle];
+// console.log(value);
 
-});
+// });
 
-select.addEventListener('change', function () {
+// select.addEventListener('change', function () {
     
-    html5Slider.noUiSlider.set([this.value]);
+//     html5Slider.noUiSlider.set([this.value]);
     
     
-});
+// });
 
 
 
@@ -313,8 +320,8 @@ var dateSlider = document.getElementById('slider-date');
 noUiSlider.create(dateSlider, {
 // Create two timestamps to define a range.
     range: {
-        min: timestamp('2020'),
-        max: timestamp('2021')
+        min: timestamp('2020-01-02'),
+        max: timestamp('2020-09-24')
     },
 
 // Steps of one week
@@ -329,14 +336,8 @@ noUiSlider.create(dateSlider, {
     })
 });
 
-// after user selects date, return date
-dateSlider.noUiSlider.on('end', function (values, handle) {
-
-    var date_select = values[handle];
-    console.log(date_select);
-    
-    // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-    function timeConverter(UNIX_timestamp){
+ // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+function timeConverter(UNIX_timestamp){
         var a = new Date(UNIX_timestamp*1000);
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         var year = a.getFullYear();
@@ -348,15 +349,41 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
         // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
         var time = date + ' ' + month + ' ' + year  ;
         return time;
-      }
+}
+// function for updating layer data
+function sliderUpdate(date) {
+    console.log(`Changing with ${date}`);
+}
+
+// after user selects date, return date
+dateSlider.noUiSlider.on('end', function (values, handle) {
+
+    var date_select = values[handle];
+    console.log(`handle_read: ${date_select}`);
     
-    var user_selected_date = timeConverter(date_select/1000);
-    console.log(user_selected_date);
-    d3.select("#date_select").text(`Date selected: ${user_selected_date}`)
+    //   user date in human readable format
+    user_selected_date = timeConverter(date_select/1000);
+    user_selected_date_plus_one = date_select;
+
+    console.log(`new user date: ${user_selected_date}`);
+    console.log(`user date plus one: ${user_selected_date_plus_one}`);
+    d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
     
-    // console.log(date_display);
+   var date_change_test = new Date(user_selected_date);
+    var timestamp = date_change_test.getTime();
+   console.log(`reconvert: ${timestamp}`);
 
 });
+
+// allowing user to use keyboard to change slider
+dateSlider.noUiSlider.on('change', function (values, handle) {
+    var date_select = values[handle];
+    //   user date in human readable format
+    user_selected_date = timeConverter(date_select/1000);
+    console.log(`new user date: ${user_selected_date}`);
+    sliderUpdate(date_select);
+});
+
 
 
 
@@ -425,5 +452,3 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     // }).bindPopup(function (layer) {
     //         return (`Location: ${layer.feature.properties.place} <br> Magnitude: ${layer.feature.properties.mag}`);
     //     }).addTo(myMap);
-
-
