@@ -74,16 +74,21 @@ var baseMaps = {
 
 var overlayMaps = {};
 
- // adding layer control to map
- var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
-
+// adding layer control to map
+// var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
+var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);;
 
 var counter = 0;
 
 // create map function
 function makeMap(layer) {
 
-    myMap.removeLayer(layer);
+    // overlayMaps.clearLayers();
+
+    // myMap.removeLayer(layer)
+    
+    layerControl.remove(overlayMaps);
+    
     // var layer = updateSlider(date)
     // source: https://stackoverflow.com/questions/19186428/refresh-leaflet-map-map-container-is-already-initialized
     // var container = L.DomUtil.get('map');
@@ -99,7 +104,6 @@ function makeMap(layer) {
     //     layers: street
     // });
     
-    
 
     // adding overlay layers for user to select
     var overlayMaps = {
@@ -109,12 +113,12 @@ function makeMap(layer) {
         // Protests: protestLayer
     };
 
-    // myMap.addLayer(layer);
 
-    layerControl.addOverlay(layer, 'Contained');
+    // layerControl.addOverlay(layer, 'Contained');
+    layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
 
 }
-
+var stategeoJson;
 var map_component = d3.select('#map');
 init(1591170927693);
 
@@ -166,7 +170,7 @@ function init(date) {
 
         // make map interactive 
         // source: https://leafletjs.com/examples/choropleth/
-        var stategeoJson;
+        
 
         // function to zoom into a state when the user clicks the state
         function zoomToFeature(e) {
@@ -224,56 +228,56 @@ function init(date) {
 
 }
 
-function updateSlider(date) {
+// function updateSlider(date) {
 
-    // myMap.removeLayer(containedFireLayer);
-    // if (containedFireLayer) {
-    // L.control.layers.removeLayer(containedFireLayer);
-    // }
-    // containedFireLayer.clearLayers();
+//     // myMap.removeLayer(containedFireLayer);
+//     // if (containedFireLayer) {
+//     // L.control.layers.removeLayer(containedFireLayer);
+//     // }
+//     // containedFireLayer.clearLayers();
 
-    contained_fires.length = 0;
+//     contained_fires.length = 0;
 
-    console.log(`length check: ${contained_fires.length}`);
-    // console.log(`date given ${date}`);
-    // console.log(`test date: ${timeConverter(date/1000)}`);
-    date_start = timeConverter(date / 1000)
-    var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
-    // console.log(plus_one_day);
-    // console.log(timeConverter(plus_one_day/1000));
-    date_end = timeConverter(plus_one_day / 1000);
+//     console.log(`length check: ${contained_fires.length}`);
+//     // console.log(`date given ${date}`);
+//     // console.log(`test date: ${timeConverter(date/1000)}`);
+//     date_start = timeConverter(date / 1000)
+//     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
+//     // console.log(plus_one_day);
+//     // console.log(timeConverter(plus_one_day/1000));
+//     date_end = timeConverter(plus_one_day / 1000);
 
-    // contained fire data
-    var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-    // var contained_fires = [];
-    d3.json(contained_fire_url).then(function (data) {
-        console.log(`Contained Fires - testing:${data.features.length}`);
-        // console.log(`testing length: ${data.features[0].geometry.rings[0][0][1]}`);
-        // console.log(response.features[1].geometry.rings[0][0]);
-        for (var i = 0; i < data.features.length; i++) {
-            try {
-                // console.log(data.features[i].geometry.rings[0][0]);
-                contained_fires.push(
-                    L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { radius: 20000 })
-                )
-            }
-            catch (err) {
-                console.log("no contained fires");
-            }
+//     // contained fire data
+//     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+//     // var contained_fires = [];
+//     d3.json(contained_fire_url).then(function (data) {
+//         console.log(`Contained Fires - testing:${data.features.length}`);
+//         // console.log(`testing length: ${data.features[0].geometry.rings[0][0][1]}`);
+//         // console.log(response.features[1].geometry.rings[0][0]);
+//         for (var i = 0; i < data.features.length; i++) {
+//             try {
+//                 // console.log(data.features[i].geometry.rings[0][0]);
+//                 contained_fires.push(
+//                     L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+//                 )
+//             }
+//             catch (err) {
+//                 console.log("no contained fires");
+//             }
 
-        }
-        console.log(contained_fires.length);
+//         }
+//         console.log(contained_fires.length);
 
-        // creating contained fire layer
-        var containedFireLayer = L.layerGroup(contained_fires);
+//         // creating contained fire layer
+//         var containedFireLayer = L.layerGroup(contained_fires);
 
-        if (containedFireLayer) { containedFireLayer.remove(); }
+//         if (containedFireLayer) { containedFireLayer.remove(); }
 
-        makeMap(containedFireLayer);
-    })
+//         makeMap(containedFireLayer);
+//     })
 
 
-}
+// }
 
 
 // slider
@@ -334,13 +338,11 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
-    // user_selected_date_plus_one = date_select;
-
-    console.log(`new user date: ${user_selected_date}`);
-    // console.log(`user date plus one: ${user_selected_date_plus_one}`);
+    console.log(`new user date END: ${user_selected_date}`);
+   
     d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
     slider_div.attr("current_time", date_select);
-    updateSlider(date_select);
+
 
 });
 
@@ -352,12 +354,20 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
-    console.log(`new user date: ${user_selected_date}`);
+    console.log(`new user date CHANGE: ${user_selected_date}`);
     console.log(`handle_read: ${date_select}`);
     console.log(`testing one day past: ${plus_one_day}`);
     d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
     slider_div.attr("current_time", date_select);
-    updateSlider(date_select);
+    
+
+    // remove all markers from map
+    myMap.eachLayer(function (layer) {
+        if ((layer !== street)) {
+            myMap.removeLayer(layer);
+        }
+   });
+   init(date_select);
 });
 
 // allow dates to change when handle is dragged

@@ -370,8 +370,14 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
     
    var date_change_test = new Date(user_selected_date);
-    var timestamp = date_change_test.getTime();
+   var timestamp = date_change_test.getTime();
    console.log(`reconvert: ${timestamp}`);
+
+   myMap.eachLayer(function (layer) {
+    if (layer !== tile) {
+        myMap.removeLayer(layer);
+    }
+});
 
 });
 
