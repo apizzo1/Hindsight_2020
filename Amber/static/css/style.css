@@ -1,0 +1,52 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#map,
+body,
+html {
+  height: 100%;
+}
+
+.legend {
+  /* line-height: 60px; */
+  color: #555;
+  
+}
+
+.legend i {
+    width: 18px;
+    height: 14px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: lightgray;
+  /* background: rgba(255,255,255,0.8); */
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+.padding {
+  margin-left: 50px;
+}
+
+/* code from example index.html provided in HW 14 */
+/* background image details */
+.hero {
+  position: relative;
+  height: 650px;
+  padding: 20px;
+  margin: 0;
+  background: black;
+  /* 2020 image - source:https://tritontimes.com/28761/columns/2020-is-off-to-a-terrible-start/*/
+  background-image: url("../../data/2020.png");
+  background-position:center;
+  background-size: cover;
+  background-position-y: bottom;
+}
