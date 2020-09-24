@@ -11,12 +11,11 @@ function optionChanged(value){
         d3.selectAll('img').remove();
         data.forEach(day => {
             if (day.date===value){
-                day_data=day
+                day_head=day
             }
         })
-        d3.select('#headline').append('h1').text(day_data.headline)
-        d3.select('#art_image').append('img').attr("src",day_data.img_url)
+        d3.select('#headline').append('h1').text(day_head.headline)
+        d3.select('#art_image').append('img').attr("src",day_head.img_url)
         
-        console.log(day_data)
     })
 }
