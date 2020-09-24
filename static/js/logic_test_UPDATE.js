@@ -42,17 +42,19 @@ function style(feature) {
 }
 
 // active fire styling
-var myStyle = {
+var active_fire_style = {
     "color": "#ff7800",
     "weight": 5,
-    "opacity": 0.65
+    "opacity": 0.65,
+    radius: 20000
 };
 
 // contained fire styling
-var myStyle2 = {
-    "color": "blue",
+var contained_fire_style = {
+    "color": "green",
     "weight": 5,
-    "opacity": 0.65
+    "opacity": 0.65,
+    radius: 20000
 };
 
 var contained_fires = [];
@@ -147,7 +149,7 @@ function init(date) {
             try {
                 // console.log(data.features[i].geometry.rings[0][0]);
                 contained_fires.push(
-                    L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+                    L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], contained_fire_style)
                 )
             }
             catch (err) {
@@ -167,7 +169,7 @@ function init(date) {
             for (var i = 0; i < response.features.length; i++)
                 try {
                     active_fires.push(
-                        L.circle([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+                        L.circle([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], active_fire_style)
                     )
                 }
                 catch (err) {
@@ -183,7 +185,7 @@ function init(date) {
                 for (var i = 0; i < data2.features.length; i++)
                 try {
                     previously_active_fires.push(
-                        L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+                        L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
                     )
                 }
                 catch (err) {
