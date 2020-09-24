@@ -126,13 +126,13 @@ function approval_fxn(date) {
 
         var plotly_layout = {
             // title: "president trump's 2020 approval ratings",
-            height: '300',
+            height: '350',
             // legend/annotation config
             // legend: {'orientation': 'h'},
             showlegend: false,
             hovermode: 'x unified',
             hoverlabel: {bgcolor: 'rgba (255, 255, 255, 0.7'},
-            margin: {t: '15', l: '45', r: '45'},
+            margin: {t: '20', l: '45', r: '15'},
             annotations: [
                 {
                   x: "1/29",

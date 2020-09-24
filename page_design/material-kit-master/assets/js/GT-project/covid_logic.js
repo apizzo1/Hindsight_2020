@@ -277,8 +277,8 @@ function single_state_fxn(date, state) {
         // fxn for sparkline
         $(function () {
             $(`#state_cases`).sparkline(new_cases_avg, {
-                width: '100%',
-                height: '35%',
+                width: '100',
+                height: '30',
                 minSpotColor: false,
                 maxSpotColor: false,
                 highlightSpotColor: 'red',
