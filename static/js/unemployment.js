@@ -11,7 +11,7 @@ function buildLinePlot(selection, userDate) {
     postMain = [];
     postSelect = [];
     
-    d3.csv('data/Unemployment/UNRATE.csv').then(function(unempData) {
+    d3.csv('../data/Unemployment/UNRATE.csv').then(function(unempData) {
         startDate = Date.parse(unempData[0]['DATE']);
         endDate = Date.parse(unempData[871]['DATE']);
         console.log(userDate);
@@ -113,16 +113,8 @@ function buildLinePlot(selection, userDate) {
     });
 }
 
-function buildDropdown () {
-    var labels = ['Age 16-19','Age over 20',
-        'Race: African American','Race: Hispanic/Latino','Race: White',
-        'Gender: Male','Gender: Female',
-        'Education: No HS graduation','Education: HS, no college','Education: Bachelors Degree','Education: Masters Degree','Education: Doctoral Degree'];
-    var values = ['16-19','over20',
-        'AfricanAmer','Latinx','White',
-        'Men','Women',
-        'no-HS-grad','HS-no-college','Bachelors','Masters','Doctoral'];
-    var req_option = d3.select("#compare");
+function buildDropdown (id, labels, values) {
+    var req_option = d3.select(id);
     req_option.append("option").attr("value", "...").text("Select Comparison Option");
     for (var j=0; j<values.length; j++) {
         req_option.append("option").attr("value", values[j]).text(labels[j]);
@@ -134,6 +126,15 @@ function selectOption (chosen) {
     buildLinePlot(chosen, sliderDate);
 }
 
+var labels = ['Age 16-19','Age over 20',
+'Race: African American','Race: Hispanic/Latino','Race: White',
+'Gender: Male','Gender: Female',
+'Education: No HS graduation','Education: HS, no college','Education: Bachelors Degree','Education: Masters Degree','Education: Doctoral Degree'];
+var values = ['16-19','over20',
+'AfricanAmer','Latinx','White',
+'Men','Women',
+'no-HS-grad','HS-no-college','Bachelors','Masters','Doctoral'];
+
 sliderDate = new Date('2020-08-01');
-buildDropdown();
+buildDropdown("#compare", labels, values);
 buildLinePlot('...', sliderDate);
