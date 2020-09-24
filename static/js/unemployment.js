@@ -14,7 +14,7 @@ function buildLinePlot(selection, userDate) {
     d3.csv('../data/Unemployment/UNRATE.csv').then(function(unempData) {
         startDate = Date.parse(unempData[0]['DATE']);
         endDate = Date.parse(unempData[871]['DATE']);
-        console.log(userDate);
+        // console.log(userDate);
         for (i=0; i< unempData.length; i++) {
             currDate = Date.parse(unempData[i]['DATE']);
             if (currDate < new Date('2020-01-01')) {
@@ -33,9 +33,9 @@ function buildLinePlot(selection, userDate) {
                 postSelect.push(unempData[i][selection]);
             }
         }
-        console.log(priorDates);
-        console.log(selectDates);
-        console.log(postDates);
+        // console.log(priorDates);
+        // console.log(selectDates);
+        // console.log(postDates);
 
 
         var priorTrace = {
@@ -122,7 +122,7 @@ function buildDropdown (id, labels, values) {
 };
 
 function selectOption (chosen) {
-    console.log(chosen);
+    // console.log(chosen);
     buildLinePlot(chosen, sliderDate);
 }
 
