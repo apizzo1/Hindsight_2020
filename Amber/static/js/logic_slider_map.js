@@ -62,6 +62,13 @@ var active_fires = [];
 var previously_active_fires =[];
 var total_active_fires = [];
 var protestMarkers = [];
+var slider_div = d3.select("#slider-date");
+var dateSlider = document.getElementById('slider-date');
+slider_div.attr("current_time", 1577854861000);
+d3.select("#date_select").text(`Date selected: January 1, 2020`);
+var stategeoJson;
+var map_component = d3.select('#map');
+map_component.attr("state_name", "None");
 
 // / create map object
 var myMap = L.map("map", {
@@ -89,9 +96,6 @@ var counter = 0;
 // create map function
 function makeMap(layer1, layer2, layer3) {
 
-    // overlayMaps.clearLayers();
-
-    // myMap.removeLayer(layer)
 
     // heat map information
     var heat = L.heatLayer(layer2, {
@@ -115,17 +119,12 @@ function makeMap(layer1, layer2, layer3) {
     layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
 
 }
-var stategeoJson;
-var map_component = d3.select('#map');
-init(1591170927693);
+
+
+// call init function using 1/1/10
+init(1577854861000);
 
 function init(date) {
-
-    // myMap.removeLayer(containedFireLayer);
-    // if (containedFireLayer) {
-    // L.control.layers.removeLayer(containedFireLayer);
-    // }
-    // containedFireLayer.clearLayers();
 
     // clearing previous contained fire data
     contained_fires.length = 0;
@@ -134,6 +133,7 @@ function init(date) {
     // console.log(`date given ${date}`);
     // console.log(`test date: ${timeConverter(date/1000)}`);
     date_start = timeConverter(date / 1000)
+    console.log(`contained fire day: ${date_start}`);
     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
     // console.log(plus_one_day);
     // console.log(timeConverter(plus_one_day/1000));
@@ -207,7 +207,7 @@ function init(date) {
                 console.log(csv_date);
 
                 d3.csv("../data/USA_2020_Sep19.csv").then(function (data) {
-                    // console.log(data);
+                    
                     // filter for user selected date
                     // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
                     var filteredData = data.filter(function (d) {
@@ -247,7 +247,7 @@ function init(date) {
                     function zoomToFeature(e) {
                         myMap.fitBounds(e.target.getBounds());
                         var state = e.target.feature.properties.name
-                        console.log(e);
+                        // console.log(e);
                         map_component.attr("state_name", state);
                     }
 
@@ -301,62 +301,13 @@ function init(date) {
     })
 }
 
-// function updateSlider(date) {
-
-//     // myMap.removeLayer(containedFireLayer);
-//     // if (containedFireLayer) {
-//     // L.control.layers.removeLayer(containedFireLayer);
-//     // }
-//     // containedFireLayer.clearLayers();
-
-//     contained_fires.length = 0;
-
-//     console.log(`length check: ${contained_fires.length}`);
-//     // console.log(`date given ${date}`);
-//     // console.log(`test date: ${timeConverter(date/1000)}`);
-//     date_start = timeConverter(date / 1000)
-//     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
-//     // console.log(plus_one_day);
-//     // console.log(timeConverter(plus_one_day/1000));
-//     date_end = timeConverter(plus_one_day / 1000);
-
-//     // contained fire data
-//     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-//     // var contained_fires = [];
-//     d3.json(contained_fire_url).then(function (data) {
-//         console.log(`Contained Fires - testing:${data.features.length}`);
-//         // console.log(`testing length: ${data.features[0].geometry.rings[0][0][1]}`);
-//         // console.log(response.features[1].geometry.rings[0][0]);
-//         for (var i = 0; i < data.features.length; i++) {
-//             try {
-//                 // console.log(data.features[i].geometry.rings[0][0]);
-//                 contained_fires.push(
-//                     L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { radius: 20000 })
-//                 )
-//             }
-//             catch (err) {
-//                 console.log("no contained fires");
-//             }
-
-//         }
-//         console.log(contained_fires.length);
-
-//         // creating contained fire layer
-//         var containedFireLayer = L.layerGroup(contained_fires);
-
-//         if (containedFireLayer) { containedFireLayer.remove(); }
-
-//         makeMap(containedFireLayer);
-//     })
-
-
-// }
-
 
 // slider
 // =======================================================================
 
 // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+
+// csv date output
 function timeConverter_csv(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -369,7 +320,7 @@ function timeConverter_csv(UNIX_timestamp) {
     var min = a.getMinutes();
     var sec = a.getSeconds();
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-    var csv_time = date + '-' + month + '-' + year;
+    var csv_time = String(parseInt(date)-1) + '-' + month + '-' + year;
     return csv_time;
 }
 function timeConverter(UNIX_timestamp) {
@@ -390,19 +341,36 @@ function timeConverter(UNIX_timestamp) {
 
 }
 
+function timeConverter_display(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp * 1000);
+    // var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    var months_display = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var year = a.getFullYear();
+    var month = months_display[a.getMonth()];
+    // var month_csv = months_csv[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec 
+    var display_date = month + ' ' + date + ', '+ year;
+    return display_date;
+
+}
+
 // Create a new date from a string, return as a timestamp.
 // source: https://refreshless.com/nouislider/examples/
 function timestamp(str) {
     return new Date(str).getTime();
 }
 
-var dateSlider = document.getElementById('slider-date');
+
 
 noUiSlider.create(dateSlider, {
     // Create two timestamps to define a range.
     range: {
         min: timestamp('2020-01-02'),
-        max: timestamp('2020-09-24')
+        max: timestamp('2020-09-11')
     },
 
     // Steps of one week
@@ -427,14 +395,14 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     console.log(`new user date END: ${user_selected_date}`);
-
-    d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
+    var display_date_main_page = timeConverter_display(date_select/1000);
+    d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
 
 });
 
-var slider_div = d3.select("#slider-date");
+
 
 // allowing user to use keyboard to change slider
 dateSlider.noUiSlider.on('change', function (values, handle) {
@@ -443,9 +411,10 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     user_selected_date = timeConverter(date_select / 1000);
     var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
     console.log(`new user date CHANGE: ${user_selected_date}`);
-    console.log(`handle_read: ${date_select}`);
-    console.log(`testing one day past: ${plus_one_day}`);
-    d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
+    // console.log(`handle_read: ${date_select}`);
+    // console.log(`testing one day past: ${plus_one_day}`);
+    var display_date_main_page = timeConverter_display(date_select/1000);
+    d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
 
@@ -463,6 +432,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 dateSlider.noUiSlider.on('slide', function (values, handle) {
     var date_select = values[handle];
     user_selected_date = timeConverter(date_select / 1000);
-    d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
+    var display_date_main_page = timeConverter_display(date_select/1000);
+    d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
 });
