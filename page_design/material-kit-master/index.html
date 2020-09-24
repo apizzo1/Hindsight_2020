@@ -68,25 +68,37 @@ The above copyright notice and this permission notice shall be included in all c
       <div class="container">
         <div class='row'>
           <div class='col-md-5'>
-            <h3>Worth 1,000 words</h3>
-            <h5 class='description'>Select images for this month.</h5>
-            <a id='8cDGyMtfQyhe_spkh4vHYg' class='gie-slideshow' href='http://www.gettyimages.com/detail/1198921166'
-              target='_blank'
-              style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed
-              from Getty Images</a>
-            <script>window.gie = window.gie || function (c) { (gie.q = gie.q || []).push(c) }; gie(function () { gie.widgets.load({ id: '8cDGyMtfQyhe_spkh4vHYg', sig: 'sw7OXsna6OJheqHdNpGl7q_w1wCd2SN2h6vPl_jqJFo=', w: '594px', h: '437px', items: '1198921166,1207384785,609664754,1212154390,1228639951', caption: true, tld: 'com', is360: false }) });</script>
-            <script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>
+            <!-- start carousel card -->
+            <div class="card">
+              <h4 class="card-header card-header-primary">Worth 1,000 words</h4>
+              <div class="card-body">
+                <p class="description">One year, five dramatic photos.</p>
+                <a id='8cDGyMtfQyhe_spkh4vHYg' class='gie-slideshow' href='http://www.gettyimages.com/detail/1198921166'
+                  target='_blank'
+                  style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed
+                  from Getty Images</a>
+                <script>window.gie = window.gie || function (c) { (gie.q = gie.q || []).push(c) }; gie(function () { gie.widgets.load({ id: '8cDGyMtfQyhe_spkh4vHYg', sig: 'sw7OXsna6OJheqHdNpGl7q_w1wCd2SN2h6vPl_jqJFo=', w: '594px', h: '437px', items: '1198921166,1207384785,609664754,1212154390,1228639951', caption: true, tld: 'com', is360: false }) });</script>
+                <script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>
+              </div>
+            </div>
+            <!-- end carousel card -->
           </div>
-          <div class='col-md-7' align='right'>
-            <h3>A look at the country today</h3>
-            <h5 class='description'>Explore data on ongoing protests and wildfires.</h5>
-            <p>map can go here</p>
+          <div class='col-md-7'>
+            <!-- start map card -->
+            <div class="card">
+              <h4 class="card-header card-header-primary">A look at the country today</h4>
+              <div class="card-body">
+                <p class="description">Explore data on ongoing protests and wildfires.</p>
+                <!-- <div id='map'>map here?</div> -->
+              </div>
+            </div>
+            <!-- end map card -->
           </div>
         </div>
         <div class='row'>
           <div class='col-7'>
-            <!-- Tabs with icons on Card -->
             <br>
+            <!-- start US COVID card -->
             <div class="card card-nav-tabs">
               <div class="card-header card-header-primary">
                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
@@ -117,6 +129,7 @@ The above copyright notice and this permission notice shall be included in all c
                     <div>
                       <h3>Total COVID cases to date:</h3>
                       <h2 class='title' id='total_cases'>No data available until March 2020.</h2>
+                      <br>
                       <h3>Total COVID-related deaths to date:</h3>
                       <h2 class='title' id='total_deaths'>No data available until March 2020.</h2>
                     </div>
@@ -124,29 +137,54 @@ The above copyright notice and this permission notice shall be included in all c
                 </div>
               </div>
             </div>
-            <!-- End Tabs with icons on Card -->
+            <!-- end US COVID card -->
           </div>
           <div class='col-5'>
-            <h3>How has COVID impacted mobility?</h3>
-            <div id='mobility_plot'>insert plotly chart here</div>
+            <br>
+            <!-- start mobility card, **or we could put it in the COVID navtabs** -->
             <div class="card">
+              <h4 class="card-header card-header-primary">How has COVID impacted mobility?</h4>
               <div class="card-body">
-                <h5 class="card-title">State Info</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Select a state to view more specific data.</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
+                <p class="description">insert plotly chart here</p>
+                <!-- <div id='mobility_plot'></div> -->
+              </div>
+            </div>
+            <!-- end mobility card -->
+            <br>
+            <!-- start state card -->
+            <div class="card">
+              <h4 class="card-header card-header-primary">A closer look at the states</h4>
+              <div class="card-body">
+                <p class="card-text">Select a state to view more specific data.</p>
+                <p>**ADD A DROPDOWN HERE-ISH**</p>
                 <div id='state_cases'></div>
               </div>
             </div>
+            <!-- end state card -->
           </div>
         </div>
         <div class="row">
-          <div class='col-7'>
-            <div id='approval_plot'></div>
+          <div class='col-6'>
+            <!-- start approval ratings card -->
+            <div class="card">
+              <h4 class="card-header card-header-primary">Presidential approval ratings</h4>
+              <div class="card-body">
+                <p class="description">Compare Donald Trump's approval ratings with the current landscape.</p>
+                <div id='approval_plot'></div>
+              </div>
+            </div>
+            <!-- end approval ratings card -->
           </div>
-          <div class='col-5'>
-
+          <div class='col-6'>
+            <!-- start stock data card -->
+            <div class="card">
+              <h4 class="card-header card-header-primary">Stock prices</h4>
+              <div class="card-body">
+                <p class="description">See how stock prices have responded to recent events.</p>
+                <!-- <div id='stock_plot'></div> -->
+              </div>
+            </div>
+            <!-- end stock data card -->
           </div>
         </div>
       </div>
@@ -162,29 +200,14 @@ The above copyright notice and this permission notice shall be included in all c
               Creative Tim
             </a>
           </li>
-          <li>
-            <a href="https://www.creative-tim.com/presentation">
-              About Us
-            </a>
-          </li>
-          <li>
-            <a href="https://www.creative-tim.com/blog">
-              Blog
-            </a>
-          </li>
-          <li>
-            <a href="https://www.creative-tim.com/license">
-              Licenses
-            </a>
-          </li>
         </ul>
       </nav>
       <div class="copyright float-right">
         &copy;
         <script>
           document.write(new Date().getFullYear())
-        </script>, made with <i class="material-icons">favorite</i> by
-        <a href="https://www.creative-tim.com/" target="_blank">Creative Tim</a> for a better web.
+        </script>, template courtesy of
+        <a href="https://www.creative-tim.com/" target="blank">Creative Tim</a>.
       </div>
     </div>
   </footer>

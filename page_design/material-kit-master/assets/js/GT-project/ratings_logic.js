@@ -125,24 +125,25 @@ function approval_fxn(date) {
         var plotly_data = [trace1, trace2, trace3, trace4, trace5];
 
         var plotly_layout = {
-            title: "president trump's 2020 approval ratings",
-            // height: '600',
+            // title: "president trump's 2020 approval ratings",
+            height: '300',
             // legend/annotation config
             // legend: {'orientation': 'h'},
             showlegend: false,
             hovermode: 'x unified',
             hoverlabel: {bgcolor: 'rgba (255, 255, 255, 0.7'},
+            margin: {t: '15', l: '45', r: '45'},
             annotations: [
                 {
-                  x: "1/18",
-                  y: "55",
+                  x: "1/29",
+                  y: "56",
                   text: '% disapproval',
                   font: {color: 'red'},
                   showarrow: false
                 },
                 {
-                  x: "1/18",
-                  y: "45",
+                  x: "1/29",
+                  y: "46",
                   text: '% approval',
                   font: {color: 'green'},
                   showarrow: false
