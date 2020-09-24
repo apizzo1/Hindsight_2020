@@ -6,7 +6,7 @@ state_cases.id=state_ids.id;
 
 -- sets up mobility by state
 
-select sm.id, si.state_abbrev, sm.year, sm.month, sm.day, sm.gps_retail_and_recreation,
+select sm.id, si.state, sm.year, sm.month, sm.day, sm.gps_retail_and_recreation,
 sm.gps_grocery_and_pharmacy, sm.gps_parks, sm.gps_transit_stations, sm.gps_workplaces, sm.gps_residential,
 sm.gps_away_from_home
 from state_mobility as sm

@@ -1,9 +1,3 @@
-var svg = d3.select("body")
-.append("svg")
-.attr("width", 200)
-.attr("height", 100)
-.style("border", "1px solid black");
-
 
 var curr_date= ""
 var curr_state=""
@@ -19,7 +13,7 @@ d3.select('#selDataset').selectAll('option').data(states).enter().append('option
     return data;
 });
 
-d3.csv("../Resources/Google Mobility - National - Daily.csv").then(function (inputdata) {
+d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (inputdata) {
 
     var datasets = [];
     inputdata.forEach(val => {
@@ -47,7 +41,7 @@ d3.csv("../Resources/Google Mobility - National - Daily.csv").then(function (inp
 })
 
 function dayChanged(value) {
-    d3.csv('../Resources/Google Mobility - State - Daily.csv').then(function (inputdata) {
+    d3.json('http://127.0.0.1:5000/api/v1.0/state_mobility').then(function (inputdata) {
         curr_date=value
         var datasets = [];
         inputdata.forEach(val => {
