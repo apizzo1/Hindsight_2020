@@ -70,11 +70,9 @@ function single_line_fxn(date, state) {
             new_cases_avg.push(avg);
         }
 
-        d3.select('#state_cases').append('span').classed(`${state}spark`, true);
-
         // fxn for sparkline
         $(function () {
-            $(`.${state}spark`).sparkline(new_cases_avg, {
+            $(`#state_cases`).sparkline(new_cases_avg, {
                 width: '100px',
                 height: '75px',
                 minSpotColor: false,
@@ -187,3 +185,4 @@ async function getStateData(state) {
 
 // state_lines_fxn('2020-08-15');
 single_line_fxn('2020-07-14', 'GA');
+single_line_fxn('2020-06-16', 'FL')

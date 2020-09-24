@@ -184,7 +184,6 @@ function us_fxn (date) {
             height: '600',
             // legend/annotation config
             legend: {
-                // 'orientation': 'h',
                 x: 0.3,
                 xanchor: 'right',
                 y: 0.95
@@ -192,22 +191,6 @@ function us_fxn (date) {
             // showlegend: false,
             hovermode: 'x unified',
             hoverlabel: {bgcolor: 'rgba (255, 255, 255, 0.7'},
-            // annotations: [
-            //     {
-            //       x: "1/18",
-            //       y: "55",
-            //       text: '% disapproval',
-            //       font: {color: 'red'},
-            //       showarrow: false
-            //     },
-            //     {
-            //       x: "1/18",
-            //       y: "44",
-            //       text: '% approval',
-            //       font: {color: 'green'},
-            //       showarrow: false
-            //     }
-            //   ],
             xaxis: {
               title: 'date',
               showgrid: false,
