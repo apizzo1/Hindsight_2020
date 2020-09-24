@@ -79,3 +79,19 @@ create table "protest_data"(
 	"notes" varchar,
 	"fatalities" varchar
 );
+create table "ui_rate"(
+	"date" varchar,
+	"unrate" float,
+	"16-19" float,
+	"over20" float,
+	"africanamer" float,
+	"latinx" float,
+	"white" float,
+	"men" float,
+	"women" float,
+	"no_hs_grad" float,
+	"hs_no_college" float,
+	"bachelors" float,
+	"masters" float,
+	"doctoral" float
+);

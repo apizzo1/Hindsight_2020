@@ -62,16 +62,16 @@ def state_mobility():
     db_response=dict_creation(results,headers_list)
     return jsonify(db_response)
 
-# @app.route("/api/v1.0/national_ui")
-# def state_mobility():
-#     # Create our session (link) from Python to the DB
+@app.route("/api/v1.0/ui_rate")
+def ui_rate():
+    # Create our session (link) from Python to the DB
 
-#     results = engine.execute('select sm.id, si.state_abbrev, sm.year, sm.month, sm.day, sm.gps_retail_and_recreation, sm.gps_grocery_and_pharmacy, sm.gps_parks, sm.gps_transit_stations, sm.gps_workplaces, sm.gps_residential, sm.gps_away_from_home from state_mobility as sm inner join state_ids as si on sm.id=si.id').fetchall()
-#     # dict keys
-#     headers_list=['id', 'state_abbrev', 'year', 'month', 'day', 'retail', 'grocery', 'parks', 'transit', 'work', 'residential', 'away_from_home']
+    results = engine.execute('select * from ui_rate').fetchall()
+    # dict keys
+    headers_list=['DATE','UNRATE','16-19','over20','AfricanAmer','Latinx','White','Men','Women','no-HS-grad','HS-no-college','Bachelors','Masters','Doctoral']
 
-#     db_response=dict_creation(results,headers_list)
-#     return jsonify(db_response)
+    db_response=dict_creation(results,headers_list)
+    return jsonify(db_response)
 
 @app.route("/api/v1.0/protest")
 def protest():
