@@ -74,7 +74,7 @@ def state_mobility():
 #     return jsonify(db_response)
 
 @app.route("/api/v1.0/protest")
-def state_mobility():
+def protest():
     # Create our session (link) from Python to the DB
 
     results = engine.execute('select * from protest_data').fetchall()
