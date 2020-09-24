@@ -1,4 +1,4 @@
-d3.csv('../Resources/headlines.csv').then(function(data){
+d3.json('http://127.0.0.1:5000/api/v1.0/headlines').then(function(data){
     dates=data.map(day => day.date)
     d3.select('#selDataset').selectAll('option').data(dates).enter().append('option').text(function (data) {
         return data;
@@ -6,15 +6,15 @@ d3.csv('../Resources/headlines.csv').then(function(data){
 })
 
 function optionChanged(value){
-    d3.csv("../Resources/headlines.csv").then(function(data){
+    d3.json("http://127.0.0.1:5000/api/v1.0/headlines").then(function(data){
+        d3.selectAll('h1').remove();
         data.forEach(day => {
             if (day.date===value){
                 day_data=day
             }
         })
-        d3.select('#headline').selectAll('h1').data(day_data).enter().append('h1').text(function (data){
-            return `<h1>${day_data.headline}</h1>`
-        })
+        d3.select('#headline').append('h1').text(day_data.headline)
+        d3.select('#art_image').append('img').attr("src",day_data.img_url)
         
         console.log(day_data)
     })

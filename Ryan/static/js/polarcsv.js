@@ -1,5 +1,7 @@
-d3.json('http://localhost:5000/api/v1.0/national_mobility').then(function (inputdata) {
-  var datasets = [];
+d3.json('http://127.0.0.1:5000/api/v1.0/national_mobility').then(function (inputdata) {
+  
+console.log(inputdata)
+var datasets = [];
   inputdata.forEach(val => {
     var retail = val.gps_retail_and_recreation;
     var grocery = val.gps_grocery_and_pharmacy;
@@ -26,7 +28,7 @@ d3.json('http://localhost:5000/api/v1.0/national_mobility').then(function (input
 function optionChanged(value) {
 
 
-  d3.json('http://localhost:5000/api/v1.0/national_mobility').then(function (inputdata) {
+  d3.json('http://127.0.0.1:5000/api/v1.0/national_mobility').then(function (inputdata) {
     var datasets = [];
     inputdata.forEach(val => {
       var retail = val.gps_retail_and_recreation;
@@ -182,6 +184,7 @@ function optionChanged(value) {
       polar: {
         radialaxis: {
           angle: 90,
+          tickangle: 90,
           visible: true,
           range: [-1, 1]
         }
@@ -193,6 +196,7 @@ function optionChanged(value) {
       polar: {
         radialaxis: {
           angle: 90,
+          tickangle: 90,
           visible: true,
           range: [-1, 1]
         }

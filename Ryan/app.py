@@ -3,7 +3,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 # create engine
 engine = create_engine('postgresql://postgres:Khaleesi3!@localhost:5432/hindsight_2020')
 # reflect DB
@@ -16,8 +16,8 @@ app = Flask(__name__)
 # dict_builder
 def dict_creation(response, headers):
     response_list=[]
-    item_dict={}
     for item in response:
+        item_dict={}
         for i in range(0,len(headers)):
             num1=headers[i]
             item_dict[num1]=item[i]
@@ -27,14 +27,7 @@ def dict_creation(response, headers):
 # home route
 @app.route("/")
 def welcome():
-    """List all available api routes."""
-    return (
-        f"Available Routes:<br/>"
-        f"/api/v1.0/headlines<br/>"
-        f"/api/v1.0/national_mobility<br/>"
-        f"/api/v1.0/state_mobility<br/>"
-        f"/api/v1.0/national_ui<br/>"
-    )
+    return render_template("index.html")
 
 @app.route("/api/v1.0/headlines")
 def headlines():
@@ -70,7 +63,7 @@ def state_mobility():
     return jsonify(db_response)
 
 # @app.route("/api/v1.0/national_ui")
-# def national_ui():
+# def state_mobility():
 #     # Create our session (link) from Python to the DB
 
 #     results = engine.execute('select sm.id, si.state_abbrev, sm.year, sm.month, sm.day, sm.gps_retail_and_recreation, sm.gps_grocery_and_pharmacy, sm.gps_parks, sm.gps_transit_stations, sm.gps_workplaces, sm.gps_residential, sm.gps_away_from_home from state_mobility as sm inner join state_ids as si on sm.id=si.id').fetchall()
