@@ -56,13 +56,14 @@ var myStyle2 = {
 };
 
 var contained_fires = [];
+var protestMarkers = [];
 
 // / create map object
 var myMap = L.map("map", {
-        // center of the United States
-        center: [39.8, -98.6],
-        zoom: 4,
-        layers: street
+    // center of the United States
+    center: [39.8, -98.6],
+    zoom: 4,
+    layers: street
 });
 
 
@@ -81,36 +82,21 @@ var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false })
 var counter = 0;
 
 // create map function
-function makeMap(layer) {
+function makeMap(layer1, layer2) {
 
     // overlayMaps.clearLayers();
 
     // myMap.removeLayer(layer)
-    
-    layerControl.remove(overlayMaps);
-    
-    // var layer = updateSlider(date)
-    // source: https://stackoverflow.com/questions/19186428/refresh-leaflet-map-map-container-is-already-initialized
-    // var container = L.DomUtil.get('map');
-    // if (container != null) {
-    //     container._leaflet_id = null;
-    // }
 
-    // // create map object
-    // var myMap = L.map("map", {
-    //     // center of the United States
-    //     center: [39.8, -98.6],
-    //     zoom: 4,
-    //     layers: street
-    // });
-    
+    layerControl.remove(overlayMaps);
+
 
     // adding overlay layers for user to select
     var overlayMaps = {
         // Active: active,
         // Active: activeFireLayer,
-        Contained: layer
-        // Protests: protestLayer
+        Contained: layer1,
+        Protests: layer2
     };
 
 
@@ -123,7 +109,7 @@ var map_component = d3.select('#map');
 init(1591170927693);
 
 function init(date) {
-    
+
     // myMap.removeLayer(containedFireLayer);
     // if (containedFireLayer) {
     // L.control.layers.removeLayer(containedFireLayer);
@@ -143,7 +129,6 @@ function init(date) {
 
     // contained fire data
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-    // var contained_fires = [];
     d3.json(contained_fire_url).then(function (data) {
         console.log(`Contained Fires - testing:${data.features.length}`);
         // console.log(`testing length: ${data.features[0].geometry.rings[0][0][1]}`);
@@ -162,70 +147,98 @@ function init(date) {
         }
         console.log(contained_fires.length);
 
-        // creating contained fire layer
-        var containedFireLayer = L.layerGroup(contained_fires);
+        protestMarkers.length = 0;
 
-        makeMap(containedFireLayer);
+        var csv_date = timeConverter_csv(date/1000);
+        console.log(csv_date);
 
+        d3.csv("../data/USA_2020_Sep12.csv").then(function (data) {
+            console.log(data);
+            // filter for user selected date
+            // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
+            var filteredData = data.filter(function (d) {
+                if (d["EVENT_DATE"] == csv_date) {
+                    return d;
+                }
 
-        // make map interactive 
-        // source: https://leafletjs.com/examples/choropleth/
-        
+            })
 
-        // function to zoom into a state when the user clicks the state
-        function zoomToFeature(e) {
-            myMap.fitBounds(e.target.getBounds());
-            var state = e.target.feature.properties.name
-            console.log(e);
-            map_component.attr("state_name", state);
-        }
+            for (var i = 0; i < filteredData.length; i++) {
+                // console.log(data[i].LOCATION);
 
-  
-        // function when user mouses over feature
-        function highlightFeature(e) {
-            var layer = e.target;
-        
-            layer.setStyle({
-                weight: 5,
-                color: 'blue',
-                dashArray: '',
-                fillOpacity: 0.3
-            });
-        
-            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                layer.bringToFront();
+                protestMarkers.push(
+                    L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
+                // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
             }
-        }
 
-        // function when user mouses out of a feature
-        function resetHighlight(e) {
-            stategeoJson.resetStyle(e.target);
-        }
+            console.log(`protest length: ${protestMarkers.length}`);
+            // creating protest layer
+            var protestLayer = L.layerGroup(protestMarkers);
+
+            // creating contained fire layer
+            var containedFireLayer = L.layerGroup(contained_fires);
+
+            makeMap(containedFireLayer, protestLayer);
 
 
-        // use onEachFeature function to call event functions
-        function onEachFeature(feature, layer) {
-            layer.bindPopup(feature.properties.name),
-            layer.on({
-                mouseover: highlightFeature,
-                mouseout: resetHighlight,
-                click: zoomToFeature,
-                
-            });
-        }
-        
-        // add state boundaries
-        // source: https://leafletjs.com/examples/choropleth/
-        stategeoJson = L.geoJson(statesData, {
-            style:style,
-            onEachFeature: onEachFeature
-        }).addTo(myMap);
+            // make map interactive 
+            // source: https://leafletjs.com/examples/choropleth/
 
-        
+
+            // function to zoom into a state when the user clicks the state
+            function zoomToFeature(e) {
+                myMap.fitBounds(e.target.getBounds());
+                var state = e.target.feature.properties.name
+                console.log(e);
+                map_component.attr("state_name", state);
+            }
+
+
+            // function when user mouses over feature
+            function highlightFeature(e) {
+                var layer = e.target;
+
+                layer.setStyle({
+                    weight: 5,
+                    color: 'black',
+                    dashArray: '',
+                    fillOpacity: 0.3
+                });
+
+                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    layer.bringToFront();
+                }
+            }
+
+            // function when user mouses out of a feature
+            function resetHighlight(e) {
+                stategeoJson.resetStyle(e.target);
+            }
+
+
+            // use onEachFeature function to call event functions
+            function onEachFeature(feature, layer) {
+                layer.bindPopup(feature.properties.name),
+                    layer.on({
+                        mouseover: highlightFeature,
+                        mouseout: resetHighlight,
+                        click: zoomToFeature,
+
+                    });
+            }
+
+            // add state boundaries
+            // source: https://leafletjs.com/examples/choropleth/
+            stategeoJson = L.geoJson(statesData, {
+                style: style,
+                onEachFeature: onEachFeature
+            }).addTo(myMap);
+
+
+        })
+
+        counter = 1;
     })
-
-    counter = 1;
-
 }
 
 // function updateSlider(date) {
@@ -284,6 +297,21 @@ function init(date) {
 // =======================================================================
 
 // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+function timeConverter_csv(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp*1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var dates = ['01','02', '03', '04', '05', '06', '07', '08', '09', '10','11', '12','13', '14', '15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
+    var date = dates[a.getDate()];
+    // var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    var csv_time = date + '-' + month + '-' + year  ;
+    return csv_time;
+}
 function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -339,7 +367,7 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     console.log(`new user date END: ${user_selected_date}`);
-   
+
     d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
     slider_div.attr("current_time", date_select);
 
@@ -359,15 +387,16 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     console.log(`testing one day past: ${plus_one_day}`);
     d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
     slider_div.attr("current_time", date_select);
-    
 
-    // remove all markers from map
+
+    // remove all layers from the map
+    // source: https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
     myMap.eachLayer(function (layer) {
         if ((layer !== street)) {
             myMap.removeLayer(layer);
         }
-   });
-   init(date_select);
+    });
+    init(date_select);
 });
 
 // allow dates to change when handle is dragged
@@ -375,5 +404,5 @@ dateSlider.noUiSlider.on('slide', function (values, handle) {
     var date_select = values[handle];
     user_selected_date = timeConverter(date_select / 1000);
     d3.select("#date_select").text(`Date selected: ${user_selected_date}`);
-    
+
 });
