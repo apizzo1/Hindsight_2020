@@ -8,6 +8,7 @@ d3.json('http://127.0.0.1:5000/api/v1.0/headlines').then(function(data){
 function optionChanged(value){
     d3.json("http://127.0.0.1:5000/api/v1.0/headlines").then(function(data){
         d3.selectAll('h1').remove();
+        d3.selectAll('img').remove();
         data.forEach(day => {
             if (day.date===value){
                 day_data=day
