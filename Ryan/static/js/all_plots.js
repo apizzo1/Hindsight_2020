@@ -270,6 +270,8 @@ function dayChanged(value) {
             }
         })
     })
+
+    
 }
 function optionChanged(state) {
     curr_state = state

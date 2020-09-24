@@ -76,7 +76,6 @@ create table "protest_data"(
 	"geo_precision" int,
 	"source" varchar,
 	"source_scale" varchar,
-	"notes" varchar,
 	"fatalities" varchar
 );
 create table "ui_rate"(
