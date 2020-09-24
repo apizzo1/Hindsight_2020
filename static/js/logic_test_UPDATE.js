@@ -152,7 +152,7 @@ function init(date) {
         var csv_date = timeConverter_csv(date/1000);
         console.log(csv_date);
 
-        d3.csv("../data/USA_2020_Sep12.csv").then(function (data) {
+        d3.csv("../data/USA_2020_Sep19.csv").then(function (data) {
             console.log(data);
             // filter for user selected date
             // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
