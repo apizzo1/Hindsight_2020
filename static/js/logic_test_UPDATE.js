@@ -57,6 +57,8 @@ var myStyle2 = {
 
 var contained_fires = [];
 var active_fires = [];
+var previously_active_fires =[];
+var total_active_fires = [];
 var protestMarkers = [];
 
 // / create map object
@@ -94,14 +96,13 @@ function makeMap(layer1, layer2, layer3) {
         radius: 35,
         blur: 15,
         // max: 0.2
-      });
-    
+    });
+
     //   remove previous layer control box
     layerControl.remove(overlayMaps);
 
     // adding overlay layers for user to select
     var overlayMaps = {
-        // Active: active,
         "Active Fires": layer3,
         "Contained Fires": layer1,
         // Protests: layer2
@@ -124,6 +125,7 @@ function init(date) {
     // }
     // containedFireLayer.clearLayers();
 
+    // clearing previous contained fire data
     contained_fires.length = 0;
 
     console.log(`length check: ${contained_fires.length}`);
@@ -159,119 +161,141 @@ function init(date) {
 
         active_fires.length = 0;
         var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-        d3.json(active_fire_url).then(function(data) {
+        d3.json(active_fire_url).then(function (response) {
 
-            console.log(data.length);
-            for (var i = 0; i < data.features.length; i++) 
+            console.log(response.features.length);
+            for (var i = 0; i < response.features.length; i++)
                 try {
                     active_fires.push(
-                        L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+                        L.circle([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], { radius: 20000 })
                     )
                 }
                 catch (err) {
                     console.log("no active fires_active page");
-            }
-            console.log(active_fires);
-
-        // protest data
-
-        protestMarkers.length = 0;
-
-        // convert date into csv date format
-        var csv_date = timeConverter_csv(date/1000);
-        console.log(csv_date);
-
-        d3.csv("../data/USA_2020_Sep19.csv").then(function (data) {
-            console.log(data);
-            // filter for user selected date
-            // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
-            var filteredData = data.filter(function (d) {
-                if (d["EVENT_DATE"] == csv_date) {
-                    return d;
                 }
+            console.log(`active fires: ${active_fires.length}`);
 
+            previously_active_fires.length =0;
+
+            var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+            d3.json(previously_active_fire_url).then(function (data2) {
+                console.log(`previously active fires: ${data2.features.length}`);
+                for (var i = 0; i < data2.features.length; i++)
+                try {
+                    previously_active_fires.push(
+                        L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+                    )
+                }
+                catch (err) {
+                    console.log("no previosuly active fires_archive page");
+                }
+                
+                // clearing previous total fire data
+                total_active_fires.length=0;
+            //    concat active fire and previously active fire arrays
+                total_active_fires = active_fires.concat(previously_active_fires);
+                console.log(`total active fires: ${total_active_fires.length}`);
+                // protest data
+
+                // clearing previous protest data
+                protestMarkers.length = 0;
+
+                // convert date into csv date format
+                var csv_date = timeConverter_csv(date / 1000);
+                console.log(csv_date);
+
+                d3.csv("../data/USA_2020_Sep19.csv").then(function (data) {
+                    // console.log(data);
+                    // filter for user selected date
+                    // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
+                    var filteredData = data.filter(function (d) {
+                        if (d["EVENT_DATE"] == csv_date) {
+                            return d;
+                        }
+
+                    })
+
+                    for (var i = 0; i < filteredData.length; i++) {
+                        // console.log(data[i].LOCATION);
+
+                        protestMarkers.push(
+                            ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
+                        // L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
+                        // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
+                    }
+
+                    console.log(`protest length: ${protestMarkers.length}`);
+                    // creating protest layer
+                    var protestLayer = L.layerGroup(protestMarkers);
+
+                    // creating contained fire layer
+                    var containedFireLayer = L.layerGroup(contained_fires);
+
+                    // creating active fire layer
+                    var activeFireLayer = L.layerGroup(total_active_fires);
+
+                    // makeMap(containedFireLayer, protestLayer);
+                    makeMap(containedFireLayer, protestMarkers, activeFireLayer);
+
+
+                    // make map interactive 
+                    // source: https://leafletjs.com/examples/choropleth/
+
+                    // function to zoom into a state when the user clicks the state
+                    function zoomToFeature(e) {
+                        myMap.fitBounds(e.target.getBounds());
+                        var state = e.target.feature.properties.name
+                        console.log(e);
+                        map_component.attr("state_name", state);
+                    }
+
+
+                    // function when user mouses over feature
+                    function highlightFeature(e) {
+                        var layer = e.target;
+
+                        layer.setStyle({
+                            weight: 5,
+                            color: 'black',
+                            dashArray: '',
+                            fillOpacity: 0.3
+                        });
+
+                        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                            layer.bringToFront();
+                        }
+                    }
+
+                    // function when user mouses out of a feature
+                    function resetHighlight(e) {
+                        stategeoJson.resetStyle(e.target);
+                    }
+
+
+                    // use onEachFeature function to call event functions
+                    function onEachFeature(feature, layer) {
+                        layer.bindPopup(feature.properties.name),
+                            layer.on({
+                                mouseover: highlightFeature,
+                                mouseout: resetHighlight,
+                                click: zoomToFeature,
+
+                            });
+                    }
+
+                    // add state boundaries
+                    // source: https://leafletjs.com/examples/choropleth/
+                    stategeoJson = L.geoJson(statesData, {
+                        style: style,
+                        onEachFeature: onEachFeature
+                    }).addTo(myMap);
+
+
+                })
+
+                counter = 1;
             })
-
-            for (var i = 0; i < filteredData.length; i++) {
-                // console.log(data[i].LOCATION);
-
-                protestMarkers.push(
-                    ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
-                    // L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
-                // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
-            }
-
-            console.log(`protest length: ${protestMarkers.length}`);
-            // creating protest layer
-            var protestLayer = L.layerGroup(protestMarkers);
-
-            // creating contained fire layer
-            var containedFireLayer = L.layerGroup(contained_fires);
-
-            // creating active fire layer
-            var activeFireLayer = L.layerGroup(active_fires);
-
-            // makeMap(containedFireLayer, protestLayer);
-            makeMap(containedFireLayer, protestMarkers, activeFireLayer);
-
-
-            // make map interactive 
-            // source: https://leafletjs.com/examples/choropleth/
-
-            // function to zoom into a state when the user clicks the state
-            function zoomToFeature(e) {
-                myMap.fitBounds(e.target.getBounds());
-                var state = e.target.feature.properties.name
-                console.log(e);
-                map_component.attr("state_name", state);
-            }
-
-
-            // function when user mouses over feature
-            function highlightFeature(e) {
-                var layer = e.target;
-
-                layer.setStyle({
-                    weight: 5,
-                    color: 'black',
-                    dashArray: '',
-                    fillOpacity: 0.3
-                });
-
-                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                    layer.bringToFront();
-                }
-            }
-
-            // function when user mouses out of a feature
-            function resetHighlight(e) {
-                stategeoJson.resetStyle(e.target);
-            }
-
-
-            // use onEachFeature function to call event functions
-            function onEachFeature(feature, layer) {
-                layer.bindPopup(feature.properties.name),
-                    layer.on({
-                        mouseover: highlightFeature,
-                        mouseout: resetHighlight,
-                        click: zoomToFeature,
-
-                    });
-            }
-
-            // add state boundaries
-            // source: https://leafletjs.com/examples/choropleth/
-            stategeoJson = L.geoJson(statesData, {
-                style: style,
-                onEachFeature: onEachFeature
-            }).addTo(myMap);
-
-
         })
-
-        counter = 1;
-    })
     })
 }
 
@@ -331,19 +355,19 @@ function init(date) {
 // =======================================================================
 
 // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-function timeConverter_csv(UNIX_timestamp){
-    var a = new Date(UNIX_timestamp*1000);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function timeConverter_csv(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var year = a.getFullYear();
     var month = months[a.getMonth()];
-    var dates = ['01','02', '03', '04', '05', '06', '07', '08', '09', '10','11', '12','13', '14', '15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
+    var dates = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
     var date = dates[a.getDate()];
     // var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-    var csv_time = date + '-' + month + '-' + year  ;
+    var csv_time = date + '-' + month + '-' + year;
     return csv_time;
 }
 function timeConverter(UNIX_timestamp) {
