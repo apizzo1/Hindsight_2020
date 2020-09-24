@@ -56,6 +56,7 @@ var myStyle2 = {
 };
 
 var contained_fires = [];
+var active_fires = [];
 var protestMarkers = [];
 
 // / create map object
@@ -82,23 +83,30 @@ var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false })
 var counter = 0;
 
 // create map function
-function makeMap(layer1, layer2) {
+function makeMap(layer1, layer2, layer3) {
 
     // overlayMaps.clearLayers();
 
     // myMap.removeLayer(layer)
 
+    // heat map information
+    var heat = L.heatLayer(layer2, {
+        radius: 35,
+        blur: 15,
+        // max: 0.2
+      });
+    
+    //   remove previous layer control box
     layerControl.remove(overlayMaps);
-
 
     // adding overlay layers for user to select
     var overlayMaps = {
         // Active: active,
-        // Active: activeFireLayer,
-        Contained: layer1,
-        Protests: layer2
+        "Active Fires": layer3,
+        "Contained Fires": layer1,
+        // Protests: layer2
+        Protests: heat
     };
-
 
     // layerControl.addOverlay(layer, 'Contained');
     layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
@@ -147,8 +155,29 @@ function init(date) {
         }
         console.log(contained_fires.length);
 
+        // active fires
+
+        active_fires.length = 0;
+        var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+        d3.json(active_fire_url).then(function(data) {
+
+            console.log(data.length);
+            for (var i = 0; i < data.features.length; i++) 
+                try {
+                    active_fires.push(
+                        L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { radius: 20000 })
+                    )
+                }
+                catch (err) {
+                    console.log("no active fires_active page");
+            }
+            console.log(active_fires);
+
+        // protest data
+
         protestMarkers.length = 0;
 
+        // convert date into csv date format
         var csv_date = timeConverter_csv(date/1000);
         console.log(csv_date);
 
@@ -167,7 +196,8 @@ function init(date) {
                 // console.log(data[i].LOCATION);
 
                 protestMarkers.push(
-                    L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
+                    ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
+                    // L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
                 // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
             }
 
@@ -178,12 +208,15 @@ function init(date) {
             // creating contained fire layer
             var containedFireLayer = L.layerGroup(contained_fires);
 
-            makeMap(containedFireLayer, protestLayer);
+            // creating active fire layer
+            var activeFireLayer = L.layerGroup(active_fires);
+
+            // makeMap(containedFireLayer, protestLayer);
+            makeMap(containedFireLayer, protestMarkers, activeFireLayer);
 
 
             // make map interactive 
             // source: https://leafletjs.com/examples/choropleth/
-
 
             // function to zoom into a state when the user clicks the state
             function zoomToFeature(e) {
@@ -238,6 +271,7 @@ function init(date) {
         })
 
         counter = 1;
+    })
     })
 }
 

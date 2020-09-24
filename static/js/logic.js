@@ -372,12 +372,7 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
    var date_change_test = new Date(user_selected_date);
    var timestamp = date_change_test.getTime();
    console.log(`reconvert: ${timestamp}`);
-
-   myMap.eachLayer(function (layer) {
-    if (layer !== tile) {
-        myMap.removeLayer(layer);
-    }
-});
+   
 
 });
 
