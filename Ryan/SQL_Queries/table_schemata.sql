@@ -48,3 +48,34 @@ create table "state_cases"(
 	"case_count" int,
 	"new_case_count" int
 );
+
+create table "protest_data"(
+	"iso" int,
+	"event_id_cnty" varchar,
+	"event_id_no_cnty" int,
+	"event_date" date,
+	"year" int,
+	"time_precision" int,
+	"event_type" varchar,
+	"sub_event_type" varchar,
+	"actor1" varchar,
+	"assoc+actor_1" varchar,
+	"inter1" int,
+	"actor2" varchar,
+	"assoc_actor_2" varchar,
+	"inter2" int,
+	"interaction" int,
+	"region" varchar,
+	"country" varchar,
+	"admin1" varchar,
+	"admin2" varchar,
+	"admin3" varchar,
+	"location" varchar,
+	"latitude" float,
+	"longitude" float,
+	"geo_precision" int,
+	"source" varchar,
+	"source_scale" varchar,
+	"notes" varchar,
+	"fatalities" varchar
+);

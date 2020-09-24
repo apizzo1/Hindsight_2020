@@ -72,5 +72,16 @@ def state_mobility():
 
 #     db_response=dict_creation(results,headers_list)
 #     return jsonify(db_response)
+
+@app.route("/api/v1.0/protest")
+def state_mobility():
+    # Create our session (link) from Python to the DB
+
+    results = engine.execute('select * from protest_data').fetchall()
+    # dict keys
+    headers_list=['ISO','EVENT_ID_CNTY','EVENT_ID_NO_CNTY','EVENT_DATE','YEAR','TIME_PRECISION','EVENT_TYPE','SUB_EVENT_TYPE','ACTOR1','ASSOC_ACTOR_1','INTER1','ACTOR2','ASSOC_ACTOR_2','INTER2','INTERACTION','REGION','COUNTRY','ADMIN1','ADMIN2','ADMIN3','LOCATION','LATITUDE','LONGITUDE','GEO_PRECISION','SOURCE','SOURCE_SCALE','NOTES','FATALITIES']
+
+    db_response=dict_creation(results,headers_list)
+    return jsonify(db_response)
 if __name__ == '__main__':
     app.run(debug=True)
