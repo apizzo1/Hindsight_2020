@@ -315,6 +315,11 @@ function init(date) {
                                     contained_fires_counter = contained_fires_counter +1;
                                 }
                             }
+                            if (state_index == 22) {
+                                if ((contained_fires[i]._latlng.lng > -87) && (contained_fires[i]._latlng.lat > 41.8)&& (contained_fires[i]._latlng.lng < -82.5)) {
+                                    contained_fires_counter = contained_fires_counter +1;
+                                }
+                            }
                            
                             else {
                                 var marker_inside_polygon = state_check.contains(contained_fires[i].getLatLng());
@@ -333,6 +338,12 @@ function init(date) {
                             }
                             if (state_index == 11) {
                                 if ((total_active_fires._latlng.lng < -126) && (total_active_fires._latlng.lat < 50) ) {
+                                    active_fires_counter = active_fires_counter +1;
+                                }
+                            }
+
+                            if (state_index == 22) {
+                                if ((total_active_fires[i]._latlng.lng > -87) && (total_active_fires[i]._latlng.lat > 41.8)&& (total_active_fires[i]._latlng.lng < -82.5)) {
                                     active_fires_counter = active_fires_counter +1;
                                 }
                             }
@@ -357,6 +368,12 @@ function init(date) {
                                     protest_counter = protest_counter +1;
                                 }
                             }
+
+                            if (state_index == 22) {
+                                if ((protest_icons[i]._latlng.lng > -87) && (protest_icons[i]._latlng.lat > 41.8)&& (protest_icons[i]._latlng.lng < -82.5)) {
+                                    protest_counter = protest_counter +1;
+                                }
+                            }
                            
                             else {
                                 var marker_inside_polygon2 = state_check.contains(protest_icons[i].getLatLng());
@@ -366,9 +383,9 @@ function init(date) {
                                 }
                             }
                         }
-                        // console.log(contained_fires_counter);
-                        // console.log(active_fires_counter);
-                        // console.log(protest_counter);
+                        console.log(contained_fires_counter);
+                        console.log(active_fires_counter);
+                        console.log(protest_counter);
                     
                     }
 
