@@ -4,64 +4,45 @@ var this_day = []
 
 var sliderDate = d3.select('#slider-date')
 var curr_date=sliderDate.attr('current_time');
-console.log(curr_date)
 
 sliderDate.on("change", dayChanged(curr_date));
-// // add states to dropdown selector
-// d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (stateData) {
-
-//     var states = []
-//     stateData.forEach(day => {
-//         if (day.month == "2") {
-//             var state = day.state
-//             states.push(state)
-//         }
-//     })
-//     var states_list = states.slice(0, 51)
-//     d3.select('#selDataset').selectAll('option').data(states_list).enter().append('option').text(function (data) {
-//         return data;
-//     });
-// });
-
-// // add dates to dropdown selector
-// d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (datesData) {
-
-//     var dates = []
-//     datesData.forEach(day => {
-//         if (day.state === "Alabama") {
-//             var date = day.month + "-" + day.day + "-" + day.year
-//             dates.push(date)
-//         }
-//     })
-//     d3.select('#selDay').selectAll('option').data(dates).enter().append('option').text(function (data) {
-//         return data;
-//     });
-// });
 
 // set day based change charts
 function dayChanged(value) {
-    // var myDate= new Date(value)
-    // var e_date=myDate.getTime()
-    var e_date=curr_date
+
+    var e_date=new Date(+curr_date)
+    var m=e_date.getUTCMonth()+1
+    var d=e_date.getUTCDate()
+    var y=e_date.getUTCFullYear()
+    var e_conv=(y+"/"+m+"/"+d)
+    console.log(e_conv)
     d3.json("http://127.0.0.1:5000/api/v1.0/headlines").then(function(data){
 
         d3.selectAll('h1').remove();
         d3.selectAll('img').remove();
 
         data.forEach(day => {
-            day.date=new Date(day.date)
+            var full_date=new Date(day.date)
+            var m = full_date.getUTCMonth()+1
+            var d = full_date.getUTCDate()
+            var y = full_date.getUTCFullYear()
+            var e_conv=(y+"/"+m+"/"+d)
+            day.date=e_conv
         })
-        data.forEach(day => {
-            day.date= day.date.getTime()
-        })
-        console.log(e_date)
-        console.log(data)
+        // console.log(data)
+
+        // data.forEach(day => {
+        //     day.date= day.date.getTime()
+        // })
+        var day_head=[]
         data.forEach(day => {
             if (day.date===e_date){
+                console.log(day.date)
+                console.log(e_date)
                 day_head=day
             }
         })
-        // console.log(day_head)
+        console.log(day_head)
 
         d3.select('#NYT_headline').append('h4').text(day_head.headline)
         // d3.select('#art_image').append('img').attr("src",day_head.img_url)
@@ -89,7 +70,7 @@ function dayChanged(value) {
             };
             datasets.push(day_dict);
         });
-
+        var day_data=[]
         datasets.forEach(day => {
             if (day.date === value) {
                 day_data = day;
