@@ -90,7 +90,7 @@ def state_ui():
 
     results = engine.execute('SELECT * FROM state_ui').fetchall()
     # dict keys
-    headers_list=['state', 'january', 'february', 'march','april', 'may', 'june', 'july', 'august']
+    headers_list=['State', 'January', 'February', 'March','April', 'May', 'June', 'July', 'August']
 
     db_response=dict_creation(results,headers_list)
     return jsonify(db_response)

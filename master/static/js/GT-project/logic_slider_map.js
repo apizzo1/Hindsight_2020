@@ -59,7 +59,7 @@ var contained_fire_style = {
 
 var contained_fires = [];
 var active_fires = [];
-var previously_active_fires =[];
+var previously_active_fires = [];
 var total_active_fires = [];
 var protestMarkers = [];
 var slider_div = d3.select("#slider-date");
@@ -123,9 +123,10 @@ function makeMap(layer1, layer2, layer3) {
 
 // call init function using 1/1/10
 init(1577854861000);
-
+var datetoPass;
+var state;
 function init(date) {
-
+    datetoPass = date;
     // clearing previous contained fire data
     contained_fires.length = 0;
 
@@ -177,24 +178,24 @@ function init(date) {
                 }
             // console.log(`active fires: ${active_fires.length}`);
 
-            previously_active_fires.length =0;
+            previously_active_fires.length = 0;
 
             var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
             d3.json(previously_active_fire_url).then(function (data2) {
                 // console.log(`previously active fires: ${data2.features.length}`);
                 for (var i = 0; i < data2.features.length; i++)
-                try {
-                    previously_active_fires.push(
-                        L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
-                    )
-                }
-                catch (err) {
-                    // console.log("no previosuly active fires_archive page");
-                }
-                
+                    try {
+                        previously_active_fires.push(
+                            L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
+                        )
+                    }
+                    catch (err) {
+                        // console.log("no previosuly active fires_archive page");
+                    }
+
                 // clearing previous total fire data
-                total_active_fires.length=0;
-            //    concat active fire and previously active fire arrays
+                total_active_fires.length = 0;
+                //    concat active fire and previously active fire arrays
                 total_active_fires = active_fires.concat(previously_active_fires);
                 // console.log(`total active fires: ${total_active_fires.length}`);
                 // protest data
@@ -207,7 +208,7 @@ function init(date) {
                 // console.log(csv_date);
 
                 d3.csv("../static/delete/USA_2020_Sep19.csv").then(function (data) {
-                    
+
                     // filter for user selected date
                     // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
                     var filteredData = data.filter(function (d) {
@@ -246,9 +247,12 @@ function init(date) {
                     // function to zoom into a state when the user clicks the state
                     function zoomToFeature(e) {
                         myMap.fitBounds(e.target.getBounds());
-                        var state = e.target.feature.properties.name
+                        state = e.target.feature.properties.name
                         // console.log(e);
                         map_component.attr("state_name", state);
+                        stateUnemployment(state, datetoPass);
+                        console.log(state, datetoPass);
+                        // single_state_fxn(state, datetoPass);
                     }
 
 
@@ -320,7 +324,7 @@ function timeConverter_csv(UNIX_timestamp) {
     var min = a.getMinutes();
     var sec = a.getSeconds();
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-    var csv_time = String(parseInt(date)-1) + '-' + month + '-' + year;
+    var csv_time = String(parseInt(date) - 1) + '-' + month + '-' + year;
     return csv_time;
 }
 function timeConverter(UNIX_timestamp) {
@@ -353,7 +357,7 @@ function timeConverter_display(UNIX_timestamp) {
     var min = a.getMinutes();
     var sec = a.getSeconds();
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec 
-    var display_date = month + ' ' + date + ', '+ year;
+    var display_date = month + ' ' + date + ', ' + year;
     return display_date;
 
 }
@@ -396,7 +400,7 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     // console.log(`new user date END: ${user_selected_date}`);
-    var display_date_main_page = timeConverter_display(date_select/1000);
+    var display_date_main_page = timeConverter_display(date_select / 1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
@@ -414,7 +418,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     // console.log(`new user date CHANGE: ${user_selected_date}`);
     // console.log(`handle_read: ${date_select}`);
     // console.log(`testing one day past: ${plus_one_day}`);
-    var display_date_main_page = timeConverter_display(date_select/1000);
+    var display_date_main_page = timeConverter_display(date_select / 1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
@@ -427,13 +431,16 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
         }
     });
     init(date_select);
+    if (!(state === null)) {
+        stateUnemployment(state, datetoPass);
+    };
 });
 
 // allow dates to change when handle is dragged
 dateSlider.noUiSlider.on('slide', function (values, handle) {
     var date_select = values[handle];
     user_selected_date = timeConverter(date_select / 1000);
-    var display_date_main_page = timeConverter_display(date_select/1000);
+    var display_date_main_page = timeConverter_display(date_select / 1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
 });
