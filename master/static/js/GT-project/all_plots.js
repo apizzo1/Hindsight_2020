@@ -1,43 +1,48 @@
 
-var curr_date = ""
 var curr_state = ""
 var this_day = []
 
-// add states to dropdown selector
-d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (stateData) {
+var sliderDate = d3.select('#slider-date')
+var curr_date=sliderDate.attr('current_time');
+console.log(curr_date)
 
-    var states = []
-    stateData.forEach(day => {
-        if (day.month == "2") {
-            var state = day.state
-            states.push(state)
-        }
-    })
-    var states_list = states.slice(0, 51)
-    d3.select('#selDataset').selectAll('option').data(states_list).enter().append('option').text(function (data) {
-        return data;
-    });
-});
+sliderDate.on("change", dayChanged(curr_date));
+// // add states to dropdown selector
+// d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (stateData) {
 
-// add dates to dropdown selector
-d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (datesData) {
+//     var states = []
+//     stateData.forEach(day => {
+//         if (day.month == "2") {
+//             var state = day.state
+//             states.push(state)
+//         }
+//     })
+//     var states_list = states.slice(0, 51)
+//     d3.select('#selDataset').selectAll('option').data(states_list).enter().append('option').text(function (data) {
+//         return data;
+//     });
+// });
 
-    var dates = []
-    datesData.forEach(day => {
-        if (day.state === "Alabama") {
-            var date = day.month + "-" + day.day + "-" + day.year
-            dates.push(date)
-        }
-    })
-    d3.select('#selDay').selectAll('option').data(dates).enter().append('option').text(function (data) {
-        return data;
-    });
-});
+// // add dates to dropdown selector
+// d3.json("http://127.0.0.1:5000/api/v1.0/state_mobility").then(function (datesData) {
+
+//     var dates = []
+//     datesData.forEach(day => {
+//         if (day.state === "Alabama") {
+//             var date = day.month + "-" + day.day + "-" + day.year
+//             dates.push(date)
+//         }
+//     })
+//     d3.select('#selDay').selectAll('option').data(dates).enter().append('option').text(function (data) {
+//         return data;
+//     });
+// });
 
 // set day based change charts
 function dayChanged(value) {
-    var myDate= new Date(value)
-    var e_date=myDate.getTime()
+    // var myDate= new Date(value)
+    // var e_date=myDate.getTime()
+    var e_date=curr_date
     d3.json("http://127.0.0.1:5000/api/v1.0/headlines").then(function(data){
 
         d3.selectAll('h1').remove();
@@ -49,13 +54,17 @@ function dayChanged(value) {
         data.forEach(day => {
             day.date= day.date.getTime()
         })
+        console.log(e_date)
+        console.log(data)
         data.forEach(day => {
             if (day.date===e_date){
                 day_head=day
             }
         })
-        d3.select('#headline').append('h1').text(day_head.headline)
-        d3.select('#art_image').append('img').attr("src",day_head.img_url)
+        // console.log(day_head)
+
+        d3.select('#NYT_headline').append('h4').text(day_head.headline)
+        // d3.select('#art_image').append('img').attr("src",day_head.img_url)
         
     })
 
@@ -354,7 +363,7 @@ function optionChanged(state) {
         },
         showlegend: true
     }
-    Plotly.newPlot('statechart', data, layout);
+    Plotly.newPlot('mobility_plot', data, layout);
 
 
 }
