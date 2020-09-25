@@ -12,9 +12,6 @@ function datebuilder(value) {
     var e_conv = (y + "/" + m + "/" + d)
     // build headline and image
     d3.json("http://127.0.0.1:5000/api/v1.0/headlines").then(function (data) {
-        // clear existing values from html
-        d3.select('h5').remove();
-        d3.selectAll('img').remove();
         // convert dates within data for comparison
         data.forEach(day => {
             var full_date = new Date(day.date)
@@ -31,8 +28,9 @@ function datebuilder(value) {
             }
         })
         // push new article title and img
-        d3.select('#NYT_headline').append('h5').text(day_head.headline)
-        d3.select('.page-header').append('img').attr("src", day_head.img_url)
+        d3.select('#NYT_headline').text(day_head.headline)
+        console.log(day_head.img_url)
+        d3.select('#background-NYT').attr("style", `background-image: url(${day_head.img_url})`)
 
     })
     // creates national charts
