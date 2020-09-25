@@ -24,6 +24,8 @@
     <select name="Compare" id="compare" onChange="selectOption(this.options[this.selectedIndex].value)"></select>
   </div>
   <div id="unemployment"></div>
+
+  <div id='stateUnemp'></div>
   <table>
     <tr>
       <td>
@@ -43,22 +45,22 @@
       </td>
     </tr>
   </table>
-
-  
-  
   <div id="stockChart"></div>
+
+
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.2.0/math.min.js"></script>
   <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
   <!-- D3 JavaScript -->
   <script src="https://d3js.org/d3.v6.min.js"></script>
+  <!-- API Key-->
+  <script type="text/javascript" src="../static/js/config.js"></script>
   <!-- Our JavaScript -->
-  <!-- <script type="text/javascript" src="../static/js/logic.js"></script> -->
   <!-- <script type="text/javascript" src="../static/js/airPollution.js"></script> -->
   <script type="text/javascript" src="../static/js/unemployment.js"></script>
   <script type="text/javascript" src="../static/js/stock.js"></script>
-  <!-- API Key-->
-  <script type="text/javascript" src="../static/js/config.js"></script>
+  <script type="text/javascript" src="../static/js/stateunemployment.js"></script>
+  
 </body>
 
 </html>
