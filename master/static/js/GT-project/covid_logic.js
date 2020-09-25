@@ -13,7 +13,7 @@ function find_avg (array) {
 function us_fxn (date) {
 
     // format date; end result should be yyyymmdd for API calls
-    var moment_date = moment(date, 'YYYY-MM-DD');
+    var moment_date = moment.unix(date/1000).add(1, 'days');
     var plotly_date = moment_date.format ('M/DD');
     var api_date = moment_date.format ('YYYYMMDD');
 
@@ -218,7 +218,7 @@ function us_fxn (date) {
 function single_state_fxn(date, state) {
 
     // format date; end result should be yyyymmdd for API calls
-    var moment_date = moment(date, 'YYYY-MM-DD');
+    var moment_date = moment.unix(date/1000).add(1, 'days');
     var api_date = moment_date.format('YYYYMMDD');
     // var prior_date = luxon_date.plus({ days: -1 }).toFormat('yyyyLLdd');
 
@@ -288,5 +288,11 @@ function single_state_fxn(date, state) {
     });
 }
 
-us_fxn ('2020-08-05');
+// us_fxn ('2020-08-05');
 single_state_fxn ('2020-08-05', 'GA');
+
+us_fxn ('1577880000000');
+
+dateSlider.noUiSlider.on('change', function (values, handle) {
+    us_fxn (values[handle]);
+})
