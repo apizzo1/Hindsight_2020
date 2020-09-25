@@ -397,7 +397,7 @@ function init(date) {
 
                     // use onEachFeature function to call event functions
                     function onEachFeature(feature, layer) {
-                        layer.bindPopup(feature.properties.name),
+                        
                             layer.on({
                                 mouseover: highlightFeature,
                                 mouseout: resetHighlight,
