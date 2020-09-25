@@ -93,6 +93,13 @@ var overlayMaps = {};
 // adding layer control to map
 var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);;
 
+// contained fire icon
+var contained_fire_icon = L.divIcon({
+    html: '<i class="fas fa-fire-extinguisher fa-lg"></i>',
+    iconSize: [20, 20],
+    className: 'containedFireIcon'
+});
+
 // active fire icon
 var fire_icon = L.divIcon({
     html: '<i class="fas fa-fire fa-lg"></i>',
@@ -102,7 +109,7 @@ var fire_icon = L.divIcon({
 
 // protest icon
 var protest_icon = L.divIcon({
-    html: '<i class="fas fa-bullhorn"></i>',
+    html: '<i class="fas fa-bullhorn fa-lg"></i>',
     iconSize: [20, 20],
     className: 'protestIcon'
 });
@@ -124,7 +131,7 @@ function makeMap(layer1, layer2, layer3, layer4) {
     // adding overlay layers for user to select
     var overlayMaps = {
         "Active Fires": layer3,
-        "Contained Fires": layer1,
+        "Fires Contained": layer1,
         Protests: layer4,
         "Protests heat map": heat
     };
@@ -164,7 +171,8 @@ function init(date) {
             try {
                 // console.log(data.features[i].geometry.rings[0][0]);
                 contained_fires.push(
-                    L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], contained_fire_style)
+                    // L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], contained_fire_style)
+                    L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { icon: contained_fire_icon })
                 )
             }
             catch (err) {
