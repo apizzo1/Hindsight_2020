@@ -1,29 +1,25 @@
 var sliderDate = Math.floor(new Date('03-22-2020').getTime() / 1000.0)
 var baseUrl = 'https://finnhub.io/api/v1/';
 var category = 'stock/candle';
-var symbol = 'AMZN';
 var startdate = new Date('January 1, 2020').getTime() / 1000.0;
 // startdate = '1572651390'
 var enddate = new Date('09-22-2020').getTime() / 1000.0;
 var humanEndDate = new Date(enddate * 1000);
 var humanSliderDate = new Date(sliderDate * 1000);
 // enddate = '1572910590'
-finnhub_API_Key = "btla6h748v6omckuq520"
-
-var stockLabels = ['Amazon', 'Netflix', '3M Co', 'Honeywell', 'MSA Safety Inc', 'Home Depot', 'Lowes', 'UBER', 'Century21', 'Boeing'];
-var stockValues = ['AMZN', 'NFLX', 'MMM', 'HON', 'MSA'];
-var defaultTicker = 'MSA';
+var sliderDate = d3.select('#slider-date').attr('current_time');
+var stockLabels = ['Amazon', 'Netflix', '3M Co', 'Honeywell', 'MSA Safety Inc', 'Home Depot', 'Lowes', 'UBER', 'Boeing', 'Delta', 'Southwest'];
+var stockValues = ['AMZN', 'NFLX', 'MMM', 'HON', 'MSA', 'HD', 'LOW', 'UBER', 'BA', 'DAL', 'LUV'];
+var defaultTicker = 'DAL';
 var chosenStocks = [defaultTicker, '...', '...'];
 console.log(`1st: ${chosenStocks}`);
 var symbols = [defaultTicker];
 var stockTrace = [];
-
+var maxData = 0;
 var queries = [];
 var promises = [];
-// var queue = d3.queue();
 
 function buildTrace(dates, data, symbol) {
-  // console.log(`data.c = ${data.c}`);
   var trace = {
     x: dates,
     y: data.c,
@@ -159,8 +155,15 @@ function selectStock(id, value) {
   });
 
   Promise.all(promises).then((values) => {
-    // console.log(values);
-
+    var maxes=[];
+    for (i=0; i<values.length; i++) {
+      maxes.push(Math.max(...values[i].c));
+    }
+    maxData = Math.max(...maxes);
+    if (Math.max(values.c) > maxData) {
+      maxData = values.c;
+    }
+    console.log(`maxData = ${maxData}`);
     if (values.length > 0) {
       var convDates = [];
       for (var i = 0; i < values[0].t.length; i++) {
@@ -176,8 +179,24 @@ function selectStock(id, value) {
       // var stockTrace1 = buildTrace(convDates, stock1Data, symbols[0]);
       // var data = [stockTrace1];
 
+      vertTrace = {
+        'x': [sliderDate, sliderDate],
+        'y': [0, maxData],
+        type: 'scatter',
+        'mode': 'lines',
+        'line': {'color': 'grey', dash: 'dash'},
+        'showlegend': false,
+        // 'xaxis': 'x',
+        // 'yaxis': 'y2'
+      }
+      data.push(vertTrace);
+
       var layout = {
         dragmode: 'zoom',
+        font: {
+          // family: 'Courier New, monospace',
+          size: 24,
+        },
         margin: {
           r: 10,
           t: 25,
