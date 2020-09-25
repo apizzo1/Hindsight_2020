@@ -1,5 +1,3 @@
-
-
 function buildLinePlot(selection, userDate) {
     selectDates = [];
     selectMain = [];
@@ -15,7 +13,6 @@ function buildLinePlot(selection, userDate) {
         // startDate = Date.parse(unempData[0]['DATE']);
         startDate = Date.parse(new Date('2005-01-01'));
         endDate = Date.parse(unempData[871]['DATE']);
-        // console.log(userDate);
         for (i=0; i< unempData.length; i++) {
             currDate = Date.parse(unempData[i]['DATE']);
             if (currDate < new Date('2020-01-01')) {
@@ -34,11 +31,7 @@ function buildLinePlot(selection, userDate) {
                 postSelect.push(unempData[i][selection]);
             }
         }
-        // console.log(priorDates);
-        // console.log(selectDates);
-        // console.log(postDates);
-
-
+        
         var priorTrace = {
             type: 'line',
             x: priorDates,
@@ -123,7 +116,6 @@ function buildDropdown (id, labels, values) {
 };
 
 function selectOption (chosen) {
-    // console.log(chosen);
     buildLinePlot(chosen, sliderDate);
 }
 
@@ -136,8 +128,9 @@ var values = ['16-19','over20',
 'Men','Women',
 'no-HS-grad','HS-no-college','Bachelors','Masters','Doctoral'];
 
+// need to add listener for date
 var sliderDate = d3.select('#slider-date').attr('current_time');
-console.log(sliderDate);
+
 // sliderDate = new Date('2020-08-01');
 buildDropdown("#compare", labels, values);
 buildLinePlot('...', sliderDate);
