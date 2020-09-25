@@ -2,8 +2,10 @@
 function approval_fxn(date) {
 
     // convert date to moment.js object
-    var date_moment = moment(date, 'MM-DD-YYYY');
+    var date_moment = moment.unix(date/1000).add(1, 'days');
     var plotly_date = date_moment.format ('M/DD');
+
+    console.log (plotly_date);
 
     // gather dis/approval data from https://projects.fivethirtyeight.com/trump-approval-ratings/
     var approval_csv = 'https://projects.fivethirtyeight.com/trump-approval-data/approval_topline.csv';
@@ -174,4 +176,8 @@ function approval_fxn(date) {
     })
 }
 
-approval_fxn('08-05-2020');
+approval_fxn ('1577880000000');
+
+dateSlider.noUiSlider.on('change', function (values, handle) {
+    approval_fxn (values[handle]);
+})
