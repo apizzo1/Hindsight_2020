@@ -5,7 +5,7 @@ function approval_fxn(date) {
     var date_moment = moment.unix(date/1000).add(1, 'days');
     var plotly_date = date_moment.format ('M/DD');
 
-    console.log (plotly_date);
+    // console.log (plotly_date);
 
     // gather dis/approval data from https://projects.fivethirtyeight.com/trump-approval-ratings/
     var approval_csv = 'https://projects.fivethirtyeight.com/trump-approval-data/approval_topline.csv';
