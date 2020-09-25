@@ -94,3 +94,14 @@ create table "ui_rate"(
 	"masters" float,
 	"doctoral" float
 );
+create table "state_ui"(
+	"state" varchar,
+	"january" float,
+	"february" float,
+	"march" float,
+	"april" float,
+	"may" float,
+	"june" float,
+	"july" float,
+	"august" float
+);

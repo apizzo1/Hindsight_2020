@@ -83,5 +83,16 @@ def protest():
 
     db_response=dict_creation(results,headers_list)
     return jsonify(db_response)
+
+@app.route("/api/v1.0/state_ui")
+def state_ui():
+    # Create our session (link) from Python to the DB
+
+    results = engine.execute('SELECT * FROM state_ui').fetchall()
+    # dict keys
+    headers_list=['state', 'january', 'february', 'march','april', 'may', 'june', 'july', 'august']
+
+    db_response=dict_creation(results,headers_list)
+    return jsonify(db_response)
 if __name__ == '__main__':
     app.run(debug=True)

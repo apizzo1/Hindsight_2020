@@ -130,6 +130,5 @@ function datebuilder(value) {
             showlegend: true
         }
         Plotly.newPlot('mobility_plot', data2, layout2);
-        console.log(5)
     })
 }
