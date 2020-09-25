@@ -5,9 +5,10 @@ var startdate = new Date('January 1, 2020').getTime() / 1000.0;
 // startdate = '1572651390'
 var enddate = new Date('09-22-2020').getTime() / 1000.0;
 var humanEndDate = new Date(enddate * 1000);
-var humanSliderDate = new Date(sliderDate * 1000);
+
 // enddate = '1572910590'
 var sliderDate = d3.select('#slider-date').attr('current_time');
+var humanSliderDate = new Date(sliderDate * 1000);
 var stockLabels = ['Amazon', 'Netflix', '3M Co', 'Honeywell', 'MSA Safety Inc', 'Home Depot', 'Lowes', 'UBER', 'Boeing', 'Delta', 'Southwest'];
 var stockValues = ['AMZN', 'NFLX', 'MMM', 'HON', 'MSA', 'HD', 'LOW', 'UBER', 'BA', 'DAL', 'LUV'];
 var defaultTicker = 'DAL';
@@ -182,6 +183,7 @@ function selectStock(id, value) {
       vertTrace = {
         'x': [sliderDate, sliderDate],
         'y': [0, maxData],
+        name: 'Selected Date',
         type: 'scatter',
         'mode': 'lines',
         'line': {'color': 'grey', dash: 'dash'},
