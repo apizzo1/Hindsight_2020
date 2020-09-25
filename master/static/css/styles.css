@@ -3,3 +3,11 @@
     -moz-box-sizing: content-box;
     box-sizing: content-box;
   }
+
+  .fa-fire {
+    color: red;
+  }
+  
+  .fa-bullhorn {
+    color: darkgray;
+  }

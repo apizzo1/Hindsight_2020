@@ -57,11 +57,14 @@ var contained_fire_style = {
     radius: 20000
 };
 
+// variable initialize
+var date_to_pass;
 var contained_fires = [];
 var active_fires = [];
 var previously_active_fires =[];
 var total_active_fires = [];
 var protestMarkers = [];
+var protest_icons = [];
 var slider_div = d3.select("#slider-date");
 var dateSlider = document.getElementById('slider-date');
 slider_div.attr("current_time", 1577854861000);
@@ -88,13 +91,24 @@ var baseMaps = {
 var overlayMaps = {};
 
 // adding layer control to map
-// var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
 var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);;
 
-var counter = 0;
+// active fire icon
+var fire_icon = L.divIcon({
+    html: '<i class="fas fa-fire fa-lg"></i>',
+    iconSize: [20, 20],
+    className: 'fireIcon'
+});
+
+// protest icon
+var protest_icon = L.divIcon({
+    html: '<i class="fas fa-bullhorn"></i>',
+    iconSize: [20, 20],
+    className: 'protestIcon'
+});
 
 // create map function
-function makeMap(layer1, layer2, layer3) {
+function makeMap(layer1, layer2, layer3, layer4) {
 
 
     // heat map information
@@ -111,8 +125,8 @@ function makeMap(layer1, layer2, layer3) {
     var overlayMaps = {
         "Active Fires": layer3,
         "Contained Fires": layer1,
-        // Protests: layer2
-        Protests: heat
+        Protests: layer4,
+        "Protests heat map": heat
     };
 
     // layerControl.addOverlay(layer, 'Contained');
@@ -122,10 +136,11 @@ function makeMap(layer1, layer2, layer3) {
 
 
 // call init function using 1/1/10
-init(1577854861000);
+init(1577923200000);
 
 function init(date) {
 
+    date_to_pass = date;
     // clearing previous contained fire data
     contained_fires.length = 0;
 
@@ -169,7 +184,8 @@ function init(date) {
             for (var i = 0; i < response.features.length; i++)
                 try {
                     active_fires.push(
-                        L.circle([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], active_fire_style)
+                        // L.circle([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], active_fire_style)
+                        L.marker([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
                     )
                 }
                 catch (err) {
@@ -185,7 +201,8 @@ function init(date) {
                 for (var i = 0; i < data2.features.length; i++)
                 try {
                     previously_active_fires.push(
-                        L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
+                        // L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
+                        L.marker([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
                     )
                 }
                 catch (err) {
@@ -201,6 +218,7 @@ function init(date) {
 
                 // clearing previous protest data
                 protestMarkers.length = 0;
+                protest_icons.length = 0;
 
                 // convert date into csv date format
                 var csv_date = timeConverter_csv(date / 1000);
@@ -222,13 +240,16 @@ function init(date) {
 
                         protestMarkers.push(
                             ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
-                        // L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]).bindPopup(filteredData[i]["LOCATION"]))
+                            protest_icons.push(
+                                L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(filteredData[i]["LOCATION"]))
+                        
                         // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
                     }
 
                     console.log(`protest length: ${protestMarkers.length}`);
                     // creating protest layer
                     var protestLayer = L.layerGroup(protestMarkers);
+                    var protestLayer_icon = L.layerGroup(protest_icons);
 
                     // creating contained fire layer
                     var containedFireLayer = L.layerGroup(contained_fires);
@@ -237,7 +258,7 @@ function init(date) {
                     var activeFireLayer = L.layerGroup(total_active_fires);
 
                     // makeMap(containedFireLayer, protestLayer);
-                    makeMap(containedFireLayer, protestMarkers, activeFireLayer);
+                    makeMap(containedFireLayer, protestMarkers, activeFireLayer, protestLayer_icon);
 
 
                     // make map interactive 
@@ -247,7 +268,7 @@ function init(date) {
                     function zoomToFeature(e) {
                         myMap.fitBounds(e.target.getBounds());
                         var state = e.target.feature.properties.name
-                        // console.log(e);
+                        console.log(state, date_to_pass);
                         map_component.attr("state_name", state);
                     }
 
@@ -374,8 +395,8 @@ noUiSlider.create(dateSlider, {
         max: timestamp('2020-09-12')
     },
 
-    // Steps of one week
-    // step: 7* 24 * 60 * 60 * 1000,
+    // Steps of one day
+    step: 24 * 60 * 60 * 1000,
 
     // Two more timestamps indicate the handle starting positions.
     start: timestamp('2020-01-02'),
@@ -419,13 +440,19 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     slider_div.attr("current_time", date_select);
 
 
-    // remove all layers from the map
+   // remove all layers from the map
     // source: https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
     myMap.eachLayer(function (layer) {
-        if ((layer !== street)) {
-            myMap.removeLayer(layer);
+        if ((layer !== grayscale)) {
+            if (layer !== street) {
+                if (layer !== satellite) {
+                    myMap.removeLayer(layer);
+                }
+            }
         }
+        
     });
+
     init(date_select);
 });
 
