@@ -1,0 +1,1 @@
+finnhub_API_Key = "btla6h748v6omckuq520"
