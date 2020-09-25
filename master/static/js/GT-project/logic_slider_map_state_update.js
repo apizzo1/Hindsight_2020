@@ -1,22 +1,22 @@
 // add tile layer 
-var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+var light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/streets-v11',
+    id: 'mapbox/light-v10',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: API_KEY
 });
 
 // satellite layer
-var satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox/satellite-streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: API_KEY
-});
+// var satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+//     maxZoom: 18,
+//     id: 'mapbox/satellite-streets-v11',
+//     tileSize: 512,
+//     zoomOffset: -1,
+//     accessToken: API_KEY
+// });
 
 // grayscale layer
 var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -82,13 +82,13 @@ var myMap = L.map("map", {
     // center of the United States
     center: [39.8, -98.6],
     zoom: 4,
-    layers: street
+    layers: light
 });
 
 
 var baseMaps = {
-    Streetview: street,
-    Satellite: satellite,
+    Light: light,
+    // Satellite: satellite,
     Grayscale: grayscale
 };
 
@@ -155,11 +155,11 @@ function init(date) {
     // clearing previous contained fire data
     contained_fires.length = 0;
 
-    console.log(`length check: ${contained_fires.length}`);
+    // console.log(`length check: ${contained_fires.length}`);
     // console.log(`date given ${date}`);
     // console.log(`test date: ${timeConverter(date/1000)}`);
     date_start = timeConverter(date / 1000)
-    console.log(`contained fire day: ${date_start}`);
+    // console.log(`contained fire day: ${date_start}`);
     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
     // console.log(plus_one_day);
     // console.log(timeConverter(plus_one_day/1000));
@@ -168,7 +168,7 @@ function init(date) {
     // contained fire data
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
     d3.json(contained_fire_url).then(function (data) {
-        console.log(`Contained Fires - testing:${data.features.length}`);
+        // console.log(`Contained Fires - testing:${data.features.length}`);
         // console.log(`testing length: ${data.features[0].geometry.rings[0][0][1]}`);
         // console.log(response.features[1].geometry.rings[0][0]);
         for (var i = 0; i < data.features.length; i++) {
@@ -184,7 +184,7 @@ function init(date) {
             }
 
         }
-        console.log(contained_fires.length);
+        // console.log(contained_fires.length);
 
         // active fires
 
@@ -192,7 +192,7 @@ function init(date) {
         var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
         d3.json(active_fire_url).then(function (response) {
 
-            console.log(response.features.length);
+            // console.log(response.features.length);
             for (var i = 0; i < response.features.length; i++)
                 try {
                     active_fires.push(
@@ -203,13 +203,13 @@ function init(date) {
                 catch (err) {
                     console.log("no active fires_active page");
                 }
-            console.log(`active fires: ${active_fires.length}`);
+            // console.log(`active fires: ${active_fires.length}`);
 
             previously_active_fires.length =0;
 
             var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
             d3.json(previously_active_fire_url).then(function (data2) {
-                console.log(`previously active fires: ${data2.features.length}`);
+                // console.log(`previously active fires: ${data2.features.length}`);
                 for (var i = 0; i < data2.features.length; i++)
                 try {
                     previously_active_fires.push(
@@ -225,7 +225,7 @@ function init(date) {
                 total_active_fires.length=0;
             //    concat active fire and previously active fire arrays
                 total_active_fires = active_fires.concat(previously_active_fires);
-                console.log(`total active fires: ${total_active_fires.length}`);
+                // console.log(`total active fires: ${total_active_fires.length}`);
                 // protest data
 
                 // clearing previous protest data
@@ -234,7 +234,7 @@ function init(date) {
 
                 // convert date into csv date format
                 var csv_date = timeConverter_csv(date / 1000);
-                console.log(csv_date);
+                // console.log(csv_date);
 
                 d3.csv("../static/delete/USA_2020_Sep19.csv").then(function (data) {
                     
@@ -258,7 +258,7 @@ function init(date) {
                         // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
                     }
 
-                    console.log(`protest length: ${protestMarkers.length}`);
+                    // console.log(`protest length: ${protestMarkers.length}`);
                     // creating protest layer
                     var protestLayer = L.layerGroup(protestMarkers);
                     var protestLayer_icon = L.layerGroup(protest_icons);
@@ -366,9 +366,9 @@ function init(date) {
                                 }
                             }
                         }
-                        console.log(contained_fires_counter);
-                        console.log(active_fires_counter);
-                        console.log(protest_counter);
+                        // console.log(contained_fires_counter);
+                        // console.log(active_fires_counter);
+                        // console.log(protest_counter);
                     
                     }
 
@@ -512,11 +512,11 @@ noUiSlider.create(dateSlider, {
 dateSlider.noUiSlider.on('end', function (values, handle) {
 
     var date_select = values[handle];
-    console.log(`handle_read: ${date_select}`);
+    // console.log(`handle_read: ${date_select}`);
 
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
-    console.log(`new user date END: ${user_selected_date}`);
+    // console.log(`new user date END: ${user_selected_date}`);
     var display_date_main_page = timeConverter_display(date_select/1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
@@ -532,7 +532,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
-    console.log(`new user date CHANGE: ${user_selected_date}`);
+    // console.log(`new user date CHANGE: ${user_selected_date}`);
     // console.log(`handle_read: ${date_select}`);
     // console.log(`testing one day past: ${plus_one_day}`);
     var display_date_main_page = timeConverter_display(date_select/1000);
@@ -544,10 +544,10 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     // source: https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
     myMap.eachLayer(function (layer) {
         if ((layer !== grayscale)) {
-            if (layer !== street) {
-                if (layer !== satellite) {
-                    myMap.removeLayer(layer);
-                }
+            if (layer !== light) {
+                // if (layer !== satellite) {
+                myMap.removeLayer(layer);
+                // }
             }
         }
         
