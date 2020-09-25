@@ -12,7 +12,7 @@ var stockLabels = ['Amazon', 'Netflix', '3M Co', 'Honeywell', 'MSA Safety Inc', 
 var stockValues = ['AMZN', 'NFLX', 'MMM', 'HON', 'MSA', 'HD', 'LOW', 'UBER', 'BA', 'DAL', 'LUV'];
 var defaultTicker = 'DAL';
 var chosenStocks = [defaultTicker, '...', '...'];
-console.log(`1st: ${chosenStocks}`);
+// console.log(`1st: ${chosenStocks}`);
 var symbols = [defaultTicker];
 var stockTrace = [];
 var maxData = 0;
@@ -32,75 +32,75 @@ function buildTrace(dates, data, symbol) {
 }
 
 function selectStock(id, value) {
-  console.log(`In Function: ${chosenStocks}`);
+  // console.log(`In Function: ${chosenStocks}`);
   promises = [];
-  console.log(value);
+  // console.log(value);
   // Get the last character of the id
   var position = id.slice(-1) - 1;
-  console.log(`value = ${value}`);
+  // console.log(`value = ${value}`);
   switch (symbols.length) {
     case 0:
       if (value === '...') {
         symbols.splice(0, 0, defaultTicker);
         queries.splice(0, 0, `${baseUrl}${category}?symbol=${defaultTicker}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-        console.log('case position = 0');
+        // console.log('case position = 0');
       }
       else {
         symbols.splice(0, 0, value);
         queries.splice(0, 0, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-        console.log('case position = 1');
+        // console.log('case position = 1');
       }
       chosenStocks[position] = value;
       break;
     case 1:
-      console.log(`value in case 1: ${value}`);
+      // console.log(`value in case 1: ${value}`);
       if (value === '...') {
         symbols.splice(0, 1, defaultTicker);
         queries.splice(0, 1, `${baseUrl}${category}?symbol=${defaultTicker}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-        console.log('case position = 2');
-        console.log(`In CP2: ${chosenStocks}`);
+        // console.log('case position = 2');
+        // console.log(`In CP2: ${chosenStocks}`);
       }
       else if (chosenStocks[position] === '...') {
         symbols.push(value);
         queries.push(`${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-        console.log('case position = 3');
+        // console.log('case position = 3');
       }
       else {
         symbols.splice(0, 1, value);
         queries.splice(0, 1, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-        console.log('case position = 4');
+        // console.log('case position = 4');
       }
       chosenStocks[position] = value;
-      console.log(`End CP2: ${chosenStocks}`);
+      // console.log(`End CP2: ${chosenStocks}`);
       break;
     case 2:
       if (value === '...') {
         if (chosenStocks[position] === symbols[0]) {
           symbols.shift();
           queries.shift();
-          console.log('case position = 5');
+          // console.log('case position = 5');
         }
         else if (chosenStocks[position] === symbols[1]) {
           symbols.pop();
           queries.pop();
-          console.log('case position = 6');
+          // console.log('case position = 6');
         }
       }
       else {
         if (chosenStocks[position] === '...') {
           symbols.push(value);
           queries.push(`${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          console.log('case position = 7');
+          // console.log('case position = 7');
         }
         else if (chosenStocks[position] === symbols[0]) {
           symbols.splice(0, 1, value);
           queries.splice(0, 1, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          console.log('case position = 8');
+          // console.log('case position = 8');
         }
         else if (chosenStocks[position] === symbols[1]) {
           symbols.splice(1, 1, value);
           queries.splice(1, 1, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          console.log('case position = 9');
+          // console.log('case position = 9');
         }
       }
       chosenStocks[position] = value;
@@ -110,34 +110,34 @@ function selectStock(id, value) {
         if (chosenStocks[position] === symbols[0]) {
           symbols.shift();
           queries.shift();
-          console.log('case position = 10');
+          // console.log('case position = 10');
         }
         else if (chosenStocks[position] === symbols[1]) {
           symbols.splice(1, 1);
           queries.splice(1, 1);
-          console.log('case position = 11');
+          // console.log('case position = 11');
         }
         else if (chosenStocks[position] === symbols[2]) {
           symbols.pop();
           queries.pop();
-          console.log('case position = 12');
+          // console.log('case position = 12');
         }
       }
       else {
         if (chosenStocks[position] === symbols[0]) {
           symbols.splice(0, 1, value);
           queries.splice(0, 1, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          console.log('case position = 13');
+          // console.log('case position = 13');
         }
         else if (chosenStocks[position] === symbols[1]) {
           symbols.splice(1, 1, value);
           queries.splice(1, 1, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          console.log('case position = 14');
+          // console.log('case position = 14');
         }
         else if (chosenStocks[position] === symbols[2]) {
           symbols.splice(2, 1, value);
           queries.splice(2, 1, `${baseUrl}${category}?symbol=${value}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          console.log('case position = 15');
+          // console.log('case position = 15');
         }
       }
       chosenStocks[position] = value;
@@ -145,9 +145,9 @@ function selectStock(id, value) {
     default:
       console.log('the array is the wrong the length')
   }
-  console.log(chosenStocks)
+  // console.log(chosenStocks)
 
-  console.log(symbols);
+  // console.log(symbols);
   queries.forEach(function (query) {
     if (!(query === '...')) {
       promises.push(d3.json(query));
@@ -163,7 +163,7 @@ function selectStock(id, value) {
     if (Math.max(values.c) > maxData) {
       maxData = values.c;
     }
-    console.log(`maxData = ${maxData}`);
+    // console.log(`maxData = ${maxData}`);
     if (values.length > 0) {
       var convDates = [];
       for (var i = 0; i < values[0].t.length; i++) {
