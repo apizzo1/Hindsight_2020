@@ -14,9 +14,9 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
   * On [Finnhub Stock API](https://finnhub.io/), go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free".
   * Sign up for an account on [Mapbox](https://www.mapbox.com/) and confirm your email.
 3. SQL Setup
-  * Database Schemata - 
-  * SQL Queries - 
-4. Flask setup
+  * Database Schemata - Set up for database is located within the SQL_Queries directory.
+  * SQL Queries - Queries are available for what the needs might be for visualization.
+4. Flask setup - Currently linked to a local postgres pgAdmin db. Use dictBuilder() to pass keys to db response to format manipulatable data.
 5. Running the app
 
 ## Resources, Libraries, & Tools
