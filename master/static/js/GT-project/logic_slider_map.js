@@ -253,6 +253,7 @@ function init(date) {
                         stateUnemployment(state, datetoPass);
                         console.log(state, datetoPass);
                         // single_state_fxn(state, datetoPass);
+                        optionChanged(state, datetoPass);
                     }
 
 
@@ -379,7 +380,7 @@ noUiSlider.create(dateSlider, {
     },
 
     // Steps of one week
-    // step: 7* 24 * 60 * 60 * 1000,
+    step: 24 * 60 * 60 * 1000,
 
     // Two more timestamps indicate the handle starting positions.
     start: timestamp('2020-01-02'),
@@ -433,6 +434,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     init(date_select);
     if (!(state === null)) {
         stateUnemployment(state, datetoPass);
+        optionChanged(state, datetoPass);
     };
 });
 

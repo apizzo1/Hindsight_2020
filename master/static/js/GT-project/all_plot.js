@@ -2,6 +2,26 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     datebuilder(values[handle]);
 })
 
+d3.json('http://127.0.0.1:5000/api/v1.0/national_mobility').then(function (nationalData) {
+
+
+    var layout2 = {
+        polar: {
+            radialaxis: {
+                angle: 90,
+                tickangle: 90,
+                visible: true,
+                range: [-1, 1]
+            }
+        },
+        showlegend: true
+    }
+
+    Plotly.newPlot('mobility_plot', data, layout2);
+
+})
+
+
 function datebuilder(value) {
     // convert slider output to formatted date
     var e_date = new Date(+value)
@@ -124,7 +144,7 @@ function datebuilder(value) {
                     angle: 90,
                     tickangle: 90,
                     visible: true,
-                    range: [-1,1]
+                    range: [-1, 1]
                 }
             },
             showlegend: true

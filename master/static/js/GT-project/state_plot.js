@@ -1,11 +1,13 @@
 function stateUnemployment(state, date) {
-    var humanSliderDate = new Date(+date);
-    var month = humanSliderDate.getUTCMonth() + 1;
-    
+    var month=moment.unix(date/1000).format("M");
+    // var humanSliderDate = new Date(+date);
+    // console.log(humanSliderDate)
+    // var month = humanSliderDate.getUTCMonth() + 1;
+
     d3.json('http://127.0.0.1:5000/api/v1.0/state_ui').then(stateData => {
-    console.log(stateData);    
-    currStateData = [];
-        for(i=0; i<stateData.length; i++) {
+        console.log(stateData);
+        currStateData = [];
+        for (i = 0; i < stateData.length; i++) {
             if (stateData[i].State === state) {
                 const keys = Object.keys(stateData[i]);
                 keys.forEach((key, index) => {
@@ -17,7 +19,7 @@ function stateUnemployment(state, date) {
         currStateData.pop();
 
         stateTrace = {
-            x: [1,2,3,4,5,6,7,8],
+            x: [1, 2, 3, 4, 5, 6, 7, 8],
             y: currStateData,
             name: 'UI',
             type: 'area',
@@ -34,7 +36,7 @@ function stateUnemployment(state, date) {
             type: 'scatter',
             hoverinfo: "none",
             'mode': 'lines',
-            'line': {'color': 'grey', dash: 'dash'},
+            'line': { 'color': 'grey', dash: 'dash' },
             'showlegend': false,
         }
 
@@ -42,12 +44,12 @@ function stateUnemployment(state, date) {
 
         layout = {
             // title: "% Unemployment",
-            height:"200",
-            margin:{
-                t:"10",
-                l:"20",
-                r:"20",
-                b:"20"
+            height: "200",
+            margin: {
+                t: "10",
+                l: "20",
+                r: "20",
+                b: "20"
             },
             xaxis: {
                 tick0: '2019-12-01',
@@ -57,20 +59,20 @@ function stateUnemployment(state, date) {
         }
 
         Plotly.newPlot('stateUnemp', plotData, layout);
-    });   
+    });
 }
 function single_state_fxn(state, date) {
-    function find_avg (array) {
+    function find_avg(array) {
         var sum = 0;
         for (var x = 0; x < array.length; x++) {
             sum += array[x];
         }
-    
-        var avg = Math.round (sum / array.length);
+
+        var avg = Math.round(sum / array.length);
         return avg;
     }
     // format date; end result should be yyyymmdd for API calls
-    var moment_date = moment.unix(date/1000).add(1, 'days');
+    var moment_date = moment.unix(date / 1000).add(1, 'days');
     var api_date = moment_date.format('YYYYMMDD');
     // var prior_date = luxon_date.plus({ days: -1 }).toFormat('yyyyLLdd');
 
@@ -103,10 +105,10 @@ function single_state_fxn(state, date) {
                 break;
             }
         }
-        
+
         // console.log(`total cases today: ${select_cases}, total deaths today: ${select_deaths}, new cases today: ${select_increase}`);
-        d3.select ('#total_cases').text(select_cases.toLocaleString('en'));
-        d3.select ('#total_deaths').text(select_deaths.toLocaleString('en'));
+        d3.select('#total_cases').text(select_cases.toLocaleString('en'));
+        d3.select('#total_deaths').text(select_deaths.toLocaleString('en'));
 
         // find 7-day moving avgs for a smoother sparkline
         var new_cases_avg = [];
@@ -137,5 +139,135 @@ function single_state_fxn(state, date) {
                 highlightLineColor: 'red'
             });
         });
+    });
+}
+function optionChanged(state, date) {
+    d3.json('http://127.0.0.1:5000/api/v1.0/state_mobility').then(function (inputdata) {
+        // format date
+        var e_conv=moment.unix(date/1000).format("M/D/YYYY");
+        // var e_date = new Date(+date)
+        // var m = e_date.getUTCMonth() + 1
+        // var d = e_date.getUTCDate()-1
+        // var y = e_date.getUTCFullYear()
+        // var e_conv = (m + "/" + d + "/" + y)
+        console.log(e_conv)
+        // parse data
+        var datasets = [];
+        inputdata.forEach(val => {
+            var retail = val.retail;
+            var grocery = val.grocery;
+            var parks = val.parks;
+            var transit = val.transit;
+            var office = val.work;
+            var date = val.month + "/" + val.day + "/" + val.year
+            var state_id = val.id
+            var statename = val.state
+            var day_dict = {
+                date: date,
+                state_id: state_id,
+                state: statename,
+                retail: retail,
+                grocery: grocery,
+                parks: parks,
+                transit: transit,
+                office: office
+            };
+            datasets.push(day_dict);
+        });
+        var this_day = [];
+        // filter by date
+        datasets.forEach(day => {
+            if (day.date === e_conv) {
+                this_day.push(day);
+            }
+        });
+        // filter by state
+        var chart_data;
+        this_day.forEach(day => {
+            if (day.state === state) {
+                chart_data = day
+            }
+        })
+
+        try {
+            // create traces
+            var trace1 = {
+                type: "scatterpolar",
+                mode: "lines",
+                name: "Retail",
+                r: [-2, chart_data.retail, chart_data.retail, -2],
+                theta: [0, 0, 72, 0],
+                fill: "toself",
+                fillcolor: '#E4FF87',
+                line: {
+                    color: 'black'
+                }
+            }
+            var trace2 = {
+                type: "scatterpolar",
+                mode: "lines",
+                name: "Parks",
+                r: [-2, chart_data.parks, chart_data.parks, -2],
+                theta: [0, 72, 144, 0],
+                fill: "toself",
+                fillcolor: 'red',
+                line: {
+                    color: 'black'
+                }
+            }
+            var trace3 = {
+                type: "scatterpolar",
+                mode: "lines",
+                name: "Grocery",
+                r: [-2, chart_data.grocery, chart_data.grocery, -2],
+                theta: [0, 144, 216, 0],
+                fill: "toself",
+                fillcolor: 'blue',
+                line: {
+                    color: 'black'
+                }
+            }
+            var trace4 = {
+                type: "scatterpolar",
+                mode: "lines",
+                name: "Transit",
+                r: [-2, chart_data.transit, chart_data.transit, -2],
+                theta: [0, 216, 288, 0],
+                fill: "toself",
+                fillcolor: 'orange',
+                line: {
+                    color: 'black'
+                }
+            }
+            var trace5 = {
+                type: "scatterpolar",
+                mode: "lines",
+                name: "Office",
+                r: [-2, chart_data.office, chart_data.office, -2],
+                theta: [0, 288, 360, 0],
+                fill: "toself",
+                fillcolor: 'purple',
+                line: {
+                    color: 'black'
+                }
+            }
+            var data = [trace1, trace2, trace3, trace4, trace5]
+            var layout = {
+                title: `${chart_data.state} Mobility on ${chart_data.date}`,
+                polar: {
+                    radialaxis: {
+                        angle: 90,
+                        tickangle: 90,
+                        visible: true,
+                        range: [-1, 1]
+                    }
+                },
+                showlegend: true
+            }
+            Plotly.newPlot('statechart', data, layout);
+        }
+        catch(err){
+            console.log(err)
+        }
     });
 }
