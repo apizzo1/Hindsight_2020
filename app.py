@@ -13,7 +13,7 @@ Base.prepare(engine, reflect = True)
 # Flask init
 app = Flask(__name__)
 
-# dict_builder
+# dict_builder to take in sql response
 def dict_creation(response, headers):
     response_list=[]
     for item in response:
