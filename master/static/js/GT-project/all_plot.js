@@ -140,12 +140,25 @@ function datebuilder(value) {
         var data2 = [daytrace1, daytrace2, daytrace3, daytrace4, daytrace5]
 
         var layout2 = {
+            legend:{
+                orientation:"h"
+            },
+            margin:{
+                t:10,
+                b:0,
+                r:0,
+                l:0
+            },
+            // title:"Seasonally-Adjusted Mobility",
             polar: {
                 radialaxis: {
                     angle: 90,
                     tickangle: 90,
                     visible: true,
                     range: [-1, 1]
+                },
+                angularaxis:{
+                    showticklabels:false
                 }
             },
             showlegend: true

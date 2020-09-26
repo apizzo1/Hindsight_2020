@@ -287,7 +287,7 @@ function optionChanged(state, date) {
                 mode: "lines",
                 name: "Retail",
                 r: [-2, chart_data.retail, chart_data.retail, -2],
-                theta: [0, 0, 72, 0],
+                theta: [0, 5, 67, 0],
                 fill: "toself",
                 fillcolor: '#E4FF87',
                 line: {
@@ -299,7 +299,7 @@ function optionChanged(state, date) {
                 mode: "lines",
                 name: "Parks",
                 r: [-2, chart_data.parks, chart_data.parks, -2],
-                theta: [0, 72, 144, 0],
+                theta: [0, 77, 139, 0],
                 fill: "toself",
                 fillcolor: 'red',
                 line: {
@@ -311,7 +311,7 @@ function optionChanged(state, date) {
                 mode: "lines",
                 name: "Grocery",
                 r: [-2, chart_data.grocery, chart_data.grocery, -2],
-                theta: [0, 144, 216, 0],
+                theta: [0, 149, 211, 0],
                 fill: "toself",
                 fillcolor: 'blue',
                 line: {
@@ -323,7 +323,7 @@ function optionChanged(state, date) {
                 mode: "lines",
                 name: "Transit",
                 r: [-2, chart_data.transit, chart_data.transit, -2],
-                theta: [0, 216, 288, 0],
+                theta: [0, 221, 283, 0],
                 fill: "toself",
                 fillcolor: 'orange',
                 line: {
@@ -335,7 +335,7 @@ function optionChanged(state, date) {
                 mode: "lines",
                 name: "Office",
                 r: [-2, chart_data.office, chart_data.office, -2],
-                theta: [0, 288, 360, 0],
+                theta: [0, 293, 355, 0],
                 fill: "toself",
                 fillcolor: 'purple',
                 line: {
