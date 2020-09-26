@@ -29,7 +29,7 @@ _SQL setup, flask setup, how to run the app, etc._
 * [noUIslider](https://refreshless.com/nouislider/), [wNumb](https://github.com/leongersen/wnumb/releases) for slider build & optimization
 * [Leaflet](https://leafletjs.com/index.html), [Leaflet PointInPolygon](https://github.com/hayeswise/Leaflet.PointInPolygon), [Leaflet Heat Map](https://github.com/Leaflet/Leaflet.heat), [Leaflet US Choropleth](https://leafletjs.com/examples/choropleth/us-states.js), [Mapbox](https://docs.mapbox.com/api/maps/#styles) for mapping
 * [Plotly for JavaScript](https://plotly.com/javascript/), [jQuery Sparklines](https://omnipotent.net/jquery.sparkline/) for charting visualizations
-* [FontAwesome](https://fontawesome.com/) for font manipulation
+* [FontAwesome](https://fontawesome.com/) for map icon symbols
 * [moment.js](https://momentjs.com/) for time manipulation
 
 **Tools & languages:** JavaScript, HTML, CSS, Python Flask, PostgreSQL
