@@ -1,5 +1,5 @@
 # Hindsight
-Created by Maria Dong, Ryan Jones, Rebecca Leeds, & Amber Pizzo.
+#### Created by Maria Dong, Ryan Jones, Rebecca Leeds, & Amber Pizzo.
 
 An interactive dashboard looking back at events and occurrences in the United States that made 2020 so unique.
 
@@ -10,14 +10,17 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
 
 ## Getting Started
 1. Download the repo in your preferred manner.
-2. Obtain two free, required API keys:
-  * On [Finnhub Stock API](https://finnhub.io/), go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free".
-  * Sign up for an account on [Mapbox](https://www.mapbox.com/) and confirm your email.
-3. SQL Setup
-  * Database Schemata - Set up for database is located within the SQL_Queries directory.
-  * SQL Queries - Queries are available for what the needs might be for visualization.
-4. Flask setup - Currently linked to a local postgres pgAdmin db. Use dictBuilder() to pass keys to db response to format manipulatable data.
-5. Run app.py in your terminal by using command python app.py
+2. Create a file called `config.py` in the `/static/js/GT-project` folder. This file should contain two API keys (that can be obtained for free):
+<br>  _a._ On [Finnhub Stock API](https://finnhub.io/), go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free". Set this key equal to `finnhub_API_Key`.
+<br>  _b._ Sign up for an account on [Mapbox](https://www.mapbox.com/) and confirm your email. Set this key equal to `API_KEY`.
+3. Set up your SQL database.
+<br>  _a._ Setup for database schemata is located in `/SQL_Queries/table_schemata.sql`.
+<br>  _b._ SQL queries are also available in `/SQL_Queries/alchemy_queries.sql` for what you may need for various visualizations.
+4. The Flask application is currently linked to a local PostgreSQL pgAdmin db. Use `dictBuilder()` to pass keys to `db` response to format manipulable data.
+5. Run `app.py` in your terminal by using the following command:
+```
+$ python app.py
+```
 
 ## Resources, Libraries, & Tools
 
@@ -25,7 +28,7 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
 * [The COVID Tracking Project](https://covidtracking.com/) for national data on COVID-19
 * [FiveThirtyEight](https://projects.fivethirtyeight.com/trump-approval-ratings/) for President Trump's approval ratings
 * [Getty Images](https://www.gettyimages.com/editorial-images) for a brief slideshow
-* [New York Times](https://www.nytimes.com/) for front page headlines & images
+* The [New York Times](https://www.nytimes.com/) (NYT) for front page headlines & images
 * [ACLED](https://acleddata.com/special-projects/us-crisis-monitor/) for protest location and times
 * [NIFC](https://data-nifc.opendata.arcgis.com/) for data on the spread of wildfires
 * [Economic Recovery Tracker](https://github.com/OpportunityInsights/EconomicTracker) for the mobility data
@@ -41,12 +44,12 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
 
 **Tools & languages:** JavaScript, HTML, CSS, Python Flask, Jupyter Notebook, PostgreSQL
 
-**Website layout:** [Material Kit](https://github.com/creativetimofficial/material-kit)
+**Website layout:** Built from [Material Kit](https://github.com/creativetimofficial/material-kit)
 
 ## Features
 After running the Flask application, begin exploring the data by dragging the timeline slider and selecting a date at the upper-right corner of the page. This slider will continue to be available at the top of the page even after scrolling down. Below, you should see the visualizations respond.
 
-The image at the top of the page and the headline will reflect the front page article of the **New York Times**. The images in the slideshow are static; just a glimpse of major photos from the year.
+The image at the top of the page and the headline will reflect the front page article of the **New York Times**. The images (courtesy of Getty Images) in the slideshow are static; just a glimpse of major photos from the year.
 
 **Presidential approval and disapproval ratings** are fully visible and interactive, and the selected date is emphasized.
 
@@ -60,14 +63,14 @@ The image at the top of the page and the headline will reflect the front page ar
 
 Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date. The national average can be compared to other populations selected from a dropdown menu.
 
-## Our Analyses
-As we looked through 2020, we noted specific dates that highlight how integrated our dashboard is:
+## Analyses & Discussion
+As a whole, our dashboard is equipped for you to draw numerous observations about interrelations among each of our featured sections. Given the vast amount of available trends, it is impractical to analyze every significant pattern. As such, we've included a handful noteworthy examples below of interrelations that we observed:
 
-* **March 4** New York Times headline brings out noteworthy changes seen in the Stocks line graph, specifically a sharp decrease in Boeing, Delta Airlines, Southwest Airlines stocks with a small recovery seen when Congress passed a bailout on **March 22**.
-* The coronavirus stimilus relief bill was passed on **March 12** as indicated by the New York Times headline, which correlates with a peak in President Trump's approval rating.
-* On **April 12**, Governor Andrew Cuomo of New York announces that "the worst is over", referring to COVID, which correlates with passing the peak of New York cases and US cases (for this timeframe).
-* The impact of **May 28**'s New York Times headline "Ex-Officer Charged in Death of George Floyd in Minneapolis" can be seen in the map when viewing the protests on that day, specifically in Minnesota.
-* **September 1** shows an increase in President Trump's approval rating, just as the CDC promises a COVID vaccine by November 2020, as seen in the New York Times' headline.
+* On **March 4**, the NYT headline discusses the limitation of U.S. travel to Europe, while we can also see that the stocks for Boeing, Delta Airlines, & Southwest Airlines (all aviation-related) begin to sharply decrease. A slight recovery in these stocks can be observed on **March 22**, while the NYT headline contains the announcement of a federal bond-buying plan.
+* The coronavirus stimilus relief bill was passed on **March 12** as indicated by the NYT headline, which among other things, distributed $1,200 to all American citizens. This date correlates with a peak in President Trump's approval rating.
+* On **April 12**, the NYT headline highlights Governor Andrew Cuomo of New York announcing that "the worst is over", referring to COVID-19 in his state. His statement does correlate with the beginning of a continuing downward trend of COVID cases in New York, as well as the downward trend of the first peak in US cases. Later, towards **July 15**, we can see that the U.S. COVID cases reach a much higher second peak in growth, while NY has no discernible peak in its sparkline at that time.
+* The impact of the events in the **May 28** NYT headline, "Ex-Officer Charged in Death of George Floyd in Minneapolis", can be seen in the map when viewing the protests on that day, specifically in Minnesota. On dates & states with higher volumes of protests, we can also see a higher increase in park mobility, confirming consistency in our data.
+* **September 1** shows an increase in President Trump's approval rating, just as the CDC promises a COVID vaccine by November 2020, as seen in the NYT headline.
 
 ## Future Considerations
 
