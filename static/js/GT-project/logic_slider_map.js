@@ -1,4 +1,4 @@
-// add tile layer 
+// add light tile layer 
 var light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
@@ -8,15 +8,6 @@ var light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}
     accessToken: API_KEY
 });
 
-// satellite layer
-// var satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//     maxZoom: 18,
-//     id: 'mapbox/satellite-streets-v11',
-//     tileSize: 512,
-//     zoomOffset: -1,
-//     accessToken: API_KEY
-// });
 
 // grayscale layer
 var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -31,31 +22,13 @@ var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}
 // map boundary styling
 function style(feature) {
     return {
-        // fillColor: getColor(feature.properties.density),
         fillColor: "white",
         weight: 2,
-        // opacity: 1,
         color: 'black',
         dashArray: '3',
         fillOpacity: 0.1
     };
 }
-
-// active fire styling
-var active_fire_style = {
-    "color": "#ff7800",
-    "weight": 5,
-    "opacity": 0.65,
-    radius: 20000
-};
-
-// contained fire styling
-var contained_fire_style = {
-    "color": "green",
-    "weight": 5,
-    "opacity": 0.65,
-    radius: 20000
-};
 
 // variable initialize
 var datetoPass;
@@ -86,13 +59,13 @@ var myMap = L.map("map", {
     layers: light
 });
 
-
+// set basemaps
 var baseMaps = {
     Light: light,
-    // Satellite: satellite,
     Grayscale: grayscale
 };
 
+// initialize overlay maps
 var overlayMaps = {};
 
 // adding layer control to map
@@ -122,12 +95,10 @@ var protest_icon = L.divIcon({
 // create map function
 function makeMap(layer1, layer2, layer3, layer4) {
 
-
     // heat map information
     var heat = L.heatLayer(layer2, {
         radius: 35,
         blur: 15,
-        // max: 0.2
     });
 
     //   remove previous layer control box
@@ -141,87 +112,80 @@ function makeMap(layer1, layer2, layer3, layer4) {
         "Protests heat map": heat
     };
 
-    // layerControl.addOverlay(layer, 'Contained');
     layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
 
 }
 
-
-// call init function using 1/1/10
-// d3.select(".total_containted_fires").text(0);
-// d3.select(".total_active_fires").text(0);
-// d3.select(".total_protests").text(0);
+// call init function when page loads with 1/1/20
 init(1577923200000);
 
 function init(date) {
-
+    // set date to pass to other functions (from slider handle read)
     datetoPass = date;
     // clearing previous contained fire data
     contained_fires.length = 0;
 
-    // console.log(`length check: ${contained_fires.length}`);
-    // console.log(`date given ${date}`);
-    // console.log(`test date: ${timeConverter(date/1000)}`);
+    // convert date for use in contained fire API call
     date_start = timeConverter(date / 1000)
-    // console.log(`contained fire day: ${date_start}`);
+    
+    // add one day to handle slider for use in contained fire API call
     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
-    // console.log(plus_one_day);
-    // console.log(timeConverter(plus_one_day/1000));
     date_end = timeConverter(plus_one_day / 1000);
 
-    // contained fire data
+    // contained fire data API call
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
     d3.json(contained_fire_url).then(function (data) {
-        // console.log(`Contained Fires - testing:${data.features.length}`);
-        // console.log(`testing length: ${data.features[0].geometry.rings[0][0][1]}`);
-        // console.log(response.features[1].geometry.rings[0][0]);
+       
         for (var i = 0; i < data.features.length; i++) {
             try {
-                // console.log(data.features[i].geometry.rings[0][0]);
+                // push all contained fire points to array
                 contained_fires.push(
-                    // L.circle([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], contained_fire_style)
                     L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { icon: contained_fire_icon })
                 )
             }
+            // if no contained fires, catch error
             catch (err) {
                 console.log("no contained fires");
             }
 
         }
-        // console.log(contained_fires.length);
+        // update index.html with total contained fires for selected date
         d3.select(".total_containted_fires").text(contained_fires.length);
 
-        // active fires
+        // active fires API call
 
+        // clearing active fire data
         active_fires.length = 0;
         var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
         d3.json(active_fire_url).then(function (response) {
 
-            // console.log(response.features.length);
             for (var i = 0; i < response.features.length; i++)
                 try {
+                     // push all active fire points to array
                     active_fires.push(
-                        // L.circle([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], active_fire_style)
                         L.marker([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
                     )
                 }
+                // if no active fires, catch error
                 catch (err) {
                     console.log("no active fires_active page");
                 }
-            // console.log(`active fires: ${active_fires.length}`);
 
+            // clearing previously active fire data
             previously_active_fires.length = 0;
 
+            // previously active fires API call
             var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
             d3.json(previously_active_fire_url).then(function (data2) {
-                // console.log(`previously active fires: ${data2.features.length}`);
+                
                 for (var i = 0; i < data2.features.length; i++)
                     try {
+                        // push all previously active fire points to array
                         previously_active_fires.push(
-                            // L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
                             L.marker([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
                         )
                     }
+                    // if no previously active fires, catch error
                     catch (err) {
                         console.log("no previosuly active fires_archive page");
                     }
@@ -230,7 +194,7 @@ function init(date) {
                 total_active_fires.length = 0;
                 //    concat active fire and previously active fire arrays
                 total_active_fires = active_fires.concat(previously_active_fires);
-                // console.log(`total active fires: ${total_active_fires.length}`);
+                // update index.html with total active fires for selected date
                 d3.select(".total_active_fires").text(total_active_fires.length);
 
                 // protest data
@@ -241,34 +205,30 @@ function init(date) {
 
                 // convert date into csv date format
                 var csv_date = timeConverter_csv(date / 1000);
-                // console.log(csv_date);
 
+                //  Bring in protest data
                 d3.csv("../static/Resources/USA_2020_Sep19.csv").then(function (data) {
-                    // console.log(data)
                     // filter for user selected date
                     // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
                     var filteredData = data.filter(function (d) {
                         if (d["EVENT_DATE"] == csv_date) {
                             return d;
                         }
-
                     })
 
                     for (var i = 0; i < filteredData.length; i++) {
-                        // console.log(data[i].LOCATION);
 
+                        // push protest markers to arrays (one for heat map and one for icons)
                         protestMarkers.push(
                             ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
                         protest_icons.push(
                             L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(filteredData[i]["LOCATION"]))
-
-                        // L.circle([filteredData[i]["LATITUDE"],filteredData[i]["LONGITUDE"]],{radius: 20000}))
                     }
 
-                    // console.log(`protest length: ${protestMarkers.length}`);
+                   // update index.html with total protests for selected date
                     d3.select(".total_protests").text(protestMarkers.length);
 
-                    // creating protest layer
+                    // creating protest layers
                     var protestLayer = L.layerGroup(protestMarkers);
                     var protestLayer_icon = L.layerGroup(protest_icons);
 
@@ -278,9 +238,8 @@ function init(date) {
                     // creating active fire layer
                     var activeFireLayer = L.layerGroup(total_active_fires);
 
-                    // makeMap(containedFireLayer, protestLayer);
+                    // call makeMap function
                     makeMap(containedFireLayer, protestMarkers, activeFireLayer, protestLayer_icon);
-
 
                     // make map interactive 
                     // source: https://leafletjs.com/examples/choropleth/
@@ -304,7 +263,7 @@ function init(date) {
                         single_state_fxn(state, datetoPass);
                         optionChanged(state, datetoPass);
 
-                        // getting state polygon coordinates
+                        // getting state polygon coordinates using state dictionary
                         var state_index = state_dict[state];
                         var polygon_coords = statesData.features[state_index].geometry.coordinates;
                         var final_coords = [];
@@ -313,37 +272,41 @@ function init(date) {
                             var update_coord = [polygon_coords[0][i][1], polygon_coords[0][i][0]];
                             final_coords.push(update_coord);
                         }
-                        // console.log(final_coords);
+                        
                         var state_check = L.polygon(final_coords);
-                        // var markers_contained =[];
-
-                        // console.log(contained_fires[0]._latlng.lat);
+                        
+                        // find markers within clicked state 
+                        // contained fires
                         for (var i = 0; i < contained_fires.length; i++) {
+                            // special requirements for Alaska (multipolygon)
                             if (state_index == 1) {
                                 if (contained_fires[i]._latlng.lat > 52) {
                                     contained_fires_counter = contained_fires_counter + 1;
                                 }
                             }
+                            // special requirements for Hawaii (multipolygon)
                             if (state_index == 11) {
                                 if ((contained_fires._latlng.lng < -126) && (contained_fires._latlng.lat < 50)) {
                                     contained_fires_counter = contained_fires_counter + 1;
                                 }
                             }
+                            // special requirements for Michigan (multipolygon)
                             if (state_index == 22) {
                                 if ((contained_fires[i]._latlng.lng > -87) && (contained_fires[i]._latlng.lat > 41.8) && (contained_fires[i]._latlng.lng < -82.5)) {
                                     contained_fires_counter = contained_fires_counter + 1;
                                 }
                             }
-
+                            // all other states check
                             else {
                                 var marker_inside_polygon = state_check.contains(contained_fires[i].getLatLng());
-                                // markers_contained.push(marker_inside_polygon);
+                                
                                 if (marker_inside_polygon) {
                                     contained_fires_counter = contained_fires_counter + 1;
                                 }
                             }
                         }
 
+                        // active fires
                         for (var i = 0; i < total_active_fires.length; i++) {
                             if (state_index == 1) {
                                 if (total_active_fires[i]._latlng.lat > 52) {
@@ -364,13 +327,13 @@ function init(date) {
 
                             else {
                                 var marker_inside_polygon1 = state_check.contains(total_active_fires[i].getLatLng());
-                                // markers_contained.push(marker_inside_polygon);
                                 if (marker_inside_polygon1) {
                                     active_fires_counter = active_fires_counter + 1;
                                 }
                             }
                         }
 
+                        // protest data
                         for (var i = 0; i < protest_icons.length; i++) {
                             if (state_index == 1) {
                                 if (protest_icons[i]._latlng.lat > 52) {
@@ -391,15 +354,13 @@ function init(date) {
 
                             else {
                                 var marker_inside_polygon2 = state_check.contains(protest_icons[i].getLatLng());
-                                // markers_contained.push(marker_inside_polygon);
                                 if (marker_inside_polygon2) {
                                     protest_counter = protest_counter + 1;
                                 }
                             }
                         }
-                        // console.log(contained_fires_counter);
-                        // console.log(active_fires_counter);
-                        // console.log(protest_counter);
+                     
+                        // update the national and state information on html when state is clicked
                         d3.select(".contained_fires").text(contained_fires_counter);
                         d3.select(".active_fires").text(active_fires_counter);
                         d3.select(".protests").text(protest_counter);
@@ -411,6 +372,7 @@ function init(date) {
 
 
                     // function when user mouses over feature
+                    // source:  https://leafletjs.com/examples/choropleth/
                     function highlightFeature(e) {
                         var layer = e.target;
 
@@ -427,12 +389,14 @@ function init(date) {
                     }
 
                     // function when user mouses out of a feature
+                    // source: https://leafletjs.com/examples/choropleth/
                     function resetHighlight(e) {
                         stategeoJson.resetStyle(e.target);
                     }
 
 
                     // use onEachFeature function to call event functions
+                    // source: https://leafletjs.com/examples/choropleth/
                     function onEachFeature(feature, layer) {
 
                         layer.on({
@@ -452,8 +416,6 @@ function init(date) {
 
 
                 })
-
-                counter = 1;
             })
         })
     })
@@ -465,7 +427,7 @@ function init(date) {
 
 // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
 
-// csv date output
+// convert time for protest data
 function timeConverter_csv(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -473,44 +435,38 @@ function timeConverter_csv(UNIX_timestamp) {
     var month = months[a.getMonth()];
     var dates = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
     var date = dates[a.getDate()];
-    // var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-    // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
     var csv_time = String(parseInt(date) - 1) + '-' + month + '-' + year;
     return csv_time;
 }
+
+// convert time for fire API call
 function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-    // var months_csv = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var year = a.getFullYear();
     var month = months[a.getMonth()];
-    // var month_csv = months_csv[a.getMonth()];
     var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-    // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
     var time = year + '-' + month + '-' + date;
-    // var csv_date = date + '-' + month_csv + '-' + year;
     return time;
 
 }
 
+// convert time for html page display
 function timeConverter_display(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
-    // var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
     var months_display = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var year = a.getFullYear();
     var month = months_display[a.getMonth()];
-    // var month_csv = months_csv[a.getMonth()];
     var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-    // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec 
     var display_date = month + ' ' + date + ', ' + year;
     return display_date;
 
@@ -522,11 +478,9 @@ function timestamp(str) {
     return new Date(str).getTime();
 }
 
-
-
+// create slider
 noUiSlider.create(dateSlider, {
     // Create two timestamps to define a range.
-    // connect: [true, false],
     range: {
         min: timestamp('2020-01-02'),
         max: timestamp('2020-09-12')
@@ -535,7 +489,7 @@ noUiSlider.create(dateSlider, {
     // Steps of one day
     step: 24 * 60 * 60 * 1000,
 
-    // Two more timestamps indicate the handle starting positions.
+    //  indicate the handle starting positions.
     start: timestamp('2020-01-02'),
 
     // No decimals
@@ -549,17 +503,14 @@ noUiSlider.create(dateSlider, {
 dateSlider.noUiSlider.on('end', function (values, handle) {
 
     var date_select = values[handle];
-
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
-    // console.log(`new user date END: ${user_selected_date}`);
     var display_date_main_page = timeConverter_display(date_select / 1000);
+    // update date shown on index.html
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
 });
-
-
 
 // allowing user to use keyboard to change slider
 dateSlider.noUiSlider.on('change', function (values, handle) {
@@ -567,13 +518,10 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
-    // console.log(`new user date CHANGE: ${user_selected_date}`);
-    // console.log(`handle_read: ${date_select}`);
-    // console.log(`testing one day past: ${plus_one_day}`);
     var display_date_main_page = timeConverter_display(date_select / 1000);
+     // update date shown on index.html
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
-
 
     // remove all layers from the map
     // source: https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
@@ -600,9 +548,12 @@ dateSlider.noUiSlider.on('slide', function (values, handle) {
     var date_select = values[handle];
     user_selected_date = timeConverter(date_select / 1000);
     var display_date_main_page = timeConverter_display(date_select / 1000);
+    // update date shown on index.html
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
 });
+
+// create state dictionary for use when user clicks on state (zoomToFeature function)
 
 var state_dict =
 
