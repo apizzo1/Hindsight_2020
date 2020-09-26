@@ -5,19 +5,18 @@ function approval_fxn(date) {
     var date_moment = moment.unix(date/1000).add(1, 'days');
     var plotly_date = date_moment.format ('M/DD');
 
-    // console.log (plotly_date);
-
     // gather dis/approval data from https://projects.fivethirtyeight.com/trump-approval-ratings/
     var approval_csv = 'https://projects.fivethirtyeight.com/trump-approval-data/approval_topline.csv';
     d3.csv(approval_csv).then((response) => {
 
-        // create blank arrays; one set of dis/approval for before selected date, another for after so we can have different colors
+        // create blank arrays; divide values for before/after selected date to plot in different colors
         var approvals1 = [];
         var disapprovals1 = [];
         var approvals2 = [];
         var disapprovals2 = [];
         var poll_dates = [];
 
+        // loop through responses, gather dates & approval/disapproval values
         for (var x = 0; x < response.length; x++) {
             var poll_date = response[x].modeldate
             var voter = response[x].subgroup;
@@ -34,6 +33,7 @@ function approval_fxn(date) {
                 
                 poll_dates.push(poll_date_format);
 
+                // push approval/disapproval values to respective arrays if they're before/after selected date
                 if (poll_date_moment <= date_moment) {
                     approvals1.push(approval);
                     disapprovals1.push(disapproval);
@@ -57,6 +57,7 @@ function approval_fxn(date) {
             }
         }
 
+        // reverse date array for plotting
         var reverse_dates = poll_dates.reverse()
 
         // create plotly object
@@ -176,8 +177,10 @@ function approval_fxn(date) {
     })
 }
 
+// initialize graph
 approval_fxn ('1577880000000');
 
+// call fxn w/ listener whenever slider changes
 dateSlider.noUiSlider.on('change', function (values, handle) {
     approval_fxn (values[handle]);
 })
