@@ -51,7 +51,7 @@ The image at the top of the page and the headline will reflect the front page ar
 
 **Presidential approval and disapproval ratings** are fully visible and interactive, and the selected date is emphasized.
 
-**Ongoing wildfires, contained wildfires, and Black Lives Matter protests** can be viewed and toggled on the interactive map. State borders are also visible and hoverable. If you click on a state, the panel next to it will populate state-specific values on COVID-19 growth, unemployment, and baseline changes in mobility, all specific to the selected date. A table below will display the total contained/active fires and total protests on the selected date.
+**Ongoing wildfires, contained wildfires, and protests** can be viewed and toggled on the interactive map. State borders are also visible and hoverable. If you click on a state, the panel next to it will populate state-specific values on COVID-19 growth, unemployment, and baseline changes in mobility, all specific to the selected date. A table below will display the total contained/active fires and total protests on the selected date.
 
 **National COVID-19 data** can be viewed by daily case increases or total cases and deaths up to the selected date. The mixed bar/line graph can be hovered over for details.
 
@@ -59,4 +59,4 @@ The image at the top of the page and the headline will reflect the front page ar
 
 **Select stock prices** are displayed in a line graph with the selected date highlighted, where they can be compared with up to two other stocks via dropdown menus.
 
-Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date.
+Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date. The national average can be compared to other populations selected from a dropdown menu.
