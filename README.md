@@ -9,9 +9,15 @@ _maybe a screenshot here_
 From a stock market crash to a highly infectious pandemic to nationwide protests and wildfires, 2020 has been an erratic year to say the least. We wanted to visualize the year on one dashboard to quantify and analyze some major trends over time.
 
 ## Getting Started
-Download the repo in your preferred manner.
-
-_SQL setup, flask setup, how to run the app, etc._
+* Download the repo in your preferred manner.
+* Two API keys are required:
+  * finnhub.io - the free API key is used for this project (Go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free")
+  * mapbox.com - there is a free API key available
+* SQL Setup
+  * Database Schemata - 
+  * SQL Queries - 
+* Flask setup
+* Running the app
 
 ## Resources, Libraries, & Tools
 
@@ -22,7 +28,9 @@ _SQL setup, flask setup, how to run the app, etc._
 * [New York Times](https://www.nytimes.com/) for front page headlines & images
 * [ACLED](https://acleddata.com/special-projects/us-crisis-monitor/) for protest location and times
 * [NIFC](https://data-nifc.opendata.arcgis.com/) for data on the spread of wildfires
-* [Economic Recovery Tracker]https://github.com/OpportunityInsights/EconomicTracker
+* [Economic Recovery Tracker](https://github.com/OpportunityInsights/EconomicTracker) for the mobility data
+* [U.S. Bureau of Labor Statistics, retrieved from FRED, Federal Reserve Bank of St. Louis](https://fred.stlouisfed.org/) for all unemployment data
+* [Finnhub Stock API](https://finnhub.io/) for the stock data
 * _anything else y'all used_
 
 **Libraries:**
@@ -49,6 +57,6 @@ The image at the top of the page and the headline will reflect the front page ar
 
 **National average change in mobility** is displayed in a polar area chart. The radial axis corresponds to the factor of increase in activity from baseline. For example, a  section with a radial value of _0.7_ represents a _70% increase_ in activity, while a value of _0_ represents _no change_ in activity.
 
-**Select stock prices** are displayed in a line graph with the selected date highlighted, where they can be compared with up to two other stocks via dropdown menu.
+**Select stock prices** are displayed in a line graph with the selected date highlighted, where they can be compared with up to two other stocks via dropdown menus.
 
 Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date.

@@ -59,9 +59,10 @@ The above copyright notice and this permission notice shall be included in all c
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <h1 class="title">Looking back on the year 2020</h1>
+          <h2 class="title">Looking back on the year 2020</h2>
           <h4>An eventful period of time to say the least. Take a closer look at some of the major occurrences in the
-            United States this year, and how they shaped the country.</h4>
+            United States this year, and how they shaped the country. Select a date with the slider above.</h4><br>
+          <h3 class='title'>Today's New York Times Headline:</h3>
           <h4 id='NYT_headline'>U.S. Strike in Iraq Kills Qassim Suleimani, Commander of Iranian Forces</h4>
         </div>
       </div>
@@ -103,7 +104,7 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col-8'>
             <!-- start map card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">A look at the country today</h4>
+              <h4 class="card-header card-header-primary">Wildfires & social unrest: a look at the country today</h4>
               <div class="card-body">
                 <!-- <p class="description">Explore data on ongoing protests and wildfires.</p> -->
                 <div id="map" style="width: 100%; height: 600px; margin-top: 0;"></div>
@@ -138,12 +139,12 @@ The above copyright notice and this permission notice shall be included in all c
             <div class="card">
               <h4 class="card-header card-header-primary">A closer look at the states</h4>
               <div class="card-body">
-                <p class="card-text">Select a state to view more specific data.</p>
-                <p>daily COVID new cases, 7-day moving average:<span id='state_cases'></span></p>
-                <p>state unemployment:</p>
-                <div id='stateUnemp'></div>
-                <p>state mobility:</p>
+                <p class="description">Select a state on the map to the left to view more specific data.</p>
+                <strong><p>State mobility:</p></strong>
                 <div id='statechart'></div>
+                <strong><p>Daily COVID new cases to selected date, 7-day moving average:<span id='state_cases'></span></p></strong>
+                <strong><p>State unemployment:</p></strong>
+                <div id='stateUnemp'></div>
               </div>
             </div>
             <!-- end state card -->
@@ -199,7 +200,7 @@ The above copyright notice and this permission notice shall be included in all c
             <div class="card">
               <h4 class="card-header card-header-primary">How has COVID impacted mobility?</h4>
               <div class="card-body">
-                <p class="description">insert plotly chart here</p>
+                <p class="description">Compare national data on movement to baseline measurements in January/February 2020.<br>The graph is available for dates after February 24, 2020.</p>
                 <div id='mobility_plot'></div>
               </div>
             </div>
@@ -242,7 +243,7 @@ The above copyright notice and this permission notice shall be included in all c
             <div class="card">
               <h4 class="card-header card-header-primary">National unemployment</h4>
               <div class="card-body">
-                <p class="description">unemployment chart here</p>
+                <p class="description">Compare national unemployment to the rest of the environment.</p>
                 <div class="custom-select" style="width:50%">
                   <select name="Compare" id="compare"
                     onChange="selectOption(this.options[this.selectedIndex].value)"></select>
