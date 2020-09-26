@@ -22,6 +22,7 @@ _SQL setup, flask setup, how to run the app, etc._
 * [New York Times](https://www.nytimes.com/) for front page headlines & images
 * [ACLED](https://acleddata.com/special-projects/us-crisis-monitor/) for protest location and times
 * [NIFC](https://data-nifc.opendata.arcgis.com/) for data on the spread of wildfires
+* [Economic Recovery Tracker]https://github.com/OpportunityInsights/EconomicTracker
 * _anything else y'all used_
 
 **Libraries:**
