@@ -1,22 +1,22 @@
 // add tile layer 
-var street = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+var light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/streets-v11',
+    id: 'mapbox/light-v10',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: API_KEY
 });
 
 // satellite layer
-var satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox/satellite-streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: API_KEY
-});
+// var satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+//     maxZoom: 18,
+//     id: 'mapbox/satellite-streets-v11',
+//     tileSize: 512,
+//     zoomOffset: -1,
+//     accessToken: API_KEY
+// });
 
 // grayscale layer
 var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -61,7 +61,7 @@ var contained_fire_style = {
 var date_to_pass;
 var contained_fires = [];
 var active_fires = [];
-var previously_active_fires = [];
+var previously_active_fires =[];
 var total_active_fires = [];
 var protestMarkers = [];
 var protest_icons = [];
@@ -72,19 +72,24 @@ d3.select("#date_select").text(`Date selected: January 1, 2020`);
 var stategeoJson;
 var map_component = d3.select('#map');
 map_component.attr("state_name", "None");
+var contained_fires_counter = 0;
+var active_fires_counter = 0;
+var protest_counter = 0;
+var state;
+
 
 // / create map object
 var myMap = L.map("map", {
     // center of the United States
     center: [39.8, -98.6],
     zoom: 4,
-    layers: street
+    layers: light
 });
 
 
 var baseMaps = {
-    Streetview: street,
-    Satellite: satellite,
+    Light: light,
+    // Satellite: satellite,
     Grayscale: grayscale
 };
 
@@ -143,14 +148,11 @@ function makeMap(layer1, layer2, layer3, layer4) {
 
 
 // call init function using 1/1/10
+init(1577923200000);
 
-
-init(1577854861000);
-var datetoPass;
-var state;
 function init(date) {
-    datetoPass = date;
 
+    date_to_pass = date;
     // clearing previous contained fire data
     contained_fires.length = 0;
 
@@ -179,7 +181,7 @@ function init(date) {
                 )
             }
             catch (err) {
-                // console.log("no contained fires");
+                console.log("no contained fires");
             }
 
         }
@@ -204,28 +206,25 @@ function init(date) {
                 }
             // console.log(`active fires: ${active_fires.length}`);
 
-            previously_active_fires.length = 0;
+            previously_active_fires.length =0;
 
             var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
             d3.json(previously_active_fire_url).then(function (data2) {
                 // console.log(`previously active fires: ${data2.features.length}`);
                 for (var i = 0; i < data2.features.length; i++)
-
+                try {
+                    previously_active_fires.push(
+                        // L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
+                        L.marker([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
+                    )
+                }
+                catch (err) {
+                    console.log("no previosuly active fires_archive page");
+                }
                 
-
-                    try {
-                        previously_active_fires.push(
-                            L.circle([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], active_fire_style)
-                        )
-                    }
-                    catch (err) {
-                        // console.log("no previosuly active fires_archive page");
-                    }
-
-
                 // clearing previous total fire data
-                total_active_fires.length = 0;
-                //    concat active fire and previously active fire arrays
+                total_active_fires.length=0;
+            //    concat active fire and previously active fire arrays
                 total_active_fires = active_fires.concat(previously_active_fires);
                 // console.log(`total active fires: ${total_active_fires.length}`);
                 // protest data
@@ -239,7 +238,7 @@ function init(date) {
                 // console.log(csv_date);
 
                 d3.csv("../static/delete/USA_2020_Sep19.csv").then(function (data) {
-
+                    
                     // filter for user selected date
                     // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
                     var filteredData = data.filter(function (d) {
@@ -280,17 +279,120 @@ function init(date) {
 
                     // function to zoom into a state when the user clicks the state
                     function zoomToFeature(e) {
+                        
+                        // reset counters;
+                        contained_fires_counter =0;
+                        active_fires_counter = 0;
+                        protest_counter = 0;
+                        // zoom to map
                         myMap.fitBounds(e.target.getBounds());
-
-
-                        state = e.target.feature.properties.name
-                        // console.log(e);
-
+                        // update html state name
+                        state = e.target.feature.properties.name;
                         map_component.attr("state_name", state);
+
+                        // call state functions
+
                         stateUnemployment(state, datetoPass);
-                        console.log(state, datetoPass);
                         single_state_fxn(state, datetoPass);
                         optionChanged(state, datetoPass);
+
+                        // getting state polygon coordinates
+                        var state_index = state_dict[state];
+                        var polygon_coords = statesData.features[state_index].geometry.coordinates;
+                        var final_coords = [];
+                        // switching lat and long for final coords
+                        for (i=0; i<polygon_coords[0].length;i++) {
+                            var update_coord = [polygon_coords[0][i][1], polygon_coords[0][i][0]];
+                            final_coords.push(update_coord);
+                        }
+                        // console.log(final_coords);
+                        var state_check = L.polygon(final_coords);
+                        // var markers_contained =[];
+                        
+                        // console.log(contained_fires[0]._latlng.lat);
+                        for (var i =0;i<contained_fires.length;i++) {
+                            if (state_index == 1) {
+                                if (contained_fires[i]._latlng.lat > 52) {
+                                    contained_fires_counter = contained_fires_counter +1;
+                                }
+                            }
+                            if (state_index == 11) {
+                                if ((contained_fires._latlng.lng < -126) && (contained_fires._latlng.lat < 50) ) {
+                                    contained_fires_counter = contained_fires_counter +1;
+                                }
+                            }
+                            if (state_index == 22) {
+                                if ((contained_fires[i]._latlng.lng > -87) && (contained_fires[i]._latlng.lat > 41.8)&& (contained_fires[i]._latlng.lng < -82.5)) {
+                                    contained_fires_counter = contained_fires_counter +1;
+                                }
+                            }
+                           
+                            else {
+                                var marker_inside_polygon = state_check.contains(contained_fires[i].getLatLng());
+                            // markers_contained.push(marker_inside_polygon);
+                                if (marker_inside_polygon) {
+                                    contained_fires_counter = contained_fires_counter +1;
+                                }
+                            }
+                        }
+        
+                        for (var i =0;i<total_active_fires.length;i++) {
+                            if (state_index == 1) {
+                                if (total_active_fires[i]._latlng.lat > 52) {
+                                    active_fires_counter = active_fires_counter +1;
+                                }
+                            }
+                            if (state_index == 11) {
+                                if ((total_active_fires._latlng.lng < -126) && (total_active_fires._latlng.lat < 50) ) {
+                                    active_fires_counter = active_fires_counter +1;
+                                }
+                            }
+
+                            if (state_index == 22) {
+                                if ((total_active_fires[i]._latlng.lng > -87) && (total_active_fires[i]._latlng.lat > 41.8)&& (total_active_fires[i]._latlng.lng < -82.5)) {
+                                    active_fires_counter = active_fires_counter +1;
+                                }
+                            }
+                           
+                            else {
+                                var marker_inside_polygon1 = state_check.contains(total_active_fires[i].getLatLng());
+                            // markers_contained.push(marker_inside_polygon);
+                                if (marker_inside_polygon1) {
+                                    active_fires_counter = active_fires_counter +1;
+                                }
+                            }
+                        }
+        
+                        for (var i =0;i<protest_icons.length;i++) {
+                            if (state_index == 1) {
+                                if (protest_icons[i]._latlng.lat > 52) {
+                                    protest_counter = protest_counter +1;
+                                }
+                            }
+                            if (state_index == 11) {
+                                if ((protest_icons._latlng.lng < -126) && (protest_icons._latlng.lat < 50) ) {
+                                    protest_counter = protest_counter +1;
+                                }
+                            }
+
+                            if (state_index == 22) {
+                                if ((protest_icons[i]._latlng.lng > -87) && (protest_icons[i]._latlng.lat > 41.8)&& (protest_icons[i]._latlng.lng < -82.5)) {
+                                    protest_counter = protest_counter +1;
+                                }
+                            }
+                           
+                            else {
+                                var marker_inside_polygon2 = state_check.contains(protest_icons[i].getLatLng());
+                            // markers_contained.push(marker_inside_polygon);
+                                if (marker_inside_polygon2) {
+                                    protest_counter = protest_counter +1;
+                                }
+                            }
+                        }
+                        console.log(contained_fires_counter);
+                        console.log(active_fires_counter);
+                        console.log(protest_counter);
+                    
                     }
 
 
@@ -318,7 +420,7 @@ function init(date) {
 
                     // use onEachFeature function to call event functions
                     function onEachFeature(feature, layer) {
-                        layer.bindPopup(feature.properties.name),
+                        
                             layer.on({
                                 mouseover: highlightFeature,
                                 mouseout: resetHighlight,
@@ -362,7 +464,7 @@ function timeConverter_csv(UNIX_timestamp) {
     var min = a.getMinutes();
     var sec = a.getSeconds();
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-    var csv_time = String(parseInt(date) - 1) + '-' + month + '-' + year;
+    var csv_time = String(parseInt(date)-1) + '-' + month + '-' + year;
     return csv_time;
 }
 function timeConverter(UNIX_timestamp) {
@@ -395,7 +497,7 @@ function timeConverter_display(UNIX_timestamp) {
     var min = a.getMinutes();
     var sec = a.getSeconds();
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec 
-    var display_date = month + ' ' + date + ', ' + year;
+    var display_date = month + ' ' + date + ', '+ year;
     return display_date;
 
 }
@@ -416,7 +518,6 @@ noUiSlider.create(dateSlider, {
         max: timestamp('2020-09-12')
     },
 
-
     // Steps of one day
     step: 24 * 60 * 60 * 1000,
 
@@ -434,15 +535,13 @@ noUiSlider.create(dateSlider, {
 dateSlider.noUiSlider.on('end', function (values, handle) {
 
     var date_select = values[handle];
-    // console.log(`handle_read: ${date_select}`);
 
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     // console.log(`new user date END: ${user_selected_date}`);
-    var display_date_main_page = timeConverter_display(date_select / 1000);
+    var display_date_main_page = timeConverter_display(date_select/1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
-
 
 });
 
@@ -457,7 +556,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     // console.log(`new user date CHANGE: ${user_selected_date}`);
     // console.log(`handle_read: ${date_select}`);
     // console.log(`testing one day past: ${plus_one_day}`);
-    var display_date_main_page = timeConverter_display(date_select / 1000);
+    var display_date_main_page = timeConverter_display(date_select/1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
@@ -466,16 +565,15 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     // source: https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
     myMap.eachLayer(function (layer) {
         if ((layer !== grayscale)) {
-            if (layer !== street) {
-                if (layer !== satellite) {
-                    myMap.removeLayer(layer);
-                }
+            if (layer !== light) {
+                myMap.removeLayer(layer);
             }
         }
-        
     });
 
+    // call map update
     init(date_select);
+    // call state functions
     if (!(state === null)) {
         stateUnemployment(state, datetoPass);
         optionChanged(state, datetoPass);
@@ -487,7 +585,64 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 dateSlider.noUiSlider.on('slide', function (values, handle) {
     var date_select = values[handle];
     user_selected_date = timeConverter(date_select / 1000);
-    var display_date_main_page = timeConverter_display(date_select / 1000);
+    var display_date_main_page = timeConverter_display(date_select/1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
 });
+
+var state_dict = 
+
+{
+"Alabama":0,
+"Alaska":1,
+"Arizona":2,
+"Arkansas":3,
+"California":4,
+"Colorado":5,
+"Connecticut":6,
+"Delaware":7,
+"District of Columbia":8,
+"Florida":9,
+"Georgia":10,
+"Hawaii":11,
+"Idaho":12,
+"Illinois":13,
+"Indiana":14,
+"Iowa":15,
+"Kansas":16,
+"Kentucky":17,
+"Louisiana":18,
+"Maine":19,
+"Maryland":20,
+"Massachusetts":21,
+"Michigan":22,
+"Minnesota":23,
+"Mississippi":24,
+"Missouri":25,
+"Montana":26,
+"Nebraska":27,
+"Nevada":28,
+"New Hampshire":29,
+"New Jersey":30,
+"New Mexico":31,
+"New York":32,
+"North Carolina":33,
+"North Dakota":34,
+"Ohio":35,
+"Oklahoma":36,
+"Oregon": 37,
+"Pennsylvania": 38,
+"Rhode Island":39,
+"South Carolina":40,
+"South Dakota":41,
+"Tennessee":42,
+"Texas":43,
+"Utah":44,
+"Vermont":45,
+"Virginia":46,
+"Washington":47,
+"West Virginia":48,
+"Wisconsin":49,
+"Wyoming":50,
+"Puerto Rico":51
+};
