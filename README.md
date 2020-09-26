@@ -3,21 +3,21 @@ Created by Maria Dong, Ryan Jones, Rebecca Leeds, & Amber Pizzo.
 
 An interactive dashboard looking back at events and occurrences in the United States that made 2020 so unique.
 
-_maybe a screenshot here_
+![screenshot](/static/img/screenshot_crop.png)
 
 ## Background
-From a stock market crash to a highly infectious pandemic to nationwide protests and wildfires, 2020 has been an erratic year to say the least. We wanted to visualize the year on one dashboard to quantify and analyze some major trends over time.
+From a stock market crash to a highly infectious pandemic to nationwide protests and wildfires, 2020 has been an erratic year to say the least. We wanted to visualize the year on one dashboard to quantify and analyze some major trends and their relationships over time.
 
 ## Getting Started
-* Download the repo in your preferred manner.
-* Two API keys are required:
-  * finnhub.io - the free API key is used for this project (Go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free")
-  * mapbox.com - there is a free API key available
-* SQL Setup
+1. Download the repo in your preferred manner.
+2. Obtain two free, required API keys:
+  * On [Finnhub Stock API](https://finnhub.io/), go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free".
+  * Sign up for an account on [Mapbox](https://www.mapbox.com/) and confirm your email.
+3. SQL Setup
   * Database Schemata - 
   * SQL Queries - 
-* Flask setup
-* Running the app
+4. Flask setup
+5. Running the app
 
 ## Resources, Libraries, & Tools
 
@@ -40,7 +40,7 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
 * [FontAwesome](https://fontawesome.com/) for map icon symbols
 * [moment.js](https://momentjs.com/) for time manipulation
 
-**Tools & languages:** JavaScript, HTML, CSS, Python Flask, PostgreSQL
+**Tools & languages:** JavaScript, HTML, CSS, Python Flask, Jupyter Notebook, PostgreSQL
 
 **Website layout:** [Material Kit](https://github.com/creativetimofficial/material-kit)
 
