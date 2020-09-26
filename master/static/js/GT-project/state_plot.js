@@ -221,8 +221,8 @@ function single_state_fxn(full_state, date) {
         // fxn for sparkline
         $(function () {
             $(`#state_cases`).sparkline(new_cases_avg, {
-                width: '100',
-                height: '30',
+                width: '200',
+                height: '60',
                 minSpotColor: false,
                 maxSpotColor: false,
                 highlightSpotColor: 'red',
@@ -344,14 +344,19 @@ function optionChanged(state, date) {
             }
             var data = [trace1, trace2, trace3, trace4, trace5]
             var layout = {
-                title: `${chart_data.state}`,
+                title: `${chart_data.state} Mobility`,
+                titlefont:{
+                    size:'10px'
+                },
                 height:'300px',
                 margin:{
                     t:-70,
                     b:-10,
                     r:10,
-                    l:20
+                    l:20,
+                    // autoexpand:false
                 },
+                // autosize:false,
                 legend:{
                     orientation:"h"
                 },
