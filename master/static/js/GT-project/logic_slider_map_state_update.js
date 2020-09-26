@@ -189,6 +189,7 @@ function init(date) {
 
         }
         // console.log(contained_fires.length);
+        d3.select(".total_containted_fires").text(contained_fires.length);
 
         // active fires
 
@@ -230,6 +231,8 @@ function init(date) {
                 //    concat active fire and previously active fire arrays
                 total_active_fires = active_fires.concat(previously_active_fires);
                 // console.log(`total active fires: ${total_active_fires.length}`);
+                d3.select(".total_active_fires").text(total_active_fires.length);
+
                 // protest data
 
                 // clearing previous protest data
@@ -263,6 +266,8 @@ function init(date) {
                     }
 
                     // console.log(`protest length: ${protestMarkers.length}`);
+                    d3.select(".total_protests").text(protestMarkers.length);
+
                     // creating protest layer
                     var protestLayer = L.layerGroup(protestMarkers);
                     var protestLayer_icon = L.layerGroup(protest_icons);
@@ -582,9 +587,6 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 
     // call map update
     init(date_select);
-    d3.select(".total_containted_fires").text(contained_fires.length);
-    d3.select(".total_active_fires").text(total_active_fires.length);
-    d3.select(".total_protests").text(protestMarkers.length);
     // call state functions
     if (!(state === null)) {
         stateUnemployment(state, datetoPass);
