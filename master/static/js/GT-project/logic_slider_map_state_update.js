@@ -75,6 +75,7 @@ map_component.attr("state_name", "None");
 var contained_fires_counter = 0;
 var active_fires_counter = 0;
 var protest_counter = 0;
+var state;
 
 
 // / create map object
@@ -278,18 +279,23 @@ function init(date) {
 
                     // function to zoom into a state when the user clicks the state
                     function zoomToFeature(e) {
-                        // myMap.fitBounds(e.target.getBounds());
-                        // var state = e.target.feature.properties.name
-                        // console.log(state, date_to_pass);
-                        // map_component.attr("state_name", state);
-
+                        
+                        // reset counters;
                         contained_fires_counter =0;
                         active_fires_counter = 0;
                         protest_counter = 0;
+                        // zoom to map
                         myMap.fitBounds(e.target.getBounds());
-                        var state = e.target.feature.properties.name
-                        console.log(state, date_to_pass);
+                        // update html state name
+                        state = e.target.feature.properties.name;
                         map_component.attr("state_name", state);
+
+                        // call state functions
+
+                        stateUnemployment(state, datetoPass);
+                        single_state_fxn(state, datetoPass);
+                        optionChanged(state, datetoPass);
+
                         // getting state polygon coordinates
                         var state_index = state_dict[state];
                         var polygon_coords = statesData.features[state_index].geometry.coordinates;
@@ -529,7 +535,6 @@ noUiSlider.create(dateSlider, {
 dateSlider.noUiSlider.on('end', function (values, handle) {
 
     var date_select = values[handle];
-    // console.log(`handle_read: ${date_select}`);
 
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
@@ -537,7 +542,6 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
     var display_date_main_page = timeConverter_display(date_select/1000);
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
-
 
 });
 
@@ -562,15 +566,19 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     myMap.eachLayer(function (layer) {
         if ((layer !== grayscale)) {
             if (layer !== light) {
-                // if (layer !== satellite) {
                 myMap.removeLayer(layer);
-                // }
             }
         }
-        
     });
 
+    // call map update
     init(date_select);
+    // call state functions
+    if (!(state === null)) {
+        stateUnemployment(state, datetoPass);
+        optionChanged(state, datetoPass);
+        single_state_fxn(state, datetoPass);
+    };
 });
 
 // allow dates to change when handle is dragged
