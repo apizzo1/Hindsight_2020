@@ -108,11 +108,16 @@ function buildLinePlot(selection, userDate) {
                 type: 'linear'
             },
         };
-
+        // create chart
         Plotly.newPlot('unemployment', data, layout);
     });
 }
 
+// Build Dropdown function
+// Parameters:
+//      id = the id in the index.html where the dropdown will reside on the page
+//      labels = an array that holds the strings that will display in the dropdown
+//      values = an array that holds the strings that will be the value attribute for the html option tag
 function buildDropdown(id, labels, values) {
     var req_option = d3.select(id);
     req_option.append("option").attr("value", "...").text("Select Option");
@@ -121,6 +126,8 @@ function buildDropdown(id, labels, values) {
     }
 };
 
+// selectOption Function
+// Parameter: chosen = the value of the option tag od the chosen drop down option
 function selectOption(chosen) {
     gblChosen=chosen;
     buildLinePlot(chosen, sliderDate);

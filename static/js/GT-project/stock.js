@@ -1,25 +1,23 @@
+// Initialize Variables
 var sliderDate = Math.floor(new Date('03-22-2020').getTime() / 1000.0)
 var baseUrl = 'https://finnhub.io/api/v1/';
 var category = 'stock/candle';
 var startdate = new Date('January 1, 2020').getTime() / 1000.0;
-// startdate = '1572651390'
 var enddate = new Date('09-22-2020').getTime() / 1000.0;
 var humanEndDate = new Date(enddate * 1000);
-
-// enddate = '1572910590'
 var sliderDate = d3.select('#slider-date').attr('current_time');
 var humanSliderDate = new Date(sliderDate * 1000);
 var stockLabels = ['Amazon', 'Netflix', '3M Co', 'Honeywell', 'MSA Safety Inc', 'Home Depot', 'Lowes', 'UBER', 'Boeing', 'Delta', 'Southwest'];
 var stockValues = ['AMZN', 'NFLX', 'MMM', 'HON', 'MSA', 'HD', 'LOW', 'UBER', 'BA', 'DAL', 'LUV'];
 var defaultTicker = 'DAL';
 var chosenStocks = [defaultTicker, '...', '...'];
-// console.log(`1st: ${chosenStocks}`);
 var symbols = [defaultTicker];
 var stockTrace = [];
 var maxData = 0;
 var queries = [];
 var promises = [];
 
+// Builds a single trace based on the passed values of dates, data, and stock ticker
 function buildTrace(dates, data, symbol) {
   var trace = {
     x: dates,
@@ -32,14 +30,16 @@ function buildTrace(dates, data, symbol) {
   return trace;
 }
 
+// Function called from the index.html from the OnChange attribute
 function selectStock(id, value) {
-  // console.log(`In Function: ${chosenStocks}`);
-  promises = [];
-  // console.log(value);
+  // Initialize the array to hold the queries
+    promises = [];
+
   // Get the last character of the id
   var position = id.slice(-1) - 1;
-  // console.log(`value = ${value}`);
-  // console.log(symbols.length, symbols)
+
+  // Looks at how many tickers are already being displayed then adds, replaces, or removes (to the queries array) 
+  // the chosen ticker from the dropdown
   switch (symbols.length) {
     case 0:
       if (value === '...') {
@@ -55,13 +55,11 @@ function selectStock(id, value) {
       chosenStocks[position] = value;
       break;
     case 1:
-      // console.log(`value in case 1: ${value}`);
       if (value === '...') {
         // console.log("position=",position)
         if (position === 0) {
           symbols.splice(0, 1, defaultTicker);
           queries.splice(0, 1, `${baseUrl}${category}?symbol=${defaultTicker}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
-          // console.log(`In CP2: ${chosenStocks}`);
         }
         // console.log('case position = 2');
       }
@@ -76,7 +74,6 @@ function selectStock(id, value) {
         // console.log('case position = 4');
       }
       chosenStocks[position] = value;
-      // console.log(`End CP2: ${chosenStocks}`);
       break;
     case 2:
       if (value === '...') {
@@ -146,45 +143,52 @@ function selectStock(id, value) {
         }
       }
       chosenStocks[position] = value;
-      // console.log(chosenStocks)
       break;
     default:
       console.log('the array is the wrong the length')
   }
-  // console.log(chosenStocks)
 
-  // console.log(symbols);
+  // generate a promise for each of the queries in the array
   queries.forEach(function (query) {
     if (!(query === '...')) {
       promises.push(d3.json(query));
     }
   });
 
+  // Once all the promises are fulfilled, then start using the data
+  // values is an array of length number of data sets, each index holds an array with the data itself
   Promise.all(promises).then((values) => {
+
     var maxes = [];
+
+    // find the max value for each data set
     for (i = 0; i < values.length; i++) {
       maxes.push(Math.max(...values[i].c));
     }
+    
+    // find the highest max of the data sets
     maxData = Math.max(...maxes);
     if (Math.max(values.c) > maxData) {
       maxData = values.c;
     }
-    // console.log(`maxData = ${maxData}`);
+
+    // Build the array that will hold the dates which will act as the x-axis for the chart
     if (values.length > 0) {
       var convDates = [];
       for (var i = 0; i < values[0].t.length; i++) {
         convDates.push(new Date(values[0].t[i] * 1000));
       }
+
       stockTrace = []
       var data = []
+      
+      // build a trace for each data set and add that data set to the data array that will be used in the Ployly chart
       values.forEach(function (value, index) {
-        // console.log(`index = ${index}, symbol = ${symbols[index]}, value = ${value}`);
         stockTrace[index] = buildTrace(convDates, value, symbols[index]);
         data.push(stockTrace[index]);
       })
-      // var stockTrace1 = buildTrace(convDates, stock1Data, symbols[0]);
-      // var data = [stockTrace1];
 
+      // create a trace for a vertical line indicating the data chosen by the user with the date slider
       vertTrace = {
         'x': [sliderDate, sliderDate],
         'y': [0, maxData],
@@ -193,15 +197,13 @@ function selectStock(id, value) {
         'mode': 'lines',
         'line': { 'color': 'grey', dash: 'dash' },
         'showlegend': false,
-        // 'xaxis': 'x',
-        // 'yaxis': 'y2'
       }
       data.push(vertTrace);
 
+      // set the layout values for the chart
       var layout = {
         dragmode: 'zoom',
         font: {
-          // family: 'Courier New, monospace',
           size: 12,
         },
         margin: {
@@ -230,18 +232,26 @@ function selectStock(id, value) {
           type: 'linear'
         }
       };
+
+      // create the chart
       Plotly.newPlot('stockChart', data, layout);
     }
   });
 }
+
+// Listen for a change on the date slider
 dateSlider.noUiSlider.on('change', function (values, handle) {
   sliderDate = (values[handle]);
-  // console.log(chosenStocks)
   selectStock('stock1', chosenStocks[0]);
   selectStock('stock2', chosenStocks[1]);
   selectStock('stock3', chosenStocks[2]);
 });
+
+// Initialize the chart with a default value
 selectStock('stock1', symbols[0]);
+
+// Build a drop down list for each of the three dropdown
+// The buildDropdown function resides in unemployment.js
 buildDropdown("#stock1", stockLabels, stockValues);
 buildDropdown("#stock2", stockLabels, stockValues);
 buildDropdown("#stock3", stockLabels, stockValues);
