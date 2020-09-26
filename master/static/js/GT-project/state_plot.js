@@ -344,7 +344,7 @@ function optionChanged(state, date) {
             }
             var data = [trace1, trace2, trace3, trace4, trace5]
             var layout = {
-                // title: `${chart_data.state} Mobility on ${chart_data.date}`,
+                title: `${chart_data.state}`,
                 height:'300px',
                 margin:{
                     t:-70,
