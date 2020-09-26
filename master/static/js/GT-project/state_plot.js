@@ -5,13 +5,13 @@ function stateUnemployment(state, date) {
     // var month = humanSliderDate.getUTCMonth() + 1;
 
     d3.json('http://127.0.0.1:5000/api/v1.0/state_ui').then(stateData => {
-        console.log(stateData);
+        // console.log(stateData);
         currStateData = [];
         for (i = 0; i < stateData.length; i++) {
             if (stateData[i].State === state) {
                 const keys = Object.keys(stateData[i]);
                 keys.forEach((key, index) => {
-                    console.log(`${key}: ${stateData[i][key]}`);
+                    // console.log(`${key}: ${stateData[i][key]}`);
                     currStateData.push(stateData[i][key]);
                 })
             }
@@ -28,7 +28,7 @@ function stateUnemployment(state, date) {
         }
 
         maxData = Math.max(...currStateData);
-        console.log(month, maxData);
+        // console.log(month, maxData);
         vertTrace = {
             'x': [month, month],
             'y': [0, maxData],
@@ -44,7 +44,7 @@ function stateUnemployment(state, date) {
 
         layout = {
             // title: "% Unemployment",
-            height: "200",
+            height: "100",
             margin: {
                 t: "10",
                 l: "20",
@@ -241,7 +241,7 @@ function optionChanged(state, date) {
         // var d = e_date.getUTCDate()-1
         // var y = e_date.getUTCFullYear()
         // var e_conv = (m + "/" + d + "/" + y)
-        console.log(e_conv)
+        // console.log(e_conv)
         // parse data
         var datasets = [];
         inputdata.forEach(val => {
@@ -344,13 +344,26 @@ function optionChanged(state, date) {
             }
             var data = [trace1, trace2, trace3, trace4, trace5]
             var layout = {
-                title: `${chart_data.state} Mobility on ${chart_data.date}`,
+                // title: `${chart_data.state} Mobility on ${chart_data.date}`,
+                height:'300px',
+                margin:{
+                    t:-70,
+                    b:-10,
+                    r:10,
+                    l:20
+                },
+                legend:{
+                    orientation:"h"
+                },
                 polar: {
                     radialaxis: {
                         angle: 90,
                         tickangle: 90,
                         visible: true,
-                        range: [-1, 1]
+                        range: [-1, 1.5]
+                    },
+                    angularaxis:{
+                        showticklabels:false
                     }
                 },
                 showlegend: true

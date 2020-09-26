@@ -8,12 +8,12 @@ function buildLinePlot(selection, userDate) {
     postDates = [];
     postMain = [];
     postSelect = [];
-    
-    d3.csv('../data/Unemployment/UNRATE.csv').then(function(unempData) {
+
+    d3.json('http://127.0.0.1:5000/api/v1.0/ui_rate').then(function (unempData) {
         // startDate = Date.parse(unempData[0]['DATE']);
         startDate = Date.parse(new Date('2005-01-01'));
         endDate = Date.parse(unempData[871]['DATE']);
-        for (i=0; i< unempData.length; i++) {
+        for (i = 0; i < unempData.length; i++) {
             currDate = Date.parse(unempData[i]['DATE']);
             if (currDate < new Date('2020-01-01')) {
                 priorDates.push(currDate);
@@ -31,7 +31,7 @@ function buildLinePlot(selection, userDate) {
                 postSelect.push(unempData[i][selection]);
             }
         }
-        
+
         var priorTrace = {
             type: 'line',
             x: priorDates,
@@ -61,14 +61,14 @@ function buildLinePlot(selection, userDate) {
                 y: priorSelect,
                 showlegend: false,
             };
-    
+
             var mainSelTrace = {
                 type: 'line',
                 name: `National Unemployment - ${selection}`,
                 x: selectDates,
                 y: selectSelect,
             };
-    
+
             var postSelTrace = {
                 type: 'line',
                 x: postDates,
@@ -84,7 +84,7 @@ function buildLinePlot(selection, userDate) {
 
         var layout = {
             title: 'Unemployment Data',
-            colorway: ['99CCFF','#0000FF','99CCFF','#FFCC00','#FF9900','#FFCC00'],
+            colorway: ['99CCFF', '#0000FF', '99CCFF', '#FFCC00', '#FF9900', '#FFCC00'],
             showlegend: true,
             legend: {
                 x: 0,
@@ -107,30 +107,35 @@ function buildLinePlot(selection, userDate) {
     });
 }
 
-function buildDropdown (id, labels, values) {
+function buildDropdown(id, labels, values) {
     var req_option = d3.select(id);
-    req_option.append("option").attr("value", "...").text("Select Comparison Option");
-    for (var j=0; j<values.length; j++) {
+    req_option.append("option").attr("value", "...").text("Select Option");
+    for (var j = 0; j < values.length; j++) {
         req_option.append("option").attr("value", values[j]).text(labels[j]);
     }
 };
 
-function selectOption (chosen) {
+function selectOption(chosen) {
+    gblChosen=chosen;
     buildLinePlot(chosen, sliderDate);
 }
 
-var labels = ['Age 16-19','Age over 20',
-'Race: African American','Race: Hispanic/Latino','Race: White',
-'Gender: Male','Gender: Female',
-'Education: No HS graduation','Education: HS, no college','Education: Bachelors Degree','Education: Masters Degree','Education: Doctoral Degree'];
-var values = ['16-19','over20',
-'AfricanAmer','Latinx','White',
-'Men','Women',
-'no-HS-grad','HS-no-college','Bachelors','Masters','Doctoral'];
+var labels = ['Age 16-19', 'Age over 20',
+    'Race: African American', 'Race: Hispanic/Latino', 'Race: White',
+    'Gender: Male', 'Gender: Female',
+    'Education: No HS graduation', 'Education: HS, no college', 'Education: Bachelors Degree', 'Education: Masters Degree', 'Education: Doctoral Degree'];
+var values = ['16-19', 'over20',
+    'AfricanAmer', 'Latinx', 'White',
+    'Men', 'Women',
+    'no-HS-grad', 'HS-no-college', 'Bachelors', 'Masters', 'Doctoral'];
 
 // need to add listener for date
-var sliderDate = d3.select('#slider-date').attr('current_time');
-
+var sliderDate;
+var gblChosen='...';
 // sliderDate = new Date('2020-08-01');
 buildDropdown("#compare", labels, values);
+dateSlider.noUiSlider.on('change', function (values, handle) {
+    sliderDate = (values[handle]);
+    buildLinePlot(gblChosen, sliderDate);
+});
 buildLinePlot('...', sliderDate);

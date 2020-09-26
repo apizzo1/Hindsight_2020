@@ -32,8 +32,9 @@ The above copyright notice and this permission notice shall be included in all c
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
-    <!-- Font Awesome CSS-->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+  <!-- Font Awesome CSS-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+    integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
   <link href="../static/css/styles.css" rel="stylesheet" />
 </head>
 
@@ -99,18 +100,40 @@ The above copyright notice and this permission notice shall be included in all c
           </div>
         </div>
         <div class='row'>
-          <div class='col-7'>
+          <div class='col-8'>
             <!-- start map card -->
             <div class="card">
               <h4 class="card-header card-header-primary">A look at the country today</h4>
               <div class="card-body">
                 <!-- <p class="description">Explore data on ongoing protests and wildfires.</p> -->
-                <div id="map" style = "width: 100%; height: 400px; margin-top: 0;"></div>
+                <div id="map" style="width: 100%; height: 600px; margin-top: 0;"></div>
+                <table class='table table-hover' align='center'>
+                  <thead>
+                    <tr>
+                      <td></td>
+                      <td>Total Contained Fires</td>
+                      <td>Total Active Fires</td>
+                      <td>Total Protests</td>
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td>National</td>
+                    <td class = "total_containted_fires">0</td>
+                    <td class = "total_active_fires">0</td>
+                    <td class = "total_protests">0</td>
+                  </tr>
+                  <tr>
+                    <td class = "state">State</td>
+                    <td class = "contained_fires"></td>
+                    <td class = "active_fires"></td>
+                    <td class = "protests"></td>
+                  </tr>
+                </table>
               </div>
             </div>
             <!-- end map card -->
           </div>
-          <div class='col-5'>
+          <div class='col-4'>
             <!-- start state card -->
             <div class="card">
               <h4 class="card-header card-header-primary">A closer look at the states</h4>
@@ -190,7 +213,26 @@ The above copyright notice and this permission notice shall be included in all c
               <h4 class="card-header card-header-primary">Stock prices</h4>
               <div class="card-body">
                 <p class="description">See how stock prices have responded to recent events.</p>
-                <!-- <div id='stock_plot'></div> -->
+                <table>
+                  <tr>
+                    <td>
+                      <div class="custom-select" style="width:100;">
+                        <select name="Stock1" id="stock1" onChange="selectStock(id, this.value)"></select>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="custom-select" style="width:100;">
+                        <select name="Stock2" id="stock2" onChange="selectStock(id, this.value)"></select>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="custom-select" style="width:100;">
+                        <select name="Stock3" id="stock3" onChange="selectStock(id, this.value)"></select>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <div id='stockChart'></div>
               </div>
             </div>
             <!-- end stock data card -->
@@ -201,7 +243,11 @@ The above copyright notice and this permission notice shall be included in all c
               <h4 class="card-header card-header-primary">National unemployment</h4>
               <div class="card-body">
                 <p class="description">unemployment chart here</p>
-                <div id='approval_plot'></div>
+                <div class="custom-select" style="width:50%">
+                  <select name="Compare" id="compare"
+                    onChange="selectOption(this.options[this.selectedIndex].value)"></select>
+                </div>
+                <div id='unemployment'></div>
               </div>
             </div>
             <!-- end unemployment ratings card -->
@@ -231,7 +277,7 @@ The above copyright notice and this permission notice shall be included in all c
       </div>
     </div>
   </footer>
-  
+
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
     crossorigin="anonymous"></script>
@@ -253,7 +299,7 @@ The above copyright notice and this permission notice shall be included in all c
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.2/nouislider.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
   <!-- leaflet files -->
- 
+
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
@@ -269,6 +315,9 @@ The above copyright notice and this permission notice shall be included in all c
   <script src="../static/js/GT-project/covid_logic.js"></script>
   <script src="../static/js/GT-project/ratings_logic.js"></script>
   <script src="../static/js/GT-project/all_plot.js"></script>
+  <script src="../static/js/GT-project/unemployment.js"></script>
+  <script src="../static/js/GT-project/stock.js"></script>
+
   <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
   <script src="../static/js/material-kit.js?v=2.0.7" type="text/javascript"></script>
   <script>

@@ -19,3 +19,9 @@
     color: darkgray;
     text-shadow: 0 0 3px #000;
   }
+  select{
+    border-color:white;
+  }
+  td{
+    text-align: center;
+  }

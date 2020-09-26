@@ -76,6 +76,7 @@ function datebuilder(value) {
                 day_data = day;
             }
         })
+        try {
         var daytrace1 = {
             type: "scatterpolar",
             mode: "lines",
@@ -150,5 +151,9 @@ function datebuilder(value) {
             showlegend: true
         }
         Plotly.newPlot('mobility_plot', data2, layout2);
+    }
+    catch(err){
+        console.log('no_current_values')
+    }
     })
 }

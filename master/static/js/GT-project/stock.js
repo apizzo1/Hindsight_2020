@@ -39,6 +39,7 @@ function selectStock(id, value) {
   // Get the last character of the id
   var position = id.slice(-1) - 1;
   // console.log(`value = ${value}`);
+  // console.log(symbols.length, symbols)
   switch (symbols.length) {
     case 0:
       if (value === '...') {
@@ -56,10 +57,13 @@ function selectStock(id, value) {
     case 1:
       // console.log(`value in case 1: ${value}`);
       if (value === '...') {
-        symbols.splice(0, 1, defaultTicker);
-        queries.splice(0, 1, `${baseUrl}${category}?symbol=${defaultTicker}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
+        // console.log("position=",position)
+        if (position === 0) {
+          symbols.splice(0, 1, defaultTicker);
+          queries.splice(0, 1, `${baseUrl}${category}?symbol=${defaultTicker}&resolution=D&from=${startdate}&to=${enddate}&token=${finnhub_API_Key}`);
+          // console.log(`In CP2: ${chosenStocks}`);
+        }
         // console.log('case position = 2');
-        // console.log(`In CP2: ${chosenStocks}`);
       }
       else if (chosenStocks[position] === '...') {
         symbols.push(value);
@@ -142,6 +146,7 @@ function selectStock(id, value) {
         }
       }
       chosenStocks[position] = value;
+      // console.log(chosenStocks)
       break;
     default:
       console.log('the array is the wrong the length')
@@ -156,8 +161,8 @@ function selectStock(id, value) {
   });
 
   Promise.all(promises).then((values) => {
-    var maxes=[];
-    for (i=0; i<values.length; i++) {
+    var maxes = [];
+    for (i = 0; i < values.length; i++) {
       maxes.push(Math.max(...values[i].c));
     }
     maxData = Math.max(...maxes);
@@ -186,7 +191,7 @@ function selectStock(id, value) {
         name: 'Selected Date',
         type: 'scatter',
         'mode': 'lines',
-        'line': {'color': 'grey', dash: 'dash'},
+        'line': { 'color': 'grey', dash: 'dash' },
         'showlegend': false,
         // 'xaxis': 'x',
         // 'yaxis': 'y2'
@@ -197,7 +202,7 @@ function selectStock(id, value) {
         dragmode: 'zoom',
         font: {
           // family: 'Courier New, monospace',
-          size: 24,
+          size: 12,
         },
         margin: {
           r: 10,
@@ -229,7 +234,13 @@ function selectStock(id, value) {
     }
   });
 }
-
+dateSlider.noUiSlider.on('change', function (values, handle) {
+  sliderDate = (values[handle]);
+  // console.log(chosenStocks)
+  selectStock('stock1', chosenStocks[0]);
+  selectStock('stock2', chosenStocks[1]);
+  selectStock('stock3', chosenStocks[2]);
+});
 selectStock('stock1', symbols[0]);
 buildDropdown("#stock1", stockLabels, stockValues);
 buildDropdown("#stock2", stockLabels, stockValues);
