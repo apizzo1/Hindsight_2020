@@ -12,31 +12,37 @@ function find_avg (array) {
 // fxn to output US data that takes date input
 function us_fxn (date) {
 
-    // format date; end result should be yyyymmdd for API calls
+    // set a minimum date (1/22/2020) to accept
     if (date < 1579651200000) {var moment_date = moment.unix(1579651200).add(1, 'days');}
-
     else {var moment_date = moment.unix(date/1000).add(1, 'days');}
 
+    // format date; end result should be yyyymmdd for API calls
     var plotly_date = moment_date.format ('M/DD');
     var api_date = moment_date.format ('YYYYMMDD');
 
+    // define url for US COVID data
     var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
+
+    // define blank arrays to push data into; separate values before & after selected date so they can be different colors when plotted
     var us_dates = [];
     var us_cases_all = [];
     var us_cases1 = [];
     var us_cases2 = [];
     // var us_deaths = [];
 
+    // begin API call
     d3.json (us_url).then ((response) => {
         for (var x = 0; x < response.length; x++) {
             var date = moment(response[x].date, 'YYYY-MM-DD').format ('M/DD');
             var cases = response[x].positive;
             // var deaths = response[x].death;
 
+            // push date & total case values to respective arrays
             us_dates.push (date);
             us_cases_all.push (cases);
             // us_deaths.push (deaths);
             
+            // push case/null values to respective arrays depending on date; isolate values for selected date
             if (response[x].date > api_date) {
                 us_cases1.push (cases);
                 us_cases2.push (null);
@@ -50,6 +56,7 @@ function us_fxn (date) {
                 us_cases1.push (cases);
                 us_cases2.push (null);
                 
+                // push select values to HTML
                 try {
                     d3.select ('#total_cases').text(select_cases.toLocaleString('en'));
                     d3.select ('#total_deaths').text(select_deaths.toLocaleString('en'));
@@ -67,12 +74,13 @@ function us_fxn (date) {
             }
         }
 
-        // create arrays for daily increases in cases/deaths
+        // create arrays for daily increases in cases/deaths, again separated to dates before/after selected date
         var all_new_cases = [0];
         var us_new_cases1 = [0];
         var us_new_cases2 = [null];
         // var us_new_deaths = [0];
 
+        // loop through cases, calculate case increases, push to respective arrays
         for (var x = (us_cases_all.length - 2); x > -1; x--) {
             var case_inc = us_cases_all[x] - us_cases_all[x + 1];
             // var death_inc = us_deaths[x] - us_deaths[x + 1];
@@ -98,6 +106,7 @@ function us_fxn (date) {
         var reverse_new_cases = all_new_cases.reverse();
 
         for (var x = (reverse_new_cases.length - 1); x > -1; x--) {
+            // create moving mini-array of 7 values (or less if 7 are unavailable)
             var avg_array = [];
 
             if (x > (reverse_new_cases.length - 8)) {
@@ -108,6 +117,8 @@ function us_fxn (date) {
                     avg_array.push (reverse_new_cases[x + y]);
                 }
             }
+
+            // call "find_avg" fxn to determine average of each mini-array
             var avg = find_avg (avg_array);
 
             if (x >= date_index) {
@@ -121,8 +132,10 @@ function us_fxn (date) {
             }
         }
 
+        // reverse date array for plotting
         var reverse_dates = us_dates.reverse();
 
+        // define traces for mixed bar/line graph on plotly
         var trace1 = {
             x: reverse_dates,
             y: us_new_cases1,
@@ -222,10 +235,10 @@ function us_fxn (date) {
     })
 }
 
-// us_fxn ('2020-08-05');
-
+// initialize page
 us_fxn ('1579651200000');
 
+// listener for slider change will call the us_fxn
 dateSlider.noUiSlider.on('change', function (values, handle) {
     us_fxn (values[handle]);
 })
