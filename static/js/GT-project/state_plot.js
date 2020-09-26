@@ -236,12 +236,7 @@ function optionChanged(state, date) {
     d3.json('http://127.0.0.1:5000/api/v1.0/state_mobility').then(function (inputdata) {
         // format date
         var e_conv=moment.unix(date/1000).format("M/D/YYYY");
-        // var e_date = new Date(+date)
-        // var m = e_date.getUTCMonth() + 1
-        // var d = e_date.getUTCDate()-1
-        // var y = e_date.getUTCFullYear()
-        // var e_conv = (m + "/" + d + "/" + y)
-        // console.log(e_conv)
+    
         // parse data
         var datasets = [];
         inputdata.forEach(val => {

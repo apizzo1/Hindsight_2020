@@ -1,26 +1,8 @@
+// set up date listener for plot interaction
 dateSlider.noUiSlider.on('change', function (values, handle) {
     datebuilder(values[handle]);
 })
-
-d3.json('http://127.0.0.1:5000/api/v1.0/national_mobility').then(function (nationalData) {
-
-
-    var layout2 = {
-        polar: {
-            radialaxis: {
-                angle: 90,
-                tickangle: 90,
-                visible: true,
-                range: [-1, 1]
-            }
-        },
-        showlegend: true
-    }
-
-    Plotly.newPlot('mobility_plot', data, layout2);
-
-})
-
+// call plot builder function with listener active
 
 function datebuilder(value) {
     // convert slider output to formatted date
@@ -71,11 +53,13 @@ function datebuilder(value) {
             };
             datasets.push(day_dict);
         });
+        // filter dataset to selected day
         datasets.forEach(day => {
             if (day.date === e_conv) {
                 day_data = day;
             }
         })
+        // create traces with selected day
         try {
         var daytrace1 = {
             type: "scatterpolar",
