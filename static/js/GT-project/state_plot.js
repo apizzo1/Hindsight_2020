@@ -1,24 +1,38 @@
-// draw state unemployment line
-function stateUnemployment(state, date) {
-    var month=moment.unix(date/1000).format("M");
-    // var humanSliderDate = new Date(+date);
-    // console.log(humanSliderDate)
-    // var month = humanSliderDate.getUTCMonth() + 1;
+// ***********************************************************************
+// *                    State Data Card Functions                        *
+// ***********************************************************************
+// The three functions in this script build the following charts in the 
+// state card on the dashboard
+// stateUnemployment - displays the monthly unemployment data for the state
+// single_state_fxn - displays the sparkline chart of COVID cases for the state
+// optionChanged - displays the mobility graph for the state
+//
+// All three of these functions are called from the logic_slider_map.js
+// whenever the slider date changes or a state is selected on the map
+// ***********************************************************************
 
+// draw state unemployment chart
+function stateUnemployment(state, date) {
+    // convert the passed date from the unix format to just the month value
+    var month=moment.unix(date/1000).format("M");
+    
+    // Flask Wrapper API caller to get the state data
     d3.json('http://127.0.0.1:5000/api/v1.0/state_ui').then(stateData => {
-        // console.log(stateData);
         currStateData = [];
+
+        // Put the data into the array in the correct order
         for (i = 0; i < stateData.length; i++) {
             if (stateData[i].State === state) {
                 const keys = Object.keys(stateData[i]);
                 keys.forEach((key, index) => {
-                    // console.log(`${key}: ${stateData[i][key]}`);
                     currStateData.push(stateData[i][key]);
                 })
             }
         }
+        // Remove the state name from the beginning of the array
         currStateData.pop();
 
+        // build the filled area trace for the state data
         stateTrace = {
             x: [1, 2, 3, 4, 5, 6, 7, 8],
             y: currStateData,
@@ -28,8 +42,10 @@ function stateUnemployment(state, date) {
             fillcolor: 'rgba(255, 0, 0, 0.1)',
         }
 
+        // find the maximum value in the data to allow for the vertical line to be the same height
         maxData = Math.max(...currStateData);
-        // console.log(month, maxData);
+
+        // build the vertical line trace that will indicate the data selected from the date slider
         vertTrace = {
             'x': [month, month],
             'y': [0, maxData],
@@ -41,10 +57,11 @@ function stateUnemployment(state, date) {
             'showlegend': false,
         }
 
+        // include both traces for display
         plotData = [stateTrace, vertTrace];
 
+        // build the layout for the chart
         layout = {
-            // title: "% Unemployment",
             height: "100",
             margin: {
                 t: "10",
@@ -53,12 +70,13 @@ function stateUnemployment(state, date) {
                 b: "20"
             },
             xaxis: {
-                tick0: '2019-12-01',
+                // set the values to display on the x-axis instead of the numbers
+                ticktext: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
             },
-            // yaxis: {title: '%Unemployment'},
             showlegend: false,
         }
 
+        // create chart
         Plotly.newPlot('stateUnemp', plotData, layout);
     });
 }
