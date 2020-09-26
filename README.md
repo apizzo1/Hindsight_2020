@@ -17,7 +17,7 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
   * Database Schemata - Set up for database is located within the SQL_Queries directory.
   * SQL Queries - Queries are available for what the needs might be for visualization.
 4. Flask setup - Currently linked to a local postgres pgAdmin db. Use dictBuilder() to pass keys to db response to format manipulatable data.
-5. Running the app
+5. Run app.py in your terminal by using command python app.py
 
 ## Resources, Libraries, & Tools
 
@@ -31,13 +31,12 @@ From a stock market crash to a highly infectious pandemic to nationwide protests
 * [Economic Recovery Tracker](https://github.com/OpportunityInsights/EconomicTracker) for the mobility data
 * [U.S. Bureau of Labor Statistics, retrieved from FRED, Federal Reserve Bank of St. Louis](https://fred.stlouisfed.org/) for all unemployment data
 * [Finnhub Stock API](https://finnhub.io/) for the stock data
-* _anything else y'all used_
 
 **Libraries:**
 * [noUIslider](https://refreshless.com/nouislider/), [wNumb](https://github.com/leongersen/wnumb/releases) for slider build & optimization
 * [Leaflet](https://leafletjs.com/index.html), [Leaflet PointInPolygon](https://github.com/hayeswise/Leaflet.PointInPolygon), [Leaflet Heat Map](https://github.com/Leaflet/Leaflet.heat), [Leaflet US Choropleth](https://leafletjs.com/examples/choropleth/us-states.js), [Mapbox](https://docs.mapbox.com/api/maps/#styles) for mapping
+* [Font Awesome](https://fontawesome.com/) for map icon symbols
 * [Plotly for JavaScript](https://plotly.com/javascript/), [jQuery Sparklines](https://omnipotent.net/jquery.sparkline/) for charting visualizations
-* [FontAwesome](https://fontawesome.com/) for map icon symbols
 * [moment.js](https://momentjs.com/) for time manipulation
 
 **Tools & languages:** JavaScript, HTML, CSS, Python Flask, Jupyter Notebook, PostgreSQL
@@ -51,7 +50,7 @@ The image at the top of the page and the headline will reflect the front page ar
 
 **Presidential approval and disapproval ratings** are fully visible and interactive, and the selected date is emphasized.
 
-**Ongoing wildfires, contained wildfires, and protests** can be viewed and toggled on the interactive map. State borders are also visible and hoverable. If you click on a state, the panel next to it will populate state-specific values on COVID-19 growth, unemployment, and baseline changes in mobility, all specific to the selected date. A table below will display the total contained/active fires and total protests on the selected date.
+**Ongoing wildfires, contained wildfires, and protests** can be viewed and toggled on the interactive map. State borders are also visible and hoverable. If you click on a state, the panel next to it will populate state-specific values on COVID-19 growth, unemployment, and baseline changes in mobility, all specific to the selected date. A table below will display the total contained/active fires and total protests on the selected date, both nationally as well as for the selected state.
 
 **National COVID-19 data** can be viewed by daily case increases or total cases and deaths up to the selected date. The mixed bar/line graph can be hovered over for details.
 
