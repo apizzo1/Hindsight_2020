@@ -59,3 +59,23 @@ The image at the top of the page and the headline will reflect the front page ar
 **Select stock prices** are displayed in a line graph with the selected date highlighted, where they can be compared with up to two other stocks via dropdown menus.
 
 Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date. The national average can be compared to other populations selected from a dropdown menu.
+
+## Our Analyses
+As we looked through 2020, we noted specific dates that highlight how integrated our dashboard is:
+
+* **March 4** New York Times headline brings out noteworthy changes seen in the Stocks line graph, specifically a sharp decrease in Boeing, Delta Airlines, Southwest Airlines stocks with a small recovery seen when Congress passed a bailout on **March 22**.
+* The coronavirus stimilus relief bill was passed on **March 12** as indicated by the New York Times headline, which correlates with a peak in President Trump's approval rating.
+* On **April 12**, Governor Andrew Cuomo of New York announces that "the worst is over", referring to COVID, which correlates with passing the peak of New York cases and US cases (for this timeframe).
+* The impact of **May 28**'s New York Times headline "Ex-Officer Charged in Death of George Floyd in Minneapolis" can be seen in the map when viewing the protests on that day, specifically in Minnesota.
+* **September 1** shows an increase in President Trump's approval rating, just as the CDC promises a COVID vaccine by November 2020, as seen in the New York Times' headline.
+
+## Future Considerations
+
+* Making Getty image carousel dynamic based on the date selected by the user
+* Making a loading screen when data is loading
+* Incorporating animation using anime.js
+* Optimizing SQL databases to integrate data more effectively and to pull data more efficiently
+* Incorporating media queries to make the dashboard responsive to different screen sizes
+* Allowing the user to select how to view the national unemployment data 
+* Finding quantifiable data for online trends and more manageable data for air pollution (to add to our map)
+* Allowing user to select a range of dates, rather than a single date, and displaying global data 
