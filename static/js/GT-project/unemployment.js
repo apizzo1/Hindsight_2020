@@ -84,6 +84,12 @@ function buildLinePlot(selection, userDate) {
 
         var layout = {
             title: 'Unemployment Data',
+            margin:{
+                // t:60,
+                b:20,
+                r:30,
+                l:40
+            },
             colorway: ['99CCFF', '#0000FF', '99CCFF', '#FFCC00', '#FF9900', '#FFCC00'],
             showlegend: true,
             legend: {
