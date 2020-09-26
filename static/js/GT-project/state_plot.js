@@ -1,3 +1,4 @@
+// draw state unemployment line
 function stateUnemployment(state, date) {
     var month=moment.unix(date/1000).format("M");
     // var humanSliderDate = new Date(+date);
@@ -62,6 +63,7 @@ function stateUnemployment(state, date) {
     });
 }
 
+// draw state COVID case sparkline
 function single_state_fxn(full_state, date) {
     
     // modified version of https://gist.github.com/calebgrove/c285a9510948b633aa47; returns abbreviation or full state name
@@ -147,6 +149,7 @@ function single_state_fxn(full_state, date) {
         }
     }
 
+    // fxn to find average of an array
     function find_avg (array) {
         var sum = 0;
         for (var x = 0; x < array.length; x++) {
@@ -157,45 +160,46 @@ function single_state_fxn(full_state, date) {
         return avg;
     }
 
+    // call abbrRegion fxn to abbreviate full state name
     var state = abbrRegion(full_state, 'abbr');
 
-    // format date; end result should be yyyymmdd for API calls
-    // var moment_date = moment.unix(date/1000);
-
+    // format date, end result should be yyyymmdd for API calls; set minimum date
     if (date < 1579651200000) {var moment_date = moment.unix(1579651200).add(1, 'days');}
-
     else {var moment_date = moment.unix(date/1000);}
     
     var api_date = moment_date.format('YYYYMMDD');
-    
-    // var prior_date = luxon_date.plus({ days: -1 }).toFormat('yyyyLLdd');
 
+    // define url for state COVID API calls
     var state_url = `https://api.covidtracking.com/v1/states/${state}/daily.json`;
 
+    // define blank arrays to push data into
     var case_array = [];
     var date_array = [];
-    var death_array = [];
+    // var death_array = [];
 
+    // begin API call; all "death" related/date-specific COVID data can be uncommented if desired
     d3.json(state_url).then((response) => {
         for (var x = 0; x < response.length; x++) {
             date_array.push(response[x]['date']);
             case_array.push(response[x]['positive']);
-            death_array.push(response[x]['death']);
+            // death_array.push(response[x]['death']);
 
+            // stop pushing values to the array when the selected date is reached, so that data only until selected date is displayed
             if (response[x]['date'] == api_date) {
-                var select_cases = response[x]['positive'];
-                var select_deaths = response[x]['death'];
+                // var select_cases = response[x]['positive'];
+                // var select_deaths = response[x]['death'];
                 var select_index = x;
             }
         }
 
+        // create arrays for daily increases in cases
         var case_increases = [];
         for (var x = (case_array.length - 2); x > -1; x--) {
             var increase = case_array[x] - case_array[x + 1];
             case_increases.push(increase);
 
             if (x == select_index) {
-                var select_increase = increase;
+                // var select_increase = increase;
                 break;
             }
         }
@@ -218,7 +222,7 @@ function single_state_fxn(full_state, date) {
             new_cases_avg.push(avg);
         }
 
-        // fxn for sparkline
+        // fxn to plot sparkline on HTML
         $(function () {
             $(`#state_cases`).sparkline(new_cases_avg, {
                 width: '200',
@@ -232,6 +236,7 @@ function single_state_fxn(full_state, date) {
     });
 }
 
+// draw state mobility graph
 function optionChanged(state, date) {
     d3.json('http://127.0.0.1:5000/api/v1.0/state_mobility').then(function (inputdata) {
         // format date

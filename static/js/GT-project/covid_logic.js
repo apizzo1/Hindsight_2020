@@ -30,7 +30,7 @@ function us_fxn (date) {
     var us_cases2 = [];
     // var us_deaths = [];
 
-    // begin API call
+    // begin API call; all "death" related COVID responses can be uncommented if desired
     d3.json (us_url).then ((response) => {
         for (var x = 0; x < response.length; x++) {
             var date = moment(response[x].date, 'YYYY-MM-DD').format ('M/DD');
