@@ -252,7 +252,7 @@ function init(date) {
                         map_component.attr("state_name", state);
                         stateUnemployment(state, datetoPass);
                         console.log(state, datetoPass);
-                        // single_state_fxn(state, datetoPass);
+                        single_state_fxn(state, datetoPass);
                         optionChanged(state, datetoPass);
                     }
 
@@ -435,6 +435,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     if (!(state === null)) {
         stateUnemployment(state, datetoPass);
         optionChanged(state, datetoPass);
+        single_state_fxn(state, datetoPass);
     };
 });
 

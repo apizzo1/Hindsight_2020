@@ -61,7 +61,6 @@ function stateUnemployment(state, date) {
         Plotly.newPlot('stateUnemp', plotData, layout);
     });
 }
-<<<<<<< HEAD
 
 function single_state_fxn(full_state, date) {
     
@@ -149,10 +148,6 @@ function single_state_fxn(full_state, date) {
     }
 
     function find_avg (array) {
-=======
-function single_state_fxn(state, date) {
-    function find_avg(array) {
->>>>>>> 61dc1457fe1a9bbec259edf7134954446705b506
         var sum = 0;
         for (var x = 0; x < array.length; x++) {
             sum += array[x];
@@ -165,12 +160,14 @@ function single_state_fxn(state, date) {
     var state = abbrRegion(full_state, 'abbr');
 
     // format date; end result should be yyyymmdd for API calls
-<<<<<<< HEAD
-    var moment_date = moment.unix(date/1000);
-=======
-    var moment_date = moment.unix(date / 1000).add(1, 'days');
->>>>>>> 61dc1457fe1a9bbec259edf7134954446705b506
+    // var moment_date = moment.unix(date/1000);
+
+    if (date < 1579651200000) {var moment_date = moment.unix(1579651200).add(1, 'days');}
+
+    else {var moment_date = moment.unix(date/1000);}
+    
     var api_date = moment_date.format('YYYYMMDD');
+    
     // var prior_date = luxon_date.plus({ days: -1 }).toFormat('yyyyLLdd');
 
     var state_url = `https://api.covidtracking.com/v1/states/${state}/daily.json`;
@@ -203,10 +200,6 @@ function single_state_fxn(state, date) {
             }
         }
 
-        // console.log(`total cases today: ${select_cases}, total deaths today: ${select_deaths}, new cases today: ${select_increase}`);
-        d3.select('#total_cases').text(select_cases.toLocaleString('en'));
-        d3.select('#total_deaths').text(select_deaths.toLocaleString('en'));
-
         // find 7-day moving avgs for a smoother sparkline
         var new_cases_avg = [];
         for (var x = 0; x < case_increases.length; x++) {
@@ -238,6 +231,7 @@ function single_state_fxn(state, date) {
         });
     });
 }
+
 function optionChanged(state, date) {
     d3.json('http://127.0.0.1:5000/api/v1.0/state_mobility').then(function (inputdata) {
         // format date
