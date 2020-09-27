@@ -64,7 +64,7 @@ The image at the top of the page and the headline will reflect the front page ar
 Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date. The national average can be compared to other populations selected from a dropdown menu.
 
 ## Analyses & Discussion
-As a whole, our dashboard is equipped for you to draw numerous observations about interrelations among each of our featured sections. Given the vast amount of available trends, it is impractical to analyze every significant pattern. As such, we've included a handful noteworthy examples below of interrelations that we observed:
+As a whole, our dashboard is equipped for you to draw numerous observations about interrelations among each of our featured sections. Given the vast amount of available trends, it is impractical to analyze every significant pattern. As such, we've only listed a handful of noteworthy examples of interrelations that we observed, but we encourage you all to go through the timeline and explore the data yourselves.
 
 * On **March 4**, the NYT headline discusses the limitation of U.S. travel to Europe, while we can also see that the stocks for Boeing, Delta Airlines, & Southwest Airlines (all aviation-related) begin to sharply decrease. A slight recovery in these stocks can be observed on **March 22**, while the NYT headline contains the announcement of a federal bond-buying plan.
 * The coronavirus stimilus relief bill was passed on **March 12** as indicated by the NYT headline, which among other things, distributed $1,200 to all American citizens. This date correlates with a peak in President Trump's approval rating.
@@ -73,12 +73,12 @@ As a whole, our dashboard is equipped for you to draw numerous observations abou
 * **September 1** shows an increase in President Trump's approval rating, just as the CDC promises a COVID vaccine by November 2020, as seen in the NYT headline.
 
 ## Future Considerations
-
-* Making Getty image carousel dynamic based on the date selected by the user
-* Making a loading screen when data is loading
+Some tasks we'd like to build on in future commits:
+* Making Getty image carousel dynamic based on the slider date
+* Making a loading screen for better transition when data is loading
 * Incorporating animation using anime.js
 * Optimizing SQL databases to integrate data more effectively and to pull data more efficiently
 * Incorporating media queries to make the dashboard responsive to different screen sizes
 * Allowing the user to select how to view the national unemployment data 
-* Finding quantifiable data for online trends and more manageable data for air pollution (to add to our map)
-* Allowing user to select a range of dates, rather than a single date, and displaying global data 
+* Finding more quantifiable/manageable data for tags trending online, air pollution (to add to our map), hate crimes, & other possibly interesting items
+* Broadening our scope of observation by allowing users to select a range of dates (rather than a single date), & exploring global data 
