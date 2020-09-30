@@ -1,5 +1,5 @@
 # Hindsight
-#### Created by Maria Dong, Ryan Jones, Rebecca Leeds, & Amber Pizzo.
+#### Created by [Maria Dong](https://github.com/mariajdong), [Ryan Jones](https://github.com/Jonsey1696), [Rebecca Leeds](https://github.com/rmoesw01), & Amber Pizzo.
 
 An interactive dashboard looking back at events and occurrences in the United States that made 2020 so unique.
 
