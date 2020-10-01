@@ -1,5 +1,5 @@
 # Hindsight
-#### Created by [Maria Dong](https://github.com/mariajdong), [Ryan Jones](https://github.com/Jonsey1696), [Rebecca Leeds](https://github.com/rmoesw01), & Amber Pizzo.
+#### Created by [Maria Dong](https://github.com/mariajdong), [Ryan Jones](https://github.com/Jonsey1696), [Rebecca Leeds](https://github.com/rmoesw01), & [Amber Pizzo](https://github.com/apizzo).
 
 An interactive dashboard looking back at events and occurrences in the United States that made 2020 so unique.
 
@@ -68,7 +68,7 @@ As a whole, our dashboard is equipped for you to draw numerous observations abou
 
 * On **March 4**, the NYT headline discusses the limitation of U.S. travel to Europe, while we can also see that the stocks for Boeing, Delta Airlines, & Southwest Airlines (all aviation-related) begin to sharply decrease. A slight recovery in these stocks can be observed on **March 22**, while the NYT headline contains the announcement of a federal bond-buying plan.
 * The coronavirus stimilus relief bill was passed on **March 12** as indicated by the NYT headline, which among other things, distributed $1,200 to all American citizens. This date correlates with a peak in President Trump's approval rating.
-* On **April 12**, the NYT headline highlights Governor Andrew Cuomo of New York announcing that "the worst is over", referring to COVID-19 in his state. His statement does correlate with the beginning of a continuing downward trend of COVID cases in New York, as well as the downward trend of the first peak in US cases. Later, towards **July 15**, we can see that the U.S. COVID cases reach a much higher second peak in growth, while NY has no discernible peak in its sparkline at that time.
+* On **April 12**, the NYT headline highlights Governor Andrew Cuomo of New York announcing that "the worst is over", referring to COVID-19 in his state. His statement does correlate with the beginning of a continuing downward trend of COVID cases in New York, as well as the downward trend of the first peak in U.S. cases. Later, towards **July 15**, we can see that the U.S. COVID cases reach a much higher second peak in growth, while NY has no discernible peak in its sparkline at that time.
 * The impact of the events in the **May 28** NYT headline, "Ex-Officer Charged in Death of George Floyd in Minneapolis", can be seen in the map when viewing the protests on that day, specifically in Minnesota. On dates & states with higher volumes of protests, we can also see a higher increase in park mobility, confirming consistency in our data.
 * **September 1** shows an increase in President Trump's approval rating, just as the CDC promises a COVID vaccine by November 2020, as seen in the NYT headline.
 
