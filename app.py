@@ -2,10 +2,12 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
+import os
 
 from flask import Flask, jsonify, render_template
+db_url = os.environ.get('DATABASE_URL', '') | 'postgresql://postgres:Khaleesi3!@localhost:5432/hindsight_2020'
 # create engine
-engine = create_engine('postgresql://postgres:Khaleesi3!@localhost:5432/hindsight_2020')
+engine = create_engine(db_url)
 # reflect DB
 Base=automap_base()
 Base.prepare(engine, reflect = True)
