@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, func
 import os
 
 from flask import Flask, jsonify, render_template
-db_url = os.environ.get('DATABASE_URL', '') | 'postgresql://postgres:Khaleesi3!@localhost:5432/hindsight_2020'
+db_url = os.environ.get('DATABASE_URL', '') 
 # create engine
 engine = create_engine(db_url)
 # reflect DB
