@@ -36,7 +36,7 @@ def dict_creation(response, headers):
 def welcome():
     return render_template("index.html")
 
-@app.route("api/v1.0/stocks")
+@app.route("/api/v1.0/stocks")
 def stocks():
     # Get the url passed into the route
     data = request.args
