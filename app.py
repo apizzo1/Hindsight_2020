@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func 
 import os
 import requests
+import urllib.parse
 
 # API key introduction
 # API_KEY = os.environ.get('API_KEY', '') 
@@ -40,7 +41,7 @@ def welcome():
 def stocks():
     # Get the url passed into the route
     data = request.args
-    r = requests.get(data["url"]+finnhub_API_Key)
+    r = requests.get(urllib.parse.unquote(data["url"]) + finnhub_API_Key)
     return jsonify(r)
 
 @app.route("/api/v1.0/headlines")
