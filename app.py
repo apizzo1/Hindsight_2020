@@ -1,14 +1,15 @@
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func 
 import os
+import requests
 
 # API key introduction
 # API_KEY = os.environ.get('API_KEY', '') 
 finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 db_url = os.environ.get('DATABASE_URL', '') 
 # create engine
 engine = create_engine(db_url)
