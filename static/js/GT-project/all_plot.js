@@ -12,7 +12,7 @@ function datebuilder(value) {
     var y = e_date.getUTCFullYear()
     var e_conv = (y + "/" + m + "/" + d)
     // build headline and image
-    d3.json("http://127.0.0.1:5000/api/v1.0/headlines").then(function (data) {
+    d3.json("/api/v1.0/headlines").then(function (data) {
         // convert dates within data for comparison
         data.forEach(day => {
             var full_date = new Date(day.date)
@@ -34,7 +34,7 @@ function datebuilder(value) {
 
     })
     // creates national charts
-    d3.json('http://127.0.0.1:5000/api/v1.0/national_mobility').then(function (nationalData) {
+    d3.json('/api/v1.0/national_mobility').then(function (nationalData) {
         var datasets = [];
         nationalData.forEach(val => {
             var retail = val.retail;
