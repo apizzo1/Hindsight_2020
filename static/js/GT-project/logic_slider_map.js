@@ -1,3 +1,4 @@
+// added url restriction to allow API key to work with Heroku only
 var API_KEY = "pk.eyJ1IjoiYXBpenpvMSIsImEiOiJja2Z1NHg4OXkwZnU5MnVzOW84bGFjd3drIn0.BjLNMe6XzDecA7hN8NEgGg"
 // add light tile layer 
 var light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
