@@ -12,7 +12,7 @@ function buildLinePlot(selection, userDate) {
     postSelect = [];
 
     // Flask Wrapper API call to gather the data
-    d3.json('http://127.0.0.1:5000/api/v1.0/ui_rate').then(function (unempData) {
+    d3.json('/api/v1.0/ui_rate').then(function (unempData) {
         startDate = Date.parse(new Date('2005-01-01'));
         endDate = Date.parse(unempData[871]['DATE']);
 
