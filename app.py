@@ -6,7 +6,7 @@ import os
 
 # API key introduction
 # API_KEY = os.environ.get('API_KEY', '') 
-# finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
+finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
 
 from flask import Flask, jsonify, render_template
 db_url = os.environ.get('DATABASE_URL', '') 
@@ -34,6 +34,13 @@ def dict_creation(response, headers):
 @app.route("/")
 def welcome():
     return render_template("index.html")
+
+@app.route("api/v1.0/stocks")
+def stocks():
+    # Get the url passed into the route
+    data = request.args
+    r = requests.get(data["url"]+finnhub_API_Key)
+    return jsonify(r)
 
 @app.route("/api/v1.0/headlines")
 def headlines():
