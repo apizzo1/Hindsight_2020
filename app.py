@@ -5,8 +5,8 @@ from sqlalchemy import create_engine, func
 import os
 
 # API key introduction
-API_KEY = os.environ.get('API_KEY', '') 
-finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
+# API_KEY = os.environ.get('API_KEY', '') 
+# finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
 
 from flask import Flask, jsonify, render_template
 db_url = os.environ.get('DATABASE_URL', '') 
