@@ -17,7 +17,7 @@ function stateUnemployment(state, date) {
     var month=moment.unix(date/1000).format("M");
     
     // Flask Wrapper API caller to get the state data
-    d3.json('http://127.0.0.1:5000/api/v1.0/state_ui').then(stateData => {
+    d3.json('/api/v1.0/state_ui').then(stateData => {
         currStateData = [];
 
         // Put the data into the array in the correct order
@@ -256,7 +256,7 @@ function single_state_fxn(full_state, date) {
 
 // draw state mobility graph
 function optionChanged(state, date) {
-    d3.json('http://127.0.0.1:5000/api/v1.0/state_mobility').then(function (inputdata) {
+    d3.json('/api/v1.0/state_mobility').then(function (inputdata) {
         // format date
         var e_conv=moment.unix(date/1000).format("M/D/YYYY");
     
