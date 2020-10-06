@@ -41,6 +41,7 @@ def welcome():
 def stocks():
     # Get the url passed into the route
     data = request.args
+    print(data)
     r = requests.get(urllib.parse.unquote(data["url"]) + finnhub_API_Key)
     return jsonify(r)
 
