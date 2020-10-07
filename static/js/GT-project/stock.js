@@ -152,8 +152,8 @@ function selectStock(id, value) {
   // generate a promise for each of the queries in the array
   queries.forEach(function (query) {
     if (!(query === '...')) {
-//       promises.push(d3.json(serverUrl + '?url=' + encodeURIComponent(query)));
-      promises.push(d3.json(serverUrl + '?url=' + query));
+      promises.push(d3.json(serverUrl + '?url=' + encodeURIComponent(query)));
+//       promises.push(d3.json(serverUrl + '?url=' + query));
     }
   });
 
