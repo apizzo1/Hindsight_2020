@@ -1,7 +1,9 @@
-# Hindsight
-#### Created by [Maria Dong](https://github.com/mariajdong), [Ryan Jones](https://github.com/Jonsey1696), [Rebecca Leeds](https://github.com/rmoesw01), & [Amber Pizzo](https://github.com/apizzo1).
+# [Hindsight](http://apizzo1-hindsight-2020.herokuapp.com/)
+**_Created by [Maria Dong](https://github.com/mariajdong), [Ryan Jones](https://github.com/Jonsey1696), [Rebecca Leeds](https://github.com/rmoesw01), & [Amber Pizzo](https://github.com/apizzo1)._**
 
-An interactive dashboard looking back at events and occurrences in the United States that made 2020 so unique.
+An interactive dashboard looking back at events and occurrences in the United States that made 2020 so unique.<br><br>
+
+**Access the deployed page [here](http://apizzo1-hindsight-2020.herokuapp.com/).**
 
 ![screenshot](/static/img/screenshot_crop.png)
 
@@ -9,14 +11,17 @@ An interactive dashboard looking back at events and occurrences in the United St
 From a stock market crash to a highly infectious pandemic to nationwide protests and wildfires, 2020 has been an erratic year to say the least. We wanted to visualize the year on one dashboard to quantify and analyze some major trends and their relationships over time.
 
 ## Getting Started
+_If you prefer to run the dashboard on your local server, please follow the instructions below. Otherwise, you can view the deployed page [here](http://apizzo1-hindsight-2020.herokuapp.com/)._
+
 1. Download the repo in your preferred manner.
 2. Create a file called `config.py` in the `/static/js/GT-project` folder. This file should contain two API keys (that can be obtained for free):
 <br>  _a._ On [Finnhub Stock API](https://finnhub.io/), go to the [Pricing](https://finnhub.io/pricing) page and select "Start Free". Set this key equal to `finnhub_API_Key`.
 <br>  _b._ Sign up for an account on [Mapbox](https://www.mapbox.com/) and confirm your email. Set this key equal to `API_KEY`.
 3. Set up your SQL database.
 <br>  _a._ Setup for database schemata is located in `/SQL_Queries/table_schemata.sql`.
-<br>  _b._ SQL queries are also available in `/SQL_Queries/alchemy_queries.sql` for what you may need for various visualizations.
-4. The Flask application is currently linked to a local PostgreSQL pgAdmin db. Use `dictBuilder()` to pass keys to `db` response to format manipulable data.
+<br>  _b._ Import `.csv` files located in `/static/Resources` to their respective tables in pgAdmin.
+<br>  _c._ SQL queries are also available in `/SQL_Queries/alchemy_queries.sql` for what you may need for various visualizations.
+4. In pgAdmin, use `dictBuilder()` to pass keys to `db` response to format manipulable data.
 5. Run `app.py` in your terminal by using the following command:
 ```
 $ python app.py
@@ -57,7 +62,7 @@ The image at the top of the page and the headline will reflect the front page ar
 
 **National COVID-19 data** can be viewed by daily case increases or total cases and deaths up to the selected date. The mixed bar/line graph can be hovered over for details.
 
-**National average change in mobility** is displayed in a polar area chart. The radial axis corresponds to the factor of increase in activity from baseline. For example, a  section with a radial value of _0.7_ represents a _70% increase_ in activity, while a value of _0_ represents _no change_ in activity.
+**National average change in mobility** is displayed in a polar area chart. The radial axis corresponds to the factor of increase in activity from baseline measurements in January/February 2020. For example, a  section with a radial value of _0.7_ represents a _70% increase_ in activity, while a value of _0_ represents _no change_ in activity.
 
 **Select stock prices** are displayed in a line graph with the selected date highlighted, where they can be compared with up to two other stocks via dropdown menus.
 
@@ -65,6 +70,8 @@ Finally, **national unemployment rates** are displayed by month. Data is highlig
 
 ## Analyses & Discussion
 As a whole, our dashboard is equipped for you to draw numerous observations about interrelations among each of our featured sections. Given the vast amount of available trends, it is impractical to analyze every significant pattern. As such, we've only listed a handful of noteworthy examples of interrelations that we observed, but we encourage you all to go through the timeline and explore the data yourselves.
+
+**Select analyses:**
 
 * On **March 4**, the NYT headline discusses the limitation of U.S. travel to Europe, while we can also see that the stocks for Boeing, Delta Airlines, & Southwest Airlines (all aviation-related) begin to sharply decrease. A slight recovery in these stocks can be observed on **March 22**, while the NYT headline contains the announcement of a federal bond-buying plan.
 * The coronavirus stimilus relief bill was passed on **March 12** as indicated by the NYT headline, which among other things, distributed $1,200 to all American citizens. This date correlates with a peak in President Trump's approval rating.
