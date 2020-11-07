@@ -16,23 +16,19 @@ function us_fxn(date) {
     if (date < 1579737600000) { var moment_date = moment.unix(1579737600).add(1, 'days'); }
     else { var moment_date = moment.unix(date / 1000); }
 
-    // format date; end result should be yyyymmdd for API calls
+    // format date; yyyy-mm-dd for plotting, yyyymmdd for API calls
     var chart_date = moment_date.format('YYYY-MM-DD');
     var api_date = moment_date.format('YYYYMMDD');
-
-    console.log (chart_date);
 
     // define url for US COVID data
     var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
 
-    // define blank arrays to push data into; separate values before & after selected date so they can be different colors when plotted
+    // define blank arrays to push data into
     var us_dates = [];
-    var all_us_cases = [];
-    var us_cases1 = [];
-    var us_cases2 = [];
+    var us_cases = [];
     // var us_deaths = [];
     
-    // blank arrays for transparency/dashes
+    // blank arrays for transparency & color settings for plotting
     var alphas = [];
     var bar_colors = [];
     var line_colors = [];
@@ -53,27 +49,23 @@ function us_fxn(date) {
             else {
                 // push date & total case values to respective arrays
                 us_dates.push(date);
-                all_us_cases.push(cases);
+                us_cases.push(cases);
                 // us_deaths.push (deaths);
 
-                // push case/null values to respective arrays depending on date; isolate values for selected date
+                // push grayscale colors for values after selected date
                 if (response[x].date > api_date) {
-                    us_cases1.push(cases);
-                    us_cases2.push(null);
-
                     alphas.push (0.7);
                     bar_colors.push (am4core.color('#A0A0A0'));
                     line_colors.push (am4core.color('#8D8D8D'));
                 }
 
+                // isolate totals to date on selected date
                 else if (response[x].date == api_date) {
-                    var date_index = x;
+                    // var date_index = x;
                     var select_cases = response[x].positive;
                     var select_deaths = response[x].death;
 
-                    us_cases1.push(cases);
-                    us_cases2.push(null);
-
+                    // push brighter colors for values before selected date
                     alphas.push (1.0);
                     bar_colors.push (am4core.color('#F0B27A'));
                     line_colors.push (am4core.color('#1A5276'));
@@ -85,15 +77,12 @@ function us_fxn(date) {
                     }
 
                     catch (err) {
-                        d3.select('#total_cases').text("No data available until February 9, 2020.");
-                        d3.select('#total_deaths').text("No data available until February 9, 2020.");
+                        d3.select('#total_cases').text("0");
+                        d3.select('#total_deaths').text("0");
                     }
                 }
 
                 else {
-                    us_cases2.push(cases);
-                    us_cases1.push(null);
-
                     alphas.push (1.0);
                     bar_colors.push (am4core.color('#F0B27A'));
                     line_colors.push (am4core.color('#1A5276'));
@@ -101,38 +90,24 @@ function us_fxn(date) {
             }
         }
 
-        // create arrays for daily increases in cases/deaths, again separated to dates before/after selected date
-        var all_new_cases = [0];
-        var us_new_cases1 = [0];
-        var us_new_cases2 = [null];
+        // create arrays for daily increases in cases/deaths; start w/ 0 to keep array length the same
+        var new_cases = [0];
         // var us_new_deaths = [0];
 
-        // loop through cases, calculate case increases, push to respective arrays
-        for (var x = (all_us_cases.length - 2); x > -1; x--) {
-            var case_inc = all_us_cases[x] - all_us_cases[x + 1];
+        // loop through cases, calculate case increases
+        for (var x = (us_cases.length - 2); x > -1; x--) {
+            var case_inc = us_cases[x] - us_cases[x + 1];
             // var death_inc = us_deaths[x] - us_deaths[x + 1];
 
-            all_new_cases.push(case_inc);
+            new_cases.push(case_inc);
             // us_new_deaths.push (death_inc);
-
-            if (x >= date_index) {
-                us_new_cases1.push(case_inc);
-                us_new_cases2.push(null);
-            }
-
-            else {
-                us_new_cases2.push(case_inc);
-                us_new_cases1.push(null);
-            }
         }
 
         // create arrays for 7d moving avg for cases/deaths
-        var new_cases_avg1 = [];
-        var new_cases_avg2 = [];
+        var new_cases_avg = [];
         // var new_deaths_avg = [];
-        var all_new_cases_avg = [];
 
-        var reverse_new_cases = all_new_cases.reverse();
+        var reverse_new_cases = new_cases.reverse();
 
         for (var x = (reverse_new_cases.length - 1); x > -1; x--) {
             // create moving mini-array of 7 values (or less if 7 are unavailable)
@@ -150,32 +125,22 @@ function us_fxn(date) {
             // call "find_avg" fxn to determine average of each mini-array
             var avg = find_avg(avg_array);
 
-            all_new_cases_avg.push (avg);
-
-            if (x >= date_index) {
-                new_cases_avg1.push(avg);
-                new_cases_avg2.push(null);
-            }
-
-            else {
-                new_cases_avg2.push(avg);
-                new_cases_avg1.push(null);
-            }
+            new_cases_avg.push (avg);
         }
 
         // reverse date array for plotting
-        var reverse_dates = us_dates.reverse();
+        // var reverse_dates = us_dates.reverse();
 
         var us_data = [];
 
-        for (var x = 0; x < us_dates.length; x++) {
+        for (var x = us_dates.length - 1; x > -1; x--) {
             us_data.push ({
-                'date': reverse_dates[x],
-                'new_cases': all_new_cases[us_dates.length - x - 1],
-                'avg_new_cases': all_new_cases_avg[x],
-                'alpha': alphas[us_dates.length - x - 1],
-                'bar_color': bar_colors[us_dates.length - x - 1],
-                'line_color': line_colors[us_dates.length - x - 1]
+                'date': us_dates[x],
+                'new_cases': new_cases[x],
+                'avg_new_cases': new_cases_avg[us_dates.length - x - 1],
+                'alpha': alphas[x],
+                'bar_color': bar_colors[x],
+                'line_color': line_colors[x]
             });
         }
 
@@ -225,15 +190,11 @@ function us_fxn(date) {
             avg_series.tooltipText = "7-day moving avg: {valueY}"
             avg_series.strokeWidth = 3;
             avg_series.propertyFields.stroke = "line_color";
+            avg_series.propertyFields.fill = "line_color";
             avg_series.name = "7-day moving average";
             avg_series.showOnInit = true;
 
             // create line for selected date
-            // var date_line = chart.series.push(new am4charts.LineSeries());
-            // date_line.dataFields.valueY = 100000;
-            // date_line.dataFields.dateX = chart_date;
-            // date_line.yAxis = valueAxis;
-            // date_series.strokeWidth = 2;
             var range = dateAxis.axisRanges.create();
             range.date = new Date(chart_date);
             range.grid.stroke = am4core.color("#5B5B5B");
