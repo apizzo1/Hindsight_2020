@@ -16,9 +16,9 @@ function us_fxn(date) {
     if (date < 1579737600000) { var moment_date = moment.unix(1579737600).add(1, 'days'); }
     else { var moment_date = moment.unix(date / 1000); }
 
-    // format date; yyyy-mm-dd for plotting, yyyymmdd for API calls
-    var chart_date = moment_date.format('YYYY-MM-DD');
-    var api_date = moment_date.format('YYYYMMDD');
+    // format date; yyyy-mm-dd for plotting, yyyymmdd for API calls; adding/subtracting for chart debugging
+    var chart_date = moment_date.add(1, 'days').format('YYYY-MM-DD');
+    var api_date = moment_date.subtract(1, 'days').format('YYYYMMDD');
 
     // define url for US COVID data
     var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
@@ -54,9 +54,9 @@ function us_fxn(date) {
 
                 // push grayscale colors for values after selected date
                 if (response[x].date > api_date) {
-                    alphas.push (0.7);
-                    bar_colors.push (am4core.color('#A0A0A0'));
-                    line_colors.push (am4core.color('#8D8D8D'));
+                    alphas.push (0.8);
+                    bar_colors.push (am4core.color('#CBCBCB'));
+                    line_colors.push (am4core.color('#B4B4B4'));
                 }
 
                 // isolate totals to date on selected date
@@ -163,6 +163,7 @@ function us_fxn(date) {
             dateAxis.title.text = "date";
             dateAxis.renderer.minGridDistance = 50;
             dateAxis.renderer.fullWidthTooltip = true;
+            dateAxis.renderer.grid.template.disabled = true;
     
             var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
             valueAxis.title.text = "# of cases";
@@ -180,6 +181,7 @@ function us_fxn(date) {
             case_series.columns.template.propertyFields.fillOpacity = "alpha";
             case_series.name = "daily new cases";
             case_series.showOnInit = true;
+            case_series.tooltip.pointerOrientation = 'left';
     
             // create line for rolling 7-day avg of new cases
             var avg_series = chart.series.push(new am4charts.LineSeries());
@@ -193,6 +195,7 @@ function us_fxn(date) {
             avg_series.propertyFields.fill = "line_color";
             avg_series.name = "7-day moving average";
             avg_series.showOnInit = true;
+            avg_series.tooltip.pointerOrientation = 'left';
 
             // create line for selected date
             var range = dateAxis.axisRanges.create();
