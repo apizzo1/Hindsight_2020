@@ -13,12 +13,14 @@ function find_avg(array) {
 function us_fxn(date) {
 
     // set a minimum date (1/22/2020) to accept; use moment.js for date parsing/formatting
-    if (date < 1579651200000) { var moment_date = moment.unix(1579651200).add(1, 'days'); }
-    else { var moment_date = moment.unix(date / 1000).add(1, 'days'); }
+    if (date < 1579737600000) { var moment_date = moment.unix(1579737600).add(1, 'days'); }
+    else { var moment_date = moment.unix(date / 1000); }
 
     // format date; end result should be yyyymmdd for API calls
-    var plotly_date = moment_date.format('M/DD');
+    var chart_date = moment_date.format('YYYY-MM-DD');
     var api_date = moment_date.format('YYYYMMDD');
+
+    console.log (chart_date);
 
     // define url for US COVID data
     var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
@@ -32,8 +34,8 @@ function us_fxn(date) {
     
     // blank arrays for transparency/dashes
     var alphas = [];
-    var dashes = [];
-    var colors = [];
+    var bar_colors = [];
+    var line_colors = [];
 
     // begin API call; all "death" related COVID responses can be uncommented if desired
     d3.json(us_url).then((response) => {
@@ -59,9 +61,9 @@ function us_fxn(date) {
                     us_cases1.push(cases);
                     us_cases2.push(null);
 
-                    alphas.push (0.4);
-                    dashes.push (8);
-                    colors.push (am4core.color('#A0A0A0'));
+                    alphas.push (0.7);
+                    bar_colors.push (am4core.color('#A0A0A0'));
+                    line_colors.push (am4core.color('#8D8D8D'));
                 }
 
                 else if (response[x].date == api_date) {
@@ -73,8 +75,8 @@ function us_fxn(date) {
                     us_cases2.push(null);
 
                     alphas.push (1.0);
-                    dashes.push (0);
-                    colors.push (am4core.color('#2471A3'));
+                    bar_colors.push (am4core.color('#F0B27A'));
+                    line_colors.push (am4core.color('#1A5276'));
 
                     // push select values to HTML
                     try {
@@ -93,8 +95,8 @@ function us_fxn(date) {
                     us_cases1.push(null);
 
                     alphas.push (1.0);
-                    dashes.push (0);
-                    colors.push (am4core.color('#2471A3'));
+                    bar_colors.push (am4core.color('#F0B27A'));
+                    line_colors.push (am4core.color('#1A5276'));
                 }
             }
         }
@@ -172,26 +174,26 @@ function us_fxn(date) {
                 'new_cases': all_new_cases[us_dates.length - x - 1],
                 'avg_new_cases': all_new_cases_avg[x],
                 'alpha': alphas[us_dates.length - x - 1],
-                'dash': dashes[us_dates.length - x - 1],
-                'color': colors[us_dates.length - x - 1]
+                'bar_color': bar_colors[us_dates.length - x - 1],
+                'line_color': line_colors[us_dates.length - x - 1]
             });
         }
 
-        console.log (us_data);
+        // console.log (us_data);
 
         // begin plotting bar/line chart
         am4core.ready(function () {
             
-            // amcore theme for animation   
-            am4core.useTheme(am4themes_animated);
+            // amcore theme for animation; removed d/t loading
+            // am4core.useTheme(am4themes_animated);
     
             // create XY chart
             var chart = am4core.create("us_plot", am4charts.XYChart);
     
-            // Add data
+            // add data
             chart.data = us_data;
     
-            // Create axes
+            // create axes
             var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
             dateAxis.title.text = "date";
             dateAxis.renderer.minGridDistance = 50;
@@ -199,159 +201,55 @@ function us_fxn(date) {
     
             var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
             valueAxis.title.text = "# of cases";
-
-            // Create series
+            valueAxis.cursorTooltipEnabled = false;
     
-            // sea temp series
+            // create columns for daily new cases
             var case_series = chart.series.push(new am4charts.ColumnSeries());
             case_series.dataFields.valueY = "new_cases";
             case_series.dataFields.dateX = "date";
             case_series.yAxis = valueAxis;
-            case_series.columns.template.propertyFields.fill = 'color';
+            case_series.columns.template.propertyFields.fill = 'bar_color';
             case_series.columns.template.strokeOpacity = 0;
             case_series.tooltipText = "new cases: {valueY}"
             case_series.strokeWidth = 2;
-            // case_series.columns.template.propertyFields.strokeDasharray = "dash";
             case_series.columns.template.propertyFields.fillOpacity = "alpha";
             case_series.name = "daily new cases";
             case_series.showOnInit = true;
     
-            // linregress sea level data
+            // create line for rolling 7-day avg of new cases
             var avg_series = chart.series.push(new am4charts.LineSeries());
             avg_series.dataFields.valueY = "avg_new_cases";
             avg_series.dataFields.dateX = "date";
             avg_series.yAxis = valueAxis;
+            avg_series.zIndex = 5;
             avg_series.tooltipText = "7-day moving avg: {valueY}"
-            avg_series.strokeWidth = 2;
-            // avg_series.propertyFields.strokeDasharray = "dash";
+            avg_series.strokeWidth = 3;
+            avg_series.propertyFields.stroke = "line_color";
             avg_series.name = "7-day moving average";
             avg_series.showOnInit = true;
-    
-            // // Drop-shaped tooltips
-            // sea_lvl_ml.tooltip.background.cornerRadius = 20;
-            // sea_lvl_ml.tooltip.background.strokeOpacity = 0;
-            // sea_lvl_ml.tooltip.pointerOrientation = "vertical";
-            // sea_lvl_ml.tooltip.label.minWidth = 40;
-            // sea_lvl_ml.tooltip.label.minHeight = 40;
-            // sea_lvl_ml.tooltip.label.textAlign = "middle";
-            // sea_lvl_ml.tooltip.label.textValign = "middle";
-    
-            // sea_lvl_linregress.tooltip.background.cornerRadius = 20;
-            // sea_lvl_linregress.tooltip.background.strokeOpacity = 0;
-            // sea_lvl_linregress.tooltip.pointerOrientation = "vertical";
-            // sea_lvl_linregress.tooltip.label.minWidth = 40;
-            // sea_lvl_linregress.tooltip.label.minHeight = 40;
-            // sea_lvl_linregress.tooltip.label.textAlign = "middle";
-            // sea_lvl_linregress.tooltip.label.textValign = "middle";
-    
-            // Make a panning cursor
+
+            // create line for selected date
+            // var date_line = chart.series.push(new am4charts.LineSeries());
+            // date_line.dataFields.valueY = 100000;
+            // date_line.dataFields.dateX = chart_date;
+            // date_line.yAxis = valueAxis;
+            // date_series.strokeWidth = 2;
+            var range = dateAxis.axisRanges.create();
+            range.date = new Date(chart_date);
+            range.grid.stroke = am4core.color("#5B5B5B");
+            range.grid.strokeWidth = 2;
+            range.grid.strokeOpacity = 1;
+            range.grid.strokeDasharray = 8;
+
+            // add cursor for spikeline & zooming in on bars
             chart.cursor = new am4charts.XYCursor();
-            chart.cursor.behavior = "panXY";
-            chart.cursor.xAxis = dateAxis;
-            chart.cursor = new am4charts.XYCursor();
-    
-            dateAxis.keepSelection = true;
-            chart.legend = new am4charts.Legend();
+            chart.cursor.lineY.disabled = true;
+            chart.cursor.behavior = 'zoomX';
+            
+            // dateAxis.keepSelection = true;
+            // chart.legend = new am4charts.Legend();
     
         });
-
-        // // define traces for mixed bar/line graph on plotly
-        // var trace1 = {
-        //     x: reverse_dates,
-        //     y: us_new_cases1,
-        //     type: 'bar',
-        //     name: 'new cases',
-        //     marker: {
-        //         color: 'rgba(245, 127, 23, 0.9)'
-        //     }
-        // };
-
-        // var trace2 = {
-        //     x: reverse_dates,
-        //     y: us_new_cases2,
-        //     type: 'bar',
-        //     name: 'new cases',
-        //     showlegend: false,
-        //     marker: {
-        //         color: 'rgba(97, 97, 97, 0.4)'
-        //     }
-        // };
-
-        // var trace3 = {
-        //     x: reverse_dates,
-        //     y: new_cases_avg1,
-        //     type: 'scatter',
-        //     mode: 'lines',
-        //     name: '7-day moving average',
-        //     line: {
-        //         shape: 'spline',
-        //         color: 'rgba(26, 35, 126, 1)'
-        //     }
-        // };
-
-        // var trace4 = {
-        //     x: reverse_dates,
-        //     y: new_cases_avg2,
-        //     type: 'scatter',
-        //     mode: 'lines',
-        //     name: '7-day moving average',
-        //     showlegend: false,
-        //     line: {
-        //         shape: 'spline',
-        //         color: 'rgba(97, 97, 97, 0.4)'
-        //     }
-        // };
-
-        // var trace5 = {
-        //     x: [plotly_date, plotly_date],
-        //     y: [-30, 100000],
-        //     type: 'scatter',
-        //     hoverinfo: 'name',
-        //     mode: 'lines',
-        //     name: 'selected date',
-        //     showlegend: false,
-        //     line: {
-        //         dash: 'dash',
-        //         color: 'grey'
-        //     },
-        // };
-
-        // var us_plot_data = [trace1, trace2, trace3, trace4, trace5];
-
-        // var us_plot_layout = {
-        //     title: "daily increase of COVID cases in the US",
-        //     // height: '600',
-        //     // legend/annotation config
-        //     legend: {
-        //         x: 0.5,
-        //         xanchor: 'right',
-        //         y: 0.95
-        //     },
-        //     // showlegend: false,
-        //     hovermode: 'x unified',
-        //     hoverlabel: { bgcolor: 'rgba (255, 255, 255, 0.7' },
-        //     xaxis: {
-        //         title: 'date',
-        //         showgrid: false,
-        //         // spikeline config
-        //         showspikes: true,
-        //         spikemode: 'across',
-        //         spikecolor: 'grey',
-        //         spikedistance: -1,
-        //         spikethickness: 1,
-        //         spikedash: 'dot',
-        //         // tick config
-        //         tickmode: 'auto',
-        //         nticks: 10
-        //     },
-        //     yaxis: {
-        //         range: [0, 80000],
-        //         autorange: false,
-        //         title: '# of cases'
-        //     }
-        // }
-
-        // Plotly.newPlot('us_plot', us_plot_data, us_plot_layout);
     })
 }
 
