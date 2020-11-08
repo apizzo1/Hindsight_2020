@@ -181,7 +181,7 @@ function us_fxn(date) {
             case_series.columns.template.propertyFields.fillOpacity = "alpha";
             case_series.name = "daily new cases";
             case_series.showOnInit = true;
-            case_series.tooltip.pointerOrientation = 'left';
+            case_series.tooltip.pointerOrientation = 'right';
     
             // create line for rolling 7-day avg of new cases
             var avg_series = chart.series.push(new am4charts.LineSeries());
@@ -195,7 +195,7 @@ function us_fxn(date) {
             avg_series.propertyFields.fill = "line_color";
             avg_series.name = "7-day moving average";
             avg_series.showOnInit = true;
-            avg_series.tooltip.pointerOrientation = 'left';
+            avg_series.tooltip.pointerOrientation = 'right';
 
             // create line for selected date
             var range = dateAxis.axisRanges.create();
