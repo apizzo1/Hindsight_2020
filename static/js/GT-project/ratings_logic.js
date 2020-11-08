@@ -3,7 +3,7 @@ function approval_fxn(date) {
 
     // convert date to moment.js object
     var date_moment = moment.unix(date/1000).add(1, 'days');
-    var plotly_date = date_moment.format ('M/DD');
+    var chart_date = date_moment.format ('M/DD/YY');
 
     // gather dis/approval data from https://projects.fivethirtyeight.com/trump-approval-ratings/
     var approval_csv = 'https://projects.fivethirtyeight.com/trump-approval-data/approval_topline.csv';
@@ -14,6 +14,11 @@ function approval_fxn(date) {
         var disapprovals1 = [];
         var approvals2 = [];
         var disapprovals2 = [];
+
+        var approvals = [];
+        var disapprovals = [];
+        var a_colors = [];
+        var d_colors = [];
         var poll_dates = [];
 
         // loop through responses, gather dates & approval/disapproval values
@@ -29,25 +34,39 @@ function approval_fxn(date) {
                 
                 // create full array of correctly formatted dates
                 var poll_date_moment = moment(poll_date, 'MM/DD/YYYY')
-                var poll_date_format = poll_date_moment.format ('M/DD');
-                
+                var poll_date_format = poll_date_moment.format ('M/DD/YY');
+
+                // skip dates after 2020
+                if (poll_date_moment > moment('12/31/2020', 'MM/DD/YYYY')) {
+                    continue;
+                }
+
+                // push 2020 dates & ratings to array
                 poll_dates.push(poll_date_format);
+                approvals.push (approval);
+                disapprovals.push (disapproval);
 
                 // push approval/disapproval values to respective arrays if they're before/after selected date
                 if (poll_date_moment <= date_moment) {
-                    approvals1.push(approval);
-                    disapprovals1.push(disapproval);
+                    // approvals1.push(approval);
+                    // disapprovals1.push(disapproval);
 
-                    approvals2.push(null);
-                    disapprovals2.push(null);
+                    // approvals2.push(null);
+                    // disapprovals2.push(null);
+
+                    a_colors.push (am4core.color('green'));
+                    d_colors.push (am4core.color('red'));
                 }
 
                 else if (poll_date_moment > date_moment) {
-                    approvals2.push(approval);
-                    disapprovals2.push(disapproval);
+                    // approvals2.push(approval);
+                    // disapprovals2.push(disapproval);
 
-                    approvals1.push(null);
-                    disapprovals1.push(null);
+                    // approvals1.push(null);
+                    // disapprovals1.push(null);
+                    
+                    a_colors.push (am4core.color('grey'));
+                    d_colors.push (am4core.color('grey'));
                 }
 
                 // break the loop once we've reached the end of 2020 data
@@ -58,7 +77,89 @@ function approval_fxn(date) {
         }
 
         // reverse date array for plotting
-        var reverse_dates = poll_dates.reverse()
+        // var reverse_dates = poll_dates.reverse()
+
+        var poll_data = [];
+
+        for (var x = poll_dates.length - 1; x > -1; x--) {
+            poll_data.push ({
+                'date': poll_dates[x],
+                'approvals': approvals[x],
+                'disapprovals': disapprovals[x],
+                'a_color': a_colors[x],
+                'd_color': d_colors[x]
+            });
+        }
+
+        // begin plotting bar/line chart
+        am4core.ready(function () {
+            
+            // amcore theme for animation; removed d/t loading
+            // am4core.useTheme(am4themes_animated);
+    
+            // create XY chart
+            var chart = am4core.create("approval_plot", am4charts.XYChart);
+    
+            // add data
+            chart.data = poll_data;
+    
+            // create axes
+            var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+            dateAxis.title.text = "date";
+            dateAxis.renderer.minGridDistance = 50;
+            dateAxis.renderer.fullWidthTooltip = true;
+            dateAxis.renderer.grid.template.disabled = true;
+    
+            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+            valueAxis.title.text = "% approval/disapproval";
+            valueAxis.min = 38;
+            valueAxis.max = 56;
+            valueAxis.cursorTooltipEnabled = false;
+    
+            // create line for rolling 7-day avg of new cases
+            var approval_series = chart.series.push(new am4charts.LineSeries());
+            approval_series.dataFields.valueY = "approvals";
+            approval_series.dataFields.dateX = "date";
+            approval_series.yAxis = valueAxis;
+            approval_series.zIndex = 5;
+            approval_series.tooltipText = "approval: {valueY}%"
+            approval_series.strokeWidth = 2;
+            approval_series.propertyFields.stroke = "a_color";
+            approval_series.propertyFields.fill = "a_color";
+            // approval_series.name = "7-day moving average";
+            approval_series.showOnInit = true;
+            approval_series.tooltip.pointerOrientation = 'left';
+
+            var disapproval_series = chart.series.push(new am4charts.LineSeries());
+            disapproval_series.dataFields.valueY = "disapprovals";
+            disapproval_series.dataFields.dateX = "date";
+            disapproval_series.yAxis = valueAxis;
+            disapproval_series.zIndex = 5;
+            disapproval_series.tooltipText = "disapproval: {valueY}%"
+            disapproval_series.strokeWidth = 2;
+            disapproval_series.propertyFields.stroke = "d_color";
+            disapproval_series.propertyFields.fill = "d_color";
+            // disapproval_series.name = "7-day moving average";
+            disapproval_series.showOnInit = true;
+            disapproval_series.tooltip.pointerOrientation = 'left';
+
+            // create line for selected date
+            var range = dateAxis.axisRanges.create();
+            range.date = new Date(chart_date);
+            range.grid.stroke = am4core.color("#5B5B5B");
+            range.grid.strokeWidth = 2;
+            range.grid.strokeOpacity = 1;
+            range.grid.strokeDasharray = 8;
+
+            // add cursor for spikeline & zooming in on bars
+            chart.cursor = new am4charts.XYCursor();
+            chart.cursor.lineY.disabled = true;
+            chart.cursor.behavior = 'zoomX';
+            
+            // dateAxis.keepSelection = true;
+            // chart.legend = new am4charts.Legend();
+    
+        });
 
         // create plotly object
         var trace1 = {
