@@ -198,6 +198,11 @@ function single_state_fxn(full_state, date) {
     // begin API call; all "death" related/date-specific COVID data can be uncommented if desired
     d3.json(state_url).then((response) => {
         for (var x = 0; x < response.length; x++) {
+            // skip data past selected date
+            if (response[x]['date'] > api_date) {
+                continue;
+            }
+
             date_array.push(response[x]['date']);
             case_array.push(response[x]['positive']);
             // death_array.push(response[x]['death']);
@@ -240,17 +245,35 @@ function single_state_fxn(full_state, date) {
             new_cases_avg.push(avg);
         }
 
-        // fxn to plot sparkline on HTML
-        $(function () {
-            $(`#state_cases`).sparkline(new_cases_avg, {
-                width: '200',
-                height: '60',
-                minSpotColor: false,
-                maxSpotColor: false,
-                highlightSpotColor: 'red',
-                highlightLineColor: 'red'
+        console.log (new_cases_avg.length);
+        
+        // if case data is available
+        if (new_cases_avg.length != 0) {
+
+            // clear any text if necessary
+            d3.select('#state_covid_text').text("");
+
+            // fxn to plot sparkline on HTML
+            $(function () {
+                $(`#state_cases`).sparkline(new_cases_avg, {
+                    width: '200',
+                    height: '60',
+                    minSpotColor: false,
+                    maxSpotColor: false,
+                    highlightSpotColor: 'red',
+                    highlightLineColor: 'red'
+                });
             });
-        });
+        }
+
+        // if case data is empty
+        else {
+            // clear existing sparkline
+            d3.select('#state_cases').selectAll('canvas').remove();
+
+            // leave message
+            d3.select('#state_covid_text').text("No data available for this date.");
+        }
     });
 }
 

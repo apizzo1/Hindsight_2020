@@ -1,9 +1,10 @@
 // create fxn to output dis/approval line graph, takes date as input
 function approval_fxn(date) {
 
-    // convert date to moment.js object
-    var date_moment = moment.unix(date/1000).add(1, 'days');
-    var chart_date = date_moment.format ('M/DD/YY');
+    // convert date to moment.js object; add/subtract for charting
+    var pre_date_moment = moment.unix(date/1000);
+    var chart_date = pre_date_moment.add(1, 'days').format ('M/DD/YY');
+    var date_moment = pre_date_moment.subtract(1, 'days');
 
     // gather dis/approval data from https://projects.fivethirtyeight.com/trump-approval-ratings/
     var approval_csv = 'https://projects.fivethirtyeight.com/trump-approval-data/approval_topline.csv';
