@@ -145,10 +145,43 @@ function approval_fxn(date) {
     })
 }
 
+// create fxn to change displayed getty carousel based on month
+function carousel_fxn (date) {
+
+    // convert date from slider to month
+    var date_moment = moment.unix(date/1000);
+    var month = date_moment.format('MM');
+
+    // define id variable
+    var id = `getty_${month}`;
+
+    // display getty carousel w/ ^id
+    document.getElementById(id).style.display = 'block';
+
+    // define list of months
+    var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+    // loop through months, hide all carousels other than selected one above
+    for (var x = 0; x < months.length; x++) {
+        var test_id = `getty_${months[x]}`;
+
+        // try/catch since december carousel doesn't exist yet
+        try {
+            if (test_id != id) {
+                document.getElementById(test_id).style.display = 'none';
+            }
+        }
+        catch (err) {
+            continue;
+        }
+    }
+}
+
 // initialize graph
 approval_fxn ('1577880000000');
 
 // call fxn w/ listener whenever slider changes
 dateSlider.noUiSlider.on('change', function (values, handle) {
     approval_fxn (values[handle]);
+    carousel_fxn (values[handle]);
 })

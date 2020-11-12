@@ -195,7 +195,7 @@ function us_fxn(date) {
             avg_series.propertyFields.fill = "line_color";
             avg_series.name = "7-day moving average";
             avg_series.showOnInit = true;
-            avg_series.tooltip.pointerOrientation = 'right';
+            avg_series.tooltip.pointerOrientation = 'left';
 
             // create line for selected date
             var range = dateAxis.axisRanges.create();
