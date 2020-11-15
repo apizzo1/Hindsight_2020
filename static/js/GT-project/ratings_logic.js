@@ -87,7 +87,7 @@ function approval_fxn(date) {
     
             // create axes
             var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-            dateAxis.title.text = "date";
+            // dateAxis.title.text = "date";
             dateAxis.renderer.minGridDistance = 50;
             dateAxis.renderer.fullWidthTooltip = true;
             dateAxis.renderer.grid.template.disabled = true;
@@ -177,7 +177,7 @@ function carousel_fxn (date) {
     }
 }
 
-// initialize graph
+// initialize approval rating graph
 approval_fxn ('1577880000000');
 
 // call fxn w/ listener whenever slider changes

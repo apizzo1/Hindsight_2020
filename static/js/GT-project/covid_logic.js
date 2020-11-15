@@ -160,7 +160,7 @@ function us_fxn(date) {
     
             // create axes
             var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-            dateAxis.title.text = "date";
+            // dateAxis.title.text = "date";
             dateAxis.renderer.minGridDistance = 50;
             dateAxis.renderer.fullWidthTooltip = true;
             dateAxis.renderer.grid.template.disabled = true;

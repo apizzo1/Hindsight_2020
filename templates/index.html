@@ -25,6 +25,7 @@ The above copyright notice and this permission notice shall be included in all c
   <!-- roboto font -->
   <link rel="stylesheet" type="text/css"
     href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <!-- font awesome icons -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link href="../static/css/material-kit.css?v=2.0.7" rel="stylesheet" />
@@ -76,7 +77,9 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-5'>
             <!-- start carousel card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">Worth 1,000 words</h4>
+              <h4 class="card-header card-header-primary">Worth 1,000 words 
+                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="A carousel of five select photos for the selected month, courtesy of Getty Images. Hover or click on the images to view descriptions."></a>
+              </h4>
               <div class="card-body">
                 <p class="description">One month, five dramatic photos.</p>
                 <!-- january -->
@@ -130,7 +133,9 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-7'>
             <!-- start approval ratings card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">Presidential approval ratings</h4>
+              <h4 class="card-header card-header-primary">Presidential approval ratings
+                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="Approval and disapproval ratings in 2020 for President Trump, compiled and weighted by FiveThirtyEight. Hover over the graph to view numerical values."></a>
+              </h4>
               <div class="card-body">
                 <p class="description">Compare Donald Trump's approval ratings with the current landscape.</p>
                 <div id='approval_plot' style="height: 315px;"></div>
@@ -143,7 +148,11 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-8'>
             <!-- start map card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">Wildfires & social unrest: a look at the country today</h4>
+              <h4 class="card-header card-header-primary">Wildfires & social unrest: a look at the country today
+                <span class='lg-tooltip'>
+                  <a class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="Description here. Toggle layers via the legend at the upper-right corner."></a>
+                </span>
+              </h4>
               <div class="card-body">
                 <!-- <p class="description">Explore data on ongoing protests and wildfires.</p> -->
                 <div id="map" style="width: 100%; height: 600px; margin-top: 0;"></div>
@@ -176,15 +185,17 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-4'>
             <!-- start state card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">A closer look at the states</h4>
+              <h4 class="card-header card-header-primary">A closer look at the states
+                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="State-specific data for mobility, daily new COVID cases, and monthly unemployment. Populates once a state is selected on the map. See mobility panel (below) for how to interpret."></a>
+              </h4>
               <div class="card-body">
                 <p class="description">Select a state on the map to view more specific data.</p>
                 <!-- <strong><p>State mobility:</p></strong> -->
                 <div id='statechart'></div>
                 <strong><p>Daily COVID new cases to selected date, 7-day moving average:</p></strong>
                 <p id='state_covid_text'></p>
-                <span id='state_cases'></span><br>
-                <strong><p>State unemployment:</p></strong>
+                <span id='state_cases'></span>
+                <strong><p><br>State unemployment:</p></strong>
                 <div id='stateUnemp'></div>
               </div>
             </div>
@@ -199,7 +210,11 @@ The above copyright notice and this permission notice shall be included in all c
               <div class="card-header card-header-primary">
                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                 <div class="nav-tabs-navigation">
-                  <span class="navbar-brand">U.S. spread of COVID-19</span>
+                  <span class="navbar-brand">U.S. spread of COVID-19 
+                    <span class='lg-tooltip'>
+                      <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-container='.lg-tooltip' data-placement="right" title="Graph of daily new COVID cases in the U.S. (bars) and 7-day moving average (line). Data from the COVID Tracking Project. Hover over the graph to view numerical values. See total cases and deaths to selected date in alternate tab."></a>
+                    </span>
+                  </span>
                   <div class="nav-tabs-wrapper">
                     <ul class="nav nav-tabs" data-tabs="tabs">
                       <li class="nav-item">
@@ -304,7 +319,7 @@ The above copyright notice and this permission notice shall be included in all c
       <nav class="float-left">
         <ul>
           <li>
-            <a href="https://github.com/apizzo1/Project-2">
+            <a href="https://github.com/apizzo1/Project-2" target="blank">
               Explore the GitHub repo here
             </a>
           </li>

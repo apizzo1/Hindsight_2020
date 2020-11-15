@@ -1,3 +1,26 @@
+/* tooltip formatting */
+.tooltip .tooltip-inner {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #2E2E2E;
+  text-align: left;
+  font-size: small;
+  max-width: 225px;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=right] .arrow::before, .tooltip.bs-tooltip-right .arrow::before {
+  border-right-color: rgba(255, 255, 255, 0.8);
+}
+
+.lg-tooltip .tooltip-inner {
+  max-width: 325px !important;
+}
+
+/* tooltip icon */
+.fa-info-circle {
+  color: #fff;
+  padding-left: 10px;
+}
+
 /* toggle carousel display */
 #getty_02 {
   display: none;
