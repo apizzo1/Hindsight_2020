@@ -134,7 +134,9 @@ The above copyright notice and this permission notice shall be included in all c
             <!-- start approval ratings card -->
             <div class="card">
               <h4 class="card-header card-header-primary">Presidential approval ratings
-                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="Approval and disapproval ratings in 2020 for President Trump, compiled and weighted by FiveThirtyEight. Hover over the graph to view numerical values."></a>
+                <span id='approval-tooltip'>
+                  <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-container="#approval-tooltip" data-placement="right" title="Approval and disapproval ratings in 2020 for President Trump, compiled and weighted by FiveThirtyEight. Hover over the graph to view numerical values."></a>
+                </span>
               </h4>
               <div class="card-body">
                 <p class="description">Compare Donald Trump's approval ratings with the current landscape.</p>
@@ -149,8 +151,8 @@ The above copyright notice and this permission notice shall be included in all c
             <!-- start map card -->
             <div class="card">
               <h4 class="card-header card-header-primary">Wildfires & social unrest: a look at the country today
-                <span class='lg-tooltip'>
-                  <a class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="Description here. Toggle layers via the legend at the upper-right corner."></a>
+                <span id='map-tooltip'>
+                  <a class="fas fa-info-circle" data-toggle="tooltip" data-container='#map-tooltip' data-placement="right" title="Overview of active fires, contained fires, and protests across the nation on selected date. Numerical counts for the nation and state (if selected) available in table below. Toggle layers via the legend at the upper-right corner."></a>
                 </span>
               </h4>
               <div class="card-body">
@@ -185,8 +187,8 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-4'>
             <!-- start state card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">A closer look at the states
-                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="State-specific data for mobility, daily new COVID cases, and monthly unemployment. Populates once a state is selected on the map. See mobility panel (below) for how to interpret."></a>
+              <h4 class="card-header card-header-primary">A closer look at states
+                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="State-specific data for mobility, daily new COVID cases, and monthly unemployment. Populates once a state is selected on the map. See mobility panel (below) for deatils on how to interpret."></a>
               </h4>
               <div class="card-body">
                 <p class="description">Select a state on the map to view more specific data.</p>
@@ -211,8 +213,8 @@ The above copyright notice and this permission notice shall be included in all c
                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                 <div class="nav-tabs-navigation">
                   <span class="navbar-brand">U.S. spread of COVID-19 
-                    <span class='lg-tooltip'>
-                      <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-container='.lg-tooltip' data-placement="right" title="Graph of daily new COVID cases in the U.S. (bars) and 7-day moving average (line). Data from the COVID Tracking Project. Hover over the graph to view numerical values. See total cases and deaths to selected date in alternate tab."></a>
+                    <span id='covid-tooltip'>
+                      <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-container='#covid-tooltip' data-placement="right" title="Graph of daily new COVID cases in the U.S. (bars) and 7-day moving average (line). Data from the COVID Tracking Project. Hover over the graph to view numerical values. See total cases and deaths to selected date in alternate tab."></a>
                     </span>
                   </span>
                   <div class="nav-tabs-wrapper">
@@ -254,9 +256,11 @@ The above copyright notice and this permission notice shall be included in all c
             <br>
             <!-- start mobility card, **or we could put it in the COVID navtabs** -->
             <div class="card">
-              <h4 class="card-header card-header-primary">How has COVID impacted mobility?</h4>
+              <h4 class="card-header card-header-primary">Mobility across the nation
+                <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" title="Graph that compares national data on movement to baseline measurements in January and February 2020. Data from Google (?). Hover over graph for more details."></a>
+              </h4>
               <div class="card-body">
-                <p class="description">Compare national data on movement to baseline measurements in January/February 2020.<br>The graph is available for dates after February 24, 2020.</p>
+                <p class="description">How has COVID impacted movement? Available for dates after February 24, 2020.</p>
                 <div id='mobility_plot'></div>
               </div>
             </div>
@@ -267,7 +271,11 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-6'>
             <!-- start stock data card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">Stock prices</h4>
+              <h4 class="card-header card-header-primary">Stock prices
+                <span id='stock-tooltip'>
+                  <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-container='#stock-tooltip' data-placement="right" title="Graph that compares prices of up to three select stocks (via dropdown menus) over time. Data from finnhub.io. Hover over the graph to view numerical values."></a>
+                </span>
+              </h4>
               <div class="card-body">
                 <p class="description">See how stock prices have responded to recent events.</p>
                 <table>
@@ -297,7 +305,11 @@ The above copyright notice and this permission notice shall be included in all c
           <div class='col col-12 col-lg-6'>
             <!-- start unemployment card -->
             <div class="card">
-              <h4 class="card-header card-header-primary">National unemployment</h4>
+              <h4 class="card-header card-header-primary">National unemployment
+                <span id='unemp-tooltip'>
+                  <a tabindex="0" class="fas fa-info-circle" data-toggle="tooltip" data-container='#unemp-tooltip' data-placement="right" title="Graph that compares prices of up to three select stocks (via dropdown menus) over time. Data from finnhub.io. Hover over the graph to view numerical values."></a>
+                </span>
+              </h4>
               <div class="card-body">
                 <p class="description">Compare national unemployment to the rest of the environment.</p>
                 <div class="custom-select" style="width:50%">

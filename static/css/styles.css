@@ -11,8 +11,11 @@
   border-right-color: rgba(255, 255, 255, 0.8);
 }
 
-.lg-tooltip .tooltip-inner {
-  max-width: 325px !important;
+#map-tooltip .tooltip-inner,
+#covid-tooltip .tooltip-inner,
+#approval-tooltip .tooltip-inner,
+#stock-tooltip .tooltip-inner {
+  max-width: 300px !important;
 }
 
 /* tooltip icon */
