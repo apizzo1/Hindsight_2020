@@ -1,5 +1,5 @@
 /* tooltip formatting */
-.tooltip .tooltip-inner {
+.tooltip-inner {
   background-color: rgba(255, 255, 255, 0.8);
   color: #2E2E2E;
   text-align: left;
@@ -14,7 +14,8 @@
 #map-tooltip .tooltip-inner,
 #covid-tooltip .tooltip-inner,
 #approval-tooltip .tooltip-inner,
-#stock-tooltip .tooltip-inner {
+#stock-tooltip .tooltip-inner,
+#unemp-tooltip .tooltip-inner {
   max-width: 300px !important;
 }
 
