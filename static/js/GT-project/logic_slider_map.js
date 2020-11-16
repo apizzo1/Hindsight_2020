@@ -51,7 +51,10 @@ var contained_fires_counter = 0;
 var active_fires_counter = 0;
 var protest_counter = 0;
 var state = null;
-
+// *********testing************
+var unique_contained_fires = [];
+var compare_coords = [];
+var contained_fires_test = [];
 
 // / create map object
 var myMap = L.map("map", {
@@ -118,6 +121,7 @@ function makeMap(layer1, layer2, layer3, layer4) {
 
 }
 
+
 // call init function when page loads with 1/1/20
 init(1577923200000);
 
@@ -126,6 +130,10 @@ function init(date) {
     datetoPass = date;
     // clearing previous contained fire data
     contained_fires.length = 0;
+    // *********testing************
+    unique_contained_fires.length = 0;
+    compare_coords.length = 0;
+    contained_fires_test.length = 0;
 
     // convert date for use in contained fire API call
     date_start = timeConverter(date / 1000)
@@ -138,19 +146,54 @@ function init(date) {
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
     d3.json(contained_fire_url).then(function (data) {
        
+        console.log(data.features)
+
         for (var i = 0; i < data.features.length; i++) {
             try {
+                
                 // push all contained fire points to array
-                contained_fires.push(
-                    L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { icon: contained_fire_icon })
+                // contained_fires.push(
+                //     L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { icon: contained_fire_icon })
+                // )
+                contained_fires_test.push(
+                        L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]])
                 )
+
+                // get coordinates from first polygon ring for each fire
+                var polygon_array = data.features[i].geometry.rings[0];
+                
+                // switching lat and lng positions for plotting
+                var new_poly_array = [];
+                for (var j = 0; j <polygon_array.length;j++) {
+                    var latlng = [polygon_array[j][1], polygon_array[j][0]];
+                    new_poly_array.push(latlng);
+                }
+                
+                // plot each fire's first geometry ring
+                var polygon = L.polygon(new_poly_array).addTo(myMap);
+                
+                // get center of polygon ring for plotting
+                var polygon_center = polygon.getBounds().getCenter();
+
+                // create string arrays to identify duplicate fires
+                var string_unique_contained_fires = JSON.stringify(compare_coords);
+                var string_poly_center = JSON.stringify([polygon_center.lat,polygon_center.lng]);
+                // if fire is unique, add to contained fires array, which will be plotted
+                if (string_unique_contained_fires.indexOf(string_poly_center) == -1) {
+                    compare_coords.push([polygon_center.lat,polygon_center.lng]);
+                    contained_fires.push(L.marker([polygon_center.lat,polygon_center.lng], { icon: contained_fire_icon }));
+                }
+              
             }
             // if no contained fires, catch error
             catch (err) {
                 console.log("no contained fires");
             }
-
+            
         }
+        console.log(contained_fires_test.length);
+        console.log(contained_fires.length);
+        
         // update index.html with total contained fires for selected date
         d3.select(".total_containted_fires").text(contained_fires.length);
 
@@ -189,7 +232,7 @@ function init(date) {
                     }
                     // if no previously active fires, catch error
                     catch (err) {
-                        console.log("no previosuly active fires_archive page");
+                        console.log("no previously active fires_archive page");
                     }
 
                 // clearing previous total fire data
