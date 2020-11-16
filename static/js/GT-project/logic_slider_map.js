@@ -153,7 +153,7 @@ function init(date) {
     // contained fire data API call
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
     d3.json(contained_fire_url).then(function (data) {
-
+        console.log(data);
         for (var i = 0; i < data.features.length; i++) {
             try {
 
@@ -182,12 +182,20 @@ function init(date) {
                 var polygon_center = polygon.getBounds().getCenter();
 
                 // create string arrays to identify duplicate fires
+                // https://stackoverflow.com/questions/19543514/check-whether-an-array-exists-in-an-array-of-arrays
                 var string_unique_contained_fires = JSON.stringify(compare_coords);
                 var string_poly_center = JSON.stringify([polygon_center.lat, polygon_center.lng]);
                 // if fire is unique, add to contained fires array, which will be plotted
                 if (string_unique_contained_fires.indexOf(string_poly_center) == -1) {
                     compare_coords.push([polygon_center.lat, polygon_center.lng]);
-                    contained_fires.push(L.marker([polygon_center.lat, polygon_center.lng], { icon: contained_fire_icon }));
+                    var popup_contained_fires = '';
+                    if (data.features[i].attributes["GISAcres"] == null) {
+                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: Unknown}`;
+                    }
+                    else {
+                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: ${data.features[i].attributes["GISAcres"]}`
+                    }
+                    contained_fires.push(L.marker([polygon_center.lat, polygon_center.lng], { icon: contained_fire_icon }).bindPopup(popup_contained_fires));
                 }
 
             }
@@ -239,10 +247,17 @@ function init(date) {
                     // create string arrays to identify duplicate fires
                     var string_unique_active_fires = JSON.stringify(compare_coords_active_fire);
                     var string_poly_center_active_fire = JSON.stringify([polygon_center_active_fire.lat, polygon_center_active_fire.lng]);
-                    // if fire is unique, add to contained fires array, which will be plotted
+                    // if fire is unique, add to active fires array, which will be plotted
                     if (string_unique_active_fires.indexOf(string_poly_center_active_fire) == -1) {
                         compare_coords_active_fire.push([polygon_center_active_fire.lat, polygon_center_active_fire.lng]);
-                        active_fires.push(L.marker([polygon_center_active_fire.lat, polygon_center_active_fire.lng], { icon: fire_icon }));
+                        var popup_active_fires = '';
+                        if (response.features[i].attributes["GISAcres"] == null) {
+                            popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
+                        }
+                        else {
+                            popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: ${response.features[i].attributes["GISAcres"]}`
+                        }
+                        active_fires.push(L.marker([polygon_center_active_fire.lat, polygon_center_active_fire.lng], { icon: fire_icon }).bindPopup(popup_active_fires));
                     }
 
                 }
@@ -291,10 +306,17 @@ function init(date) {
                         // create string arrays to identify duplicate fires
                         var string_unique_prev_active_fires = JSON.stringify(compare_coords_prev_active_fire);
                         var string_poly_center_prev_active_fire = JSON.stringify([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng]);
-                        // if fire is unique, add to contained fires array, which will be plotted
+                        // if fire is unique, add to previously active fires array, which will be plotted
                         if (string_unique_prev_active_fires.indexOf(string_poly_center_prev_active_fire) == -1) {
                             compare_coords_prev_active_fire.push([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng]);
-                            previously_active_fires.push(L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }));
+                            var popup_prev_active_fires = '';
+                            if (data2.features[i].attributes["GISAcres"] == null) {
+                                popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
+                            }
+                            else {
+                                popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: ${data2.features[i].attributes["GISAcres"]}`
+                            }
+                            previously_active_fires.push(L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }).bindPopup(popup_prev_active_fires));
                         }
 
                     }
