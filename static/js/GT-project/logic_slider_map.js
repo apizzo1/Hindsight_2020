@@ -618,10 +618,12 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 
     // using Moment.js for date display
     var date_select = values[handle];
-    console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
+    // console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
+    var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
     //   user date in human readable format
-    user_selected_date = timeConverter(date_select / 1000);
-    var display_date_main_page = timeConverter_display(date_select / 1000);
+    // user_selected_date = timeConverter(date_select / 1000);
+    // var display_date_main_page_old = timeConverter_display(date_select / 1000);
+    // console.log(`old display date: ${display_date_main_page_old}`);
     // update date shown on index.html
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
@@ -632,11 +634,13 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 dateSlider.noUiSlider.on('change', function (values, handle) {
     // using Moment.js for date display
     var date_select = values[handle];
-    console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
+    // console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
+    var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
     //   user date in human readable format
-    user_selected_date = timeConverter(date_select / 1000);
-    var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
-    var display_date_main_page = timeConverter_display(date_select / 1000);
+    // user_selected_date = timeConverter(date_select / 1000);
+    // var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
+    // var display_date_main_page_old = timeConverter_display(date_select / 1000);
+    // console.log(`old display date: ${display_date_main_page_old}`);
     // update date shown on index.html
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
@@ -671,9 +675,11 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 dateSlider.noUiSlider.on('slide', function (values, handle) {
     // using Moment.js for date display
     var date_select = values[handle];
-    console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
-    user_selected_date = timeConverter(date_select / 1000);
-    var display_date_main_page = timeConverter_display(date_select / 1000);
+    // console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
+    var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
+    // user_selected_date = timeConverter(date_select / 1000);
+    // var display_date_main_page_old = timeConverter_display(date_select / 1000);
+    // console.log(`old display date: ${display_date_main_page_old}`);
     // update date shown on index.html
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
