@@ -122,6 +122,8 @@ function makeMap(layer1, layer2, layer3, layer4) {
     };
 
     layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
+    // reset map view after user changes date
+    myMap.setView([39.8, -98.6], 4);
 
 }
 
@@ -153,7 +155,7 @@ function init(date) {
     // contained fire data API call
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
     d3.json(contained_fire_url).then(function (data) {
-        console.log(data);
+        // console.log(data);
         for (var i = 0; i < data.features.length; i++) {
             try {
 
@@ -190,10 +192,10 @@ function init(date) {
                     compare_coords.push([polygon_center.lat, polygon_center.lng]);
                     var popup_contained_fires = '';
                     if (data.features[i].attributes["GISAcres"] == null) {
-                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: Unknown}`;
+                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
                     }
                     else {
-                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: ${data.features[i].attributes["GISAcres"]}`
+                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: ${(data.features[i].attributes["GISAcres"]).toFixed(2)}`
                     }
                     contained_fires.push(L.marker([polygon_center.lat, polygon_center.lng], { icon: contained_fire_icon }).bindPopup(popup_contained_fires));
                 }
@@ -206,7 +208,7 @@ function init(date) {
 
         }
         // console.log(contained_fires_test.length);
-        // console.log(contained_fires.length);
+        // console.log(contained_fires);
 
         // update index.html with total contained fires for selected date
         d3.select(".total_containted_fires").text(contained_fires.length);
@@ -217,7 +219,7 @@ function init(date) {
         active_fires.length = 0;
         var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
         d3.json(active_fire_url).then(function (response) {
-
+        // console.log(response.features);
             for (var i = 0; i < response.features.length; i++) {
                 try {
                     // push all active fire points to array
@@ -255,7 +257,7 @@ function init(date) {
                             popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
                         }
                         else {
-                            popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: ${response.features[i].attributes["GISAcres"]}`
+                            popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: ${(response.features[i].attributes["GISAcres"]).toFixed(2)}`
                         }
                         active_fires.push(L.marker([polygon_center_active_fire.lat, polygon_center_active_fire.lng], { icon: fire_icon }).bindPopup(popup_active_fires));
                     }
@@ -314,7 +316,7 @@ function init(date) {
                                 popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
                             }
                             else {
-                                popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: ${data2.features[i].attributes["GISAcres"]}`
+                                popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: ${(data2.features[i].attributes["GISAcres"]).toFixed(2)}`
                             }
                             previously_active_fires.push(L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }).bindPopup(popup_prev_active_fires));
                         }
@@ -361,7 +363,7 @@ function init(date) {
                         protestMarkers.push(
                             ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
                         protest_icons.push(
-                            L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(filteredData[i]["LOCATION"]))
+                            L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`))
                     }
 
                     // update index.html with total protests for selected date
@@ -674,6 +676,12 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 
     // call map update
     init(date_select);
+    
+    // reset Map table state row to default
+    d3.select(".contained_fires").text("");
+    d3.select(".active_fires").text("");
+    d3.select(".protests").text("");
+    d3.select(".state").text("State");
     // call state functions
     if (!(state === null)) {
         stateUnemployment(state, datetoPass);
