@@ -136,17 +136,11 @@ function init(date) {
     compare_coords_prev_active_fire.length = 0;
 
     // convert date for use in contained fire API call
-    // date_start = timeConverter(date / 1000);
     date_start = moment.unix(date/1000).format('YYYY-MM-DD');
-    // console.log(date_start);
-    // console.log(moment.unix(date/1000).format('YYYY-MM-DD'));
 
     // add one day to handle slider for use in contained fire API call
     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
-    // date_end = timeConverter(plus_one_day / 1000);
     date_end = moment.unix(plus_one_day/1000).format('YYYY-MM-DD');
-    // console.log(date_end);
-    // console.log(moment.unix(plus_one_day/1000).format('YYYY-MM-DD'));
 
     // contained fire data API call
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
@@ -321,10 +315,7 @@ function init(date) {
                 protest_icons.length = 0;
 
                 // convert date into csv date format
-                // var csv_date = timeConverter_csv(date / 1000);
                 var csv_date = moment.unix(date/1000).format('DD-MMM-YYYY');
-                // console.log(`csv date: ${timeConverter_csv(date / 1000)}`);
-                // console.log(`csv date (moment): ${moment.unix(date/1000).format('DD-MMM-YYYY')}`);
 
                 //  Bring in protest data
                 d3.csv("../static/Resources/USA_2020_Sep19.csv").then(function (data) {
@@ -545,53 +536,6 @@ function init(date) {
 // slider
 // =======================================================================
 
-// source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-
-// convert time for protest data
-// function timeConverter_csv(UNIX_timestamp) {
-//     var a = new Date(UNIX_timestamp * 1000);
-//     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-//     var year = a.getFullYear();
-//     var month = months[a.getMonth()];
-//     var dates = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
-//     var date = dates[a.getDate()];
-//     var hour = a.getHours();
-//     var min = a.getMinutes();
-//     var sec = a.getSeconds();
-//     var csv_time = String(parseInt(date) - 1) + '-' + month + '-' + year;
-//     return csv_time;
-// }
-
-// convert time for fire API call
-// function timeConverter(UNIX_timestamp) {
-//     var a = new Date(UNIX_timestamp * 1000);
-//     var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-//     var year = a.getFullYear();
-//     var month = months[a.getMonth()];
-//     var date = a.getDate();
-//     var hour = a.getHours();
-//     var min = a.getMinutes();
-//     var sec = a.getSeconds();
-//     var time = year + '-' + month + '-' + date;
-//     return time;
-
-// }
-
-// convert time for html page display
-// function timeConverter_display(UNIX_timestamp) {
-//     var a = new Date(UNIX_timestamp * 1000);
-//     var months_display = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-//     var year = a.getFullYear();
-//     var month = months_display[a.getMonth()];
-//     var date = a.getDate();
-//     var hour = a.getHours();
-//     var min = a.getMinutes();
-//     var sec = a.getSeconds();
-//     var display_date = month + ' ' + date + ', ' + year;
-//     return display_date;
-
-// }
-
 // Create a new date from a string, return as a timestamp.
 // source: https://refreshless.com/nouislider/examples/
 function timestamp(str) {
@@ -624,13 +568,8 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 
     // using Moment.js for date display
     var date_select = values[handle];
-    // console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
     var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
-    //   user date in human readable format
-    // user_selected_date = timeConverter(date_select / 1000);
-    // var display_date_main_page_old = timeConverter_display(date_select / 1000);
-    // console.log(`old display date: ${display_date_main_page_old}`);
-    // update date shown on index.html
+    // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
@@ -640,14 +579,8 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 dateSlider.noUiSlider.on('change', function (values, handle) {
     // using Moment.js for date display
     var date_select = values[handle];
-    // console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
     var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
-    //   user date in human readable format
-    // user_selected_date = timeConverter(date_select / 1000);
-    // var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
-    // var display_date_main_page_old = timeConverter_display(date_select / 1000);
-    // console.log(`old display date: ${display_date_main_page_old}`);
-    // update date shown on index.html
+    // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
 
@@ -681,12 +614,8 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 dateSlider.noUiSlider.on('slide', function (values, handle) {
     // using Moment.js for date display
     var date_select = values[handle];
-    // console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
     var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
-    // user_selected_date = timeConverter(date_select / 1000);
-    // var display_date_main_page_old = timeConverter_display(date_select / 1000);
-    // console.log(`old display date: ${display_date_main_page_old}`);
-    // update date shown on index.html
+    // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
 });
