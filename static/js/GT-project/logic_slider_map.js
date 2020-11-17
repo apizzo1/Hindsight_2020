@@ -54,11 +54,6 @@ var state = null;
 var compare_coords = [];
 var compare_coords_active_fire = [];
 var compare_coords_prev_active_fire = [];
-// *********testing************
-// var unique_contained_fires = [];
-// var contained_fires_test = [];
-// var active_fires_test = [];
-// var prev_active_fire_test = [];
 
 // / create map object
 var myMap = L.map("map", {
@@ -140,12 +135,6 @@ function init(date) {
     compare_coords_active_fire.length = 0;
     compare_coords_prev_active_fire.length = 0;
 
-    // *********testing************
-    // unique_contained_fires.length = 0;
-    // contained_fires_test.length = 0;
-    // active_fires_test.length = 0;
-    // prev_active_fire_test.length = 0;
-
     // convert date for use in contained fire API call
     date_start = timeConverter(date / 1000)
 
@@ -159,14 +148,6 @@ function init(date) {
         // console.log(data);
         for (var i = 0; i < data.features.length; i++) {
             try {
-
-                // push all contained fire points to array (testing)
-                // contained_fires.push(
-                //     L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]], { icon: contained_fire_icon })
-                // )
-                // contained_fires_test.push(
-                //     L.marker([data.features[i].geometry.rings[0][0][1], data.features[i].geometry.rings[0][0][0]])
-                // )
 
                 // get coordinates from first polygon ring for each fire
                 var polygon_array = data.features[i].geometry.rings[0];
@@ -224,13 +205,6 @@ function init(date) {
         // console.log(response.features);
             for (var i = 0; i < response.features.length; i++) {
                 try {
-                    // push all active fire points to array (testing)
-                    // active_fires.push(
-                    //     L.marker([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
-                    // )
-                    // active_fires_test.push(
-                    //     L.marker([response.features[i].geometry.rings[0][0][1], response.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
-                    // )
 
                     // get coordinates from first polygon ring for each fire
                     var polygon_array_active_fire = response.features[i].geometry.rings[0];
@@ -283,14 +257,6 @@ function init(date) {
                 // console.log(data2.features);
                 for (var i = 0; i < data2.features.length; i++) {
                     try {
-                        // push all previously active fire points to array (testing)
-                        // previously_active_fires.push(
-                        //     L.marker([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
-                        // )
-
-                        // prev_active_fire_test.push(
-                        //     L.marker([data2.features[i].geometry.rings[0][0][1], data2.features[i].geometry.rings[0][0][0]], { icon: fire_icon })
-                        // )
 
                         // get coordinates from first polygon ring for each fire
                         var polygon_array_prev_active_fire = data2.features[i].geometry.rings[0];
