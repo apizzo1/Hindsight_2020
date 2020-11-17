@@ -315,7 +315,10 @@ function init(date) {
                 protest_icons.length = 0;
 
                 // convert date into csv date format
-                var csv_date = timeConverter_csv(date / 1000);
+                // var csv_date = timeConverter_csv(date / 1000);
+                var csv_date = moment.unix(date/1000).format('DD-MMM-YYYY');
+                // console.log(`csv date: ${timeConverter_csv(date / 1000)}`);
+                // console.log(`csv date (moment): ${moment.unix(date/1000).format('DD-MMM-YYYY')}`);
 
                 //  Bring in protest data
                 d3.csv("../static/Resources/USA_2020_Sep19.csv").then(function (data) {
@@ -539,19 +542,19 @@ function init(date) {
 // source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
 
 // convert time for protest data
-function timeConverter_csv(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var year = a.getFullYear();
-    var month = months[a.getMonth()];
-    var dates = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
-    var date = dates[a.getDate()];
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    var sec = a.getSeconds();
-    var csv_time = String(parseInt(date) - 1) + '-' + month + '-' + year;
-    return csv_time;
-}
+// function timeConverter_csv(UNIX_timestamp) {
+//     var a = new Date(UNIX_timestamp * 1000);
+//     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+//     var year = a.getFullYear();
+//     var month = months[a.getMonth()];
+//     var dates = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+//     var date = dates[a.getDate()];
+//     var hour = a.getHours();
+//     var min = a.getMinutes();
+//     var sec = a.getSeconds();
+//     var csv_time = String(parseInt(date) - 1) + '-' + month + '-' + year;
+//     return csv_time;
+// }
 
 // convert time for fire API call
 function timeConverter(UNIX_timestamp) {
@@ -613,7 +616,9 @@ noUiSlider.create(dateSlider, {
 // after user selects date with mouse, return date
 dateSlider.noUiSlider.on('end', function (values, handle) {
 
+    // using Moment.js for date display
     var date_select = values[handle];
+    console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     var display_date_main_page = timeConverter_display(date_select / 1000);
@@ -625,7 +630,9 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 
 // allowing user to use keyboard to change slider
 dateSlider.noUiSlider.on('change', function (values, handle) {
+    // using Moment.js for date display
     var date_select = values[handle];
+    console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
     //   user date in human readable format
     user_selected_date = timeConverter(date_select / 1000);
     var plus_one_day = parseInt(date_select) + (60 * 60 * 24 * 1000);
@@ -662,7 +669,9 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 
 // allow dates to change when handle is dragged
 dateSlider.noUiSlider.on('slide', function (values, handle) {
+    // using Moment.js for date display
     var date_select = values[handle];
+    console.log(moment.unix(date_select/1000).format('MMMM D, YYYY'));
     user_selected_date = timeConverter(date_select / 1000);
     var display_date_main_page = timeConverter_display(date_select / 1000);
     // update date shown on index.html
