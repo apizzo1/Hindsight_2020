@@ -132,6 +132,7 @@ function init(date) {
     // clearing previous contained fire data
     contained_fires.length = 0;
     compare_coords.length = 0;
+    // clearing active fire and previously active fire data
     compare_coords_active_fire.length = 0;
     compare_coords_prev_active_fire.length = 0;
 
@@ -148,7 +149,6 @@ function init(date) {
         // console.log(data);
         for (var i = 0; i < data.features.length; i++) {
             try {
-
                 // get coordinates from first polygon ring for each fire
                 var polygon_array = data.features[i].geometry.rings[0];
 
@@ -159,7 +159,7 @@ function init(date) {
                     new_poly_array.push(latlng);
                 }
 
-                // plot each fire's first geometry ring
+                // create polygon for each fire's first geometry ring
                 var polygon = L.polygon(new_poly_array);
 
                 // get center of polygon ring for plotting
@@ -172,7 +172,9 @@ function init(date) {
                 // if fire is unique, add to contained fires array, which will be plotted
                 if (string_unique_contained_fires.indexOf(string_poly_center) == -1) {
                     compare_coords.push([polygon_center.lat, polygon_center.lng]);
+                    // create popup for contained fires
                     var popup_contained_fires = '';
+                    // if acres value is null, set to "unknown"
                     if (data.features[i].attributes["GISAcres"] == null) {
                         popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
                     }
@@ -205,7 +207,6 @@ function init(date) {
         // console.log(response.features);
             for (var i = 0; i < response.features.length; i++) {
                 try {
-
                     // get coordinates from first polygon ring for each fire
                     var polygon_array_active_fire = response.features[i].geometry.rings[0];
 
@@ -216,7 +217,7 @@ function init(date) {
                         new_poly_array_active_fire.push(latlng_active_fire);
                     }
 
-                    // plot each fire's first geometry ring
+                    // create polygon for each fire's first geometry ring
                     var polygon_active_fire = L.polygon(new_poly_array_active_fire);
 
                     // get center of polygon ring for plotting
@@ -228,7 +229,9 @@ function init(date) {
                     // if fire is unique, add to active fires array, which will be plotted
                     if (string_unique_active_fires.indexOf(string_poly_center_active_fire) == -1) {
                         compare_coords_active_fire.push([polygon_center_active_fire.lat, polygon_center_active_fire.lng]);
+                        // create popup for active fires
                         var popup_active_fires = '';
+                        // if acres value is null, set to "unknown"
                         if (response.features[i].attributes["GISAcres"] == null) {
                             popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
                         }
@@ -257,7 +260,6 @@ function init(date) {
                 // console.log(data2.features);
                 for (var i = 0; i < data2.features.length; i++) {
                     try {
-
                         // get coordinates from first polygon ring for each fire
                         var polygon_array_prev_active_fire = data2.features[i].geometry.rings[0];
 
@@ -268,7 +270,7 @@ function init(date) {
                             new_poly_array_prev_active_fire.push(latlng_prev_active_fire);
                         }
 
-                        // plot each fire's first geometry ring
+                        // create polygon for each fire's first geometry ring
                         var polygon_array_prev_active_fire = L.polygon(new_poly_array_prev_active_fire);
 
                         // get center of polygon ring for plotting
@@ -280,7 +282,9 @@ function init(date) {
                         // if fire is unique, add to previously active fires array, which will be plotted
                         if (string_unique_prev_active_fires.indexOf(string_poly_center_prev_active_fire) == -1) {
                             compare_coords_prev_active_fire.push([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng]);
+                            // create popup for previously active fires
                             var popup_prev_active_fires = '';
+                            // if acres value is null, set to "unknown"
                             if (data2.features[i].attributes["GISAcres"] == null) {
                                 popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
                             }
