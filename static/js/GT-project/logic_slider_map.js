@@ -66,7 +66,7 @@ var myMap = L.map("map", {
 // set basemaps
 var baseMaps = {
     Light: light,
-    Grayscale: grayscale
+    Dark: grayscale
 };
 
 // initialize overlay maps
