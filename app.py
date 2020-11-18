@@ -6,17 +6,17 @@ import os
 import requests
 import urllib.parse
 
-# # API key introduction
-# # API_KEY = os.environ.get('API_KEY', '') 
-# finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
+# API key introduction
+# API_KEY = os.environ.get('API_KEY', '') 
+finnhub_API_Key = os.environ.get('finnhub_API_Key', '') 
 
 from flask import Flask, jsonify, render_template, request
-# db_url = os.environ.get('DATABASE_URL', '') 
-# # create engine
-# engine = create_engine(db_url)
-# # reflect DB
-# Base=automap_base()
-# Base.prepare(engine, reflect = True)
+db_url = os.environ.get('DATABASE_URL', '') 
+# create engine
+engine = create_engine(db_url)
+# reflect DB
+Base=automap_base()
+Base.prepare(engine, reflect = True)
 
 # Flask init
 app = Flask(__name__)
