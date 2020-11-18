@@ -198,16 +198,21 @@ function single_state_fxn(full_state, date) {
     // begin API call; all "death" related/date-specific COVID data can be uncommented if desired
     d3.json(state_url).then((response) => {
         for (var x = 0; x < response.length; x++) {
+
+            // skip data past selected date
+            if (moment(response[x]['date'], 'YYYY-MM-DD') > moment_date) {
+                continue;
+            }
+
             date_array.push(response[x]['date']);
             case_array.push(response[x]['positive']);
             // death_array.push(response[x]['death']);
 
-            // stop pushing values to the array when the selected date is reached, so that data only until selected date is displayed
-            if (response[x]['date'] == api_date) {
-                // var select_cases = response[x]['positive'];
-                // var select_deaths = response[x]['death'];
-                var select_index = x;
-            }
+            // isolate data for selected date if desired
+            // if (response[x]['date'] == api_date) {
+            //     var select_cases = response[x]['positive'];
+            //     var select_deaths = response[x]['death'];
+            // }
         }
 
         // create arrays for daily increases in cases
@@ -215,15 +220,11 @@ function single_state_fxn(full_state, date) {
         for (var x = (case_array.length - 2); x > -1; x--) {
             var increase = case_array[x] - case_array[x + 1];
             case_increases.push(increase);
-
-            if (x == select_index) {
-                // var select_increase = increase;
-                break;
-            }
         }
 
         // find 7-day moving avgs for a smoother sparkline
         var new_cases_avg = [];
+
         for (var x = 0; x < case_increases.length; x++) {
             var avg_array = [];
             if (x > (case_increases.length - 8)) {
@@ -239,18 +240,35 @@ function single_state_fxn(full_state, date) {
             var avg = find_avg(avg_array);
             new_cases_avg.push(avg);
         }
+        
+        // if case data is available
+        if (new_cases_avg.length != 0) {
 
-        // fxn to plot sparkline on HTML
-        $(function () {
-            $(`#state_cases`).sparkline(new_cases_avg, {
-                width: '200',
-                height: '60',
-                minSpotColor: false,
-                maxSpotColor: false,
-                highlightSpotColor: 'red',
-                highlightLineColor: 'red'
+            // clear any text if necessary
+            d3.select('#state_covid_text').text("");
+
+            // fxn to plot sparkline on HTML
+            $(function () {
+                $(`#state_cases`).sparkline(new_cases_avg, {
+                    width: '200',
+                    height: '60',
+                    minSpotColor: false,
+                    maxSpotColor: false,
+                    highlightSpotColor: 'red',
+                    highlightLineColor: 'red'
+                });
             });
-        });
+        }
+
+        // if case data is empty
+        else {
+            
+            // clear existing sparkline
+            d3.select('#state_cases').selectAll('canvas').remove();
+
+            // leave message
+            d3.select('#state_covid_text').text("No data available for this date.");
+        }
     });
 }
 

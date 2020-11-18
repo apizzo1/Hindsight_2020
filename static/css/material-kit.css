@@ -165,14 +165,14 @@ sup {
 }
 
 a {
-  color: #9c27b0;
+  color: #607D8B;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
 }
 
 a:hover {
-  color: #641971;
+  color: #607D8B;
   text-decoration: underline;
 }
 
@@ -586,14 +586,14 @@ sup {
 }
 
 a {
-  color: #9c27b0;
+  color: #fff;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
 }
 
 a:hover {
-  color: #641971;
+  color: #607D8B;
   text-decoration: underline;
 }
 
@@ -11617,7 +11617,7 @@ a {
 
 a:hover,
 a:focus {
-  color: #89229b;
+  color: whitesmoke;
   text-decoration: none;
 }
 
@@ -16931,7 +16931,7 @@ footer ul li {
 }
 
 footer ul li a {
-  color: inherit;
+  color: #000;
   padding: 0.9375rem;
   font-weight: 500;
   font-size: 12px;
@@ -16944,6 +16944,11 @@ footer ul li a {
 
 footer ul li a:hover {
   text-decoration: none;
+  color: #607D8B;
+}
+
+footer div a {
+  color: #4D646F;
 }
 
 footer ul li .btn {

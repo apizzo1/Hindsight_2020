@@ -36,9 +36,9 @@ $ python app.py
 * The [New York Times](https://www.nytimes.com/) (NYT) for front page headlines & images
 * [ACLED](https://acleddata.com/special-projects/us-crisis-monitor/) for protest location and times
 * [NIFC](https://data-nifc.opendata.arcgis.com/) for data on the spread of wildfires
-* [Economic Recovery Tracker](https://github.com/OpportunityInsights/EconomicTracker) for the mobility data
+* [Economic Recovery Tracker](https://github.com/OpportunityInsights/EconomicTracker) for mobility data
 * [U.S. Bureau of Labor Statistics, retrieved from FRED, Federal Reserve Bank of St. Louis](https://fred.stlouisfed.org/) for all unemployment data
-* [Finnhub Stock API](https://finnhub.io/) for the stock data
+* [Finnhub Stock API](https://finnhub.io/) for stock data
 
 **Libraries:**
 * [noUIslider](https://refreshless.com/nouislider/), [wNumb](https://github.com/leongersen/wnumb/releases) for slider build & optimization

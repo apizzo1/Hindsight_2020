@@ -1,27 +1,100 @@
+/* tooltip formatting */
+.tooltip-inner {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #2E2E2E;
+  text-align: left;
+  font-size: small;
+  max-width: 225px;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=right] .arrow::before, .tooltip.bs-tooltip-right .arrow::before {
+  border-right-color: rgba(255, 255, 255, 0.8);
+}
+
+#map-tooltip .tooltip-inner,
+#covid-tooltip .tooltip-inner,
+#approval-tooltip .tooltip-inner,
+#stock-tooltip .tooltip-inner,
+#unemp-tooltip .tooltip-inner {
+  max-width: 300px !important;
+}
+
+/* tooltip icon */
+.fa-info-circle {
+  color: #fff;
+  padding-left: 10px;
+}
+
+/* toggle carousel display */
+#getty_02 {
+  display: none;
+}
+
+#getty_03 {
+  display: none;
+}
+
+#getty_04 {
+  display: none;
+}
+
+#getty_05 {
+  display: none;
+}
+
+#getty_06 {
+  display: none;
+}
+
+#getty_07 {
+  display: none;
+}
+
+#getty_08 {
+  display: none;
+}
+
+#getty_09 {
+  display: none;
+}
+
+#getty_10 {
+  display: none;
+}
+
+#getty_11 {
+  display: none;
+}
+
+/* ensure that jquery sparkline fxns properly */
 .jqstooltip {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-  }
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
 
-  .fa-fire {
-    color: red;
-    /* source: https://stackoverflow.com/questions/35933260/can-we-add-border-around-the-fontawesome-icon-using-css */
-    text-shadow: 0 0 3px #000;
-  }
+/* icon styling for map */
+.fa-fire {
+  color: red;
+  /* source: https://stackoverflow.com/questions/35933260/can-we-add-border-around-the-fontawesome-icon-using-css */
+  text-shadow: 0 0 3px #000;
+}
   
-  .fa-bullhorn {
-    color: rgb(24, 226, 233);
-    text-shadow: 0 0 3px #000;
-  }
+.fa-bullhorn {
+  color: rgb(24, 226, 233);
+  text-shadow: 0 0 3px #000;
+}
 
-  .fa-fire-extinguisher {
-    color: darkgray;
-    text-shadow: 0 0 3px #000;
-  }
-  select{
-    border-color:white;
-  }
-  td{
-    text-align: center;
-  }
+.fa-fire-extinguisher {
+  color: darkgray;
+  text-shadow: 0 0 3px #000;
+}
+
+/* modify dropdown menu appearance */
+select {
+  border-color:white;
+}
+
+td {
+  text-align: center;
+}
