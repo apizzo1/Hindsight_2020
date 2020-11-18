@@ -180,7 +180,7 @@ function carousel_fxn (date) {
 // initialize approval rating graph
 approval_fxn ('1577880000000');
 
-// call fxn w/ listener whenever slider changes
+// call fxns w/ listener whenever slider changes
 dateSlider.noUiSlider.on('change', function (values, handle) {
     approval_fxn (values[handle]);
     carousel_fxn (values[handle]);
