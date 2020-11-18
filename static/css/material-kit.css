@@ -11617,7 +11617,7 @@ a {
 
 a:hover,
 a:focus {
-  color: whitesmoke;
+  color: rgb(190, 190, 190);
   text-decoration: none;
 }
 

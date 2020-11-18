@@ -98,3 +98,13 @@ select {
 td {
   text-align: center;
 }
+
+/* img formatting for footer */
+footer img {
+  max-width: 90%;
+}
+
+.icon-row i {
+  padding-left: 10px;
+  padding-right: 10px;
+}
