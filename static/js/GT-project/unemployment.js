@@ -13,8 +13,8 @@ am4core.ready(function () {
     chart.paddingRight = 10;
 
     // Flask Wrapper API call to gather the data
-    d3.json('/api/v1.0/ui_rate').then(function (unempData) {
-    // d3.csv('../static/Resources/UNRATE.csv').then(function (unempData) {
+    // d3.json('/api/v1.0/ui_rate').then(function (unempData) {
+    d3.csv('../static/Resources/UNRATE.csv').then(function (unempData) {
 
         var unempData2020 = [];
         for (var i = 864; i < unempData.length; i++) {
