@@ -100,11 +100,11 @@ td {
 }
 
 /* img formatting for footer */
-footer img {
-  max-width: 90%;
-}
+/* footer img {
+  max-width: 75%;
+} */
 
-.icon-row i {
-  padding-left: 10px;
-  padding-right: 10px;
+footer i {
+  padding-left: 5px;
+  /* padding-right: 10px; */
 }
