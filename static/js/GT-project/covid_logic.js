@@ -18,7 +18,7 @@ var first_date = moment.unix(1579737600);
 // define url for US COVID data
 var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
 
-// begin API call; all "death" related COVID responses can be uncommented if desired
+// begin API call
 d3.json(us_url).then((response) => {
 
     // format date; yyyy-mm-dd for plotting, yyyymmdd for API calls; adding/subtracting for chart debugging
@@ -28,7 +28,7 @@ d3.json(us_url).then((response) => {
     // define blank arrays to push data into
     var us_dates = [];
     var us_cases = [];
-    // var us_deaths = [];
+    var us_deaths = [];
 
     // blank arrays for transparency & color settings for plotting
     var alphas = [];
@@ -39,7 +39,7 @@ d3.json(us_url).then((response) => {
         var test_date = moment(response[x].date, 'YYYY-MM-DD')
         var date = test_date.format('M/DD/YY');
         var cases = response[x].positive;
-        // var deaths = response[x].death;
+        var deaths = response[x].death;
 
         // skip over data not in 2020; json data starts at most recent date then backwards
         if (test_date > moment('2020-12-31', 'YYYY-MM-DD')) {
@@ -50,7 +50,7 @@ d3.json(us_url).then((response) => {
             // push date & total case values to respective arrays
             us_dates.push(date);
             us_cases.push(cases);
-            // us_deaths.push (deaths);
+            us_deaths.push (deaths);
 
             // push grayscale colors for values after selected date
             if (response[x].date > first_api_date) {
@@ -206,28 +206,27 @@ d3.json(us_url).then((response) => {
         else { var moment_date = moment.unix(new_date / 1000); }
 
         var chart_date = moment_date.add(1, 'days').format('YYYY-MM-DD');
-        var api_date = moment_date.subtract(1, 'days');
+        var select_date = moment_date.subtract(1, 'days').format('YYYY-MM-DD');
 
         var new_alphas = [];
         var new_bar_colors = [];
         var new_line_colors = [];
 
         for (var x = 0; x < us_dates.length; x++) {
-            var list_date = us_dates[x];
-            var moment_list_date = moment (list_date, 'M/DD/YY');
+            var loop_date = moment(us_dates[x], 'M/DD/YY').format('YYYY-MM-DD');
 
             // push grayscale colors for values after selected date
-            if (moment_list_date > api_date) {
+            if (loop_date > select_date) {
                 new_alphas.push(0.8);
                 new_bar_colors.push(am4core.color('#CBCBCB'));
                 new_line_colors.push(am4core.color('#B4B4B4'));
             }
 
             // isolate totals to date on selected date
-            else if (moment_list_date == api_date) {
-                // var date_index = x;
-                var select_cases = response[x].positive;
-                var select_deaths = response[x].death;
+            else if (loop_date == select_date) {
+
+                var select_cases = us_cases[x];
+                var select_deaths = us_deaths[x];
 
                 // push brighter colors for values before selected date
                 new_alphas.push(1.0);
