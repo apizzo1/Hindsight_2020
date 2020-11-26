@@ -487,7 +487,7 @@ function init(date) {
 
                     // function to update state information when new date is clicked
                     function dateUpdate(state) {
-                        console.log(`state passed: ${state}`);
+                        
                         // reset counters;
                         contained_fires_counter = 0;
                         active_fires_counter = 0;
@@ -495,7 +495,7 @@ function init(date) {
                      
                         // getting state polygon coordinates using state dictionary
                         var state_index = state_dict[state];
-                        console.log(`State index ${state_index}`);
+                        
                         var polygon_coords = statesData.features[state_index].geometry.coordinates;
                         var final_coords = [];
                         // switching lat and long for final coords
@@ -590,8 +590,6 @@ function init(date) {
                                 }
                             }
                         }
-
-                        console.log(`Test ${active_fires_counter}`);
 
                         // update the national and state information on html when state is clicked
                         d3.select(".contained_fires").text(contained_fires_counter);
