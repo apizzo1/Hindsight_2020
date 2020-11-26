@@ -117,8 +117,6 @@ function makeMap(layer1, layer2, layer3, layer4) {
     };
 
     layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
-    // reset map view after user changes date
-    myMap.setView([39.8, -98.6], 4);
 
 }
 
@@ -137,11 +135,11 @@ function init(date) {
     compare_coords_prev_active_fire.length = 0;
 
     // convert date for use in contained fire API call
-    date_start = moment.unix(date/1000).format('YYYY-MM-DD');
+    date_start = moment.unix(date / 1000).format('YYYY-MM-DD');
 
     // add one day to handle slider for use in contained fire API call
     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
-    date_end = moment.unix(plus_one_day/1000).format('YYYY-MM-DD');
+    date_end = moment.unix(plus_one_day / 1000).format('YYYY-MM-DD');
 
     // contained fire data API call
     var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
@@ -204,7 +202,7 @@ function init(date) {
         active_fires.length = 0;
         var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
         d3.json(active_fire_url).then(function (response) {
-        // console.log(response.features);
+            // console.log(response.features);
             for (var i = 0; i < response.features.length; i++) {
                 try {
                     // get coordinates from first polygon ring for each fire
@@ -319,7 +317,7 @@ function init(date) {
                 protest_icons.length = 0;
 
                 // convert date into csv date format
-                var csv_date = moment.unix(date/1000).format('DD-MMM-YYYY');
+                var csv_date = moment.unix(date / 1000).format('DD-MMM-YYYY');
 
                 //  Bring in protest data
                 d3.csv("../static/Resources/USA_2020_Sep19.csv").then(function (data) {
@@ -356,6 +354,11 @@ function init(date) {
                     // call makeMap function
                     makeMap(containedFireLayer, protestMarkers, activeFireLayer, protestLayer_icon);
 
+                    // call function to update state info row when new date is selected
+                    if (d3.select(".state")._groups[0][0].innerText != "State") {
+                        dateUpdate(d3.select(".state")._groups[0][0].innerText);
+                    }
+                    
                     // make map interactive 
                     // source: https://leafletjs.com/examples/choropleth/
 
@@ -475,14 +478,125 @@ function init(date) {
                             }
                         }
 
+                        // update the state information on html when state is clicked
+                        d3.select(".contained_fires").text(contained_fires_counter);
+                        d3.select(".active_fires").text(active_fires_counter);
+                        d3.select(".protests").text(protest_counter);
+                        d3.select(".state").text(state);
+                    }
+
+                    // function to update state information when new date is clicked
+                    function dateUpdate(state) {
+                        console.log(`state passed: ${state}`);
+                        // reset counters;
+                        contained_fires_counter = 0;
+                        active_fires_counter = 0;
+                        protest_counter = 0;
+                     
+                        // getting state polygon coordinates using state dictionary
+                        var state_index = state_dict[state];
+                        console.log(`State index ${state_index}`);
+                        var polygon_coords = statesData.features[state_index].geometry.coordinates;
+                        var final_coords = [];
+                        // switching lat and long for final coords
+                        for (i = 0; i < polygon_coords[0].length; i++) {
+                            var update_coord = [polygon_coords[0][i][1], polygon_coords[0][i][0]];
+                            final_coords.push(update_coord);
+                        }
+
+                        var state_check = L.polygon(final_coords);
+
+                        // find markers within clicked state 
+                        // contained fires
+                        for (var i = 0; i < contained_fires.length; i++) {
+                            // special requirements for Alaska (multipolygon)
+                            if (state_index == 1) {
+                                if (contained_fires[i]._latlng.lat > 52) {
+                                    contained_fires_counter = contained_fires_counter + 1;
+                                }
+                            }
+                            // special requirements for Hawaii (multipolygon)
+                            if (state_index == 11) {
+                                if ((contained_fires._latlng.lng < -126) && (contained_fires._latlng.lat < 50)) {
+                                    contained_fires_counter = contained_fires_counter + 1;
+                                }
+                            }
+                            // special requirements for Michigan (multipolygon)
+                            if (state_index == 22) {
+                                if ((contained_fires[i]._latlng.lng > -87) && (contained_fires[i]._latlng.lat > 41.8) && (contained_fires[i]._latlng.lng < -82.5)) {
+                                    contained_fires_counter = contained_fires_counter + 1;
+                                }
+                            }
+                            // all other states check
+                            else {
+                                var marker_inside_polygon = state_check.contains(contained_fires[i].getLatLng());
+
+                                if (marker_inside_polygon) {
+                                    contained_fires_counter = contained_fires_counter + 1;
+                                }
+                            }
+                        }
+
+                        // active fires
+                        for (var i = 0; i < total_active_fires.length; i++) {
+                            if (state_index == 1) {
+                                if (total_active_fires[i]._latlng.lat > 52) {
+                                    active_fires_counter = active_fires_counter + 1;
+                                }
+                            }
+                            if (state_index == 11) {
+                                if ((total_active_fires._latlng.lng < -126) && (total_active_fires._latlng.lat < 50)) {
+                                    active_fires_counter = active_fires_counter + 1;
+                                }
+                            }
+
+                            if (state_index == 22) {
+                                if ((total_active_fires[i]._latlng.lng > -87) && (total_active_fires[i]._latlng.lat > 41.8) && (total_active_fires[i]._latlng.lng < -82.5)) {
+                                    active_fires_counter = active_fires_counter + 1;
+                                }
+                            }
+
+                            else {
+                                var marker_inside_polygon1 = state_check.contains(total_active_fires[i].getLatLng());
+                                if (marker_inside_polygon1) {
+                                    active_fires_counter = active_fires_counter + 1;
+                                }
+                            }
+                        }
+
+                        // protest data
+                        for (var i = 0; i < protest_icons.length; i++) {
+                            if (state_index == 1) {
+                                if (protest_icons[i]._latlng.lat > 52) {
+                                    protest_counter = protest_counter + 1;
+                                }
+                            }
+                            if (state_index == 11) {
+                                if ((protest_icons._latlng.lng < -126) && (protest_icons._latlng.lat < 50)) {
+                                    protest_counter = protest_counter + 1;
+                                }
+                            }
+
+                            if (state_index == 22) {
+                                if ((protest_icons[i]._latlng.lng > -87) && (protest_icons[i]._latlng.lat > 41.8) && (protest_icons[i]._latlng.lng < -82.5)) {
+                                    protest_counter = protest_counter + 1;
+                                }
+                            }
+
+                            else {
+                                var marker_inside_polygon2 = state_check.contains(protest_icons[i].getLatLng());
+                                if (marker_inside_polygon2) {
+                                    protest_counter = protest_counter + 1;
+                                }
+                            }
+                        }
+
+                        console.log(`Test ${active_fires_counter}`);
+
                         // update the national and state information on html when state is clicked
                         d3.select(".contained_fires").text(contained_fires_counter);
                         d3.select(".active_fires").text(active_fires_counter);
                         d3.select(".protests").text(protest_counter);
-                        d3.select(".total_containted_fires").text(contained_fires.length);
-                        d3.select(".total_active_fires").text(total_active_fires.length);
-                        d3.select(".total_protests").text(protestMarkers.length);
-                        d3.select(".state").text(state);
                     }
 
 
@@ -572,7 +686,7 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 
     // using Moment.js for date display
     var date_select = values[handle];
-    var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
+    var display_date_main_page = moment.unix(date_select / 1000).format('MMMM D, YYYY');
     // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
@@ -583,7 +697,7 @@ dateSlider.noUiSlider.on('end', function (values, handle) {
 dateSlider.noUiSlider.on('change', function (values, handle) {
     // using Moment.js for date display
     var date_select = values[handle];
-    var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
+    var display_date_main_page = moment.unix(date_select / 1000).format('MMMM D, YYYY');
     // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
@@ -600,12 +714,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 
     // call map update
     init(date_select);
-    
-    // reset Map table state row to default
-    d3.select(".contained_fires").text("");
-    d3.select(".active_fires").text("");
-    d3.select(".protests").text("");
-    d3.select(".state").text("State");
+
     // call state functions
     if (!(state === null)) {
         stateUnemployment(state, datetoPass);
@@ -618,7 +727,7 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
 dateSlider.noUiSlider.on('slide', function (values, handle) {
     // using Moment.js for date display
     var date_select = values[handle];
-    var display_date_main_page = moment.unix(date_select/1000).format('MMMM D, YYYY');
+    var display_date_main_page = moment.unix(date_select / 1000).format('MMMM D, YYYY');
     // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
 
