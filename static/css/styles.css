@@ -98,3 +98,10 @@ select {
 td {
   text-align: center;
 }
+
+/* format for footer icons */
+
+footer i {
+  padding-left: 5px;
+  /* padding-right: 10px; */
+}
