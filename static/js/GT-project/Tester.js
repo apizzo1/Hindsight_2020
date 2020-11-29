@@ -55,6 +55,7 @@ var compare_coords = [];
 var compare_coords_active_fire = [];
 var compare_coords_prev_active_fire = [];
 var compare_coords_protests = [];
+// map layer groups 
 var containedFireLayer = new L.LayerGroup();
 var activeFireLayer = new L.LayerGroup();
 var protestIconLayer = new L.LayerGroup();
@@ -79,7 +80,7 @@ var myMap = L.map("map", {
     // center of the United States
     center: [39.8, -98.6],
     zoom: 4,
-    layers: [light, containedFireLayer]
+    layers: [light, activeFireLayer]
 });
 
 // adding layer control to map
@@ -141,7 +142,7 @@ function init(date) {
     active_fires.length = 0;
     var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
     d3.json(active_fire_url).then(function (response) {
-        console.log(response.features.length);
+        // console.log(response.features.length);
         var active_fire_markers;
         for (var i = 0; i < response.features.length; i++) {
             try {
@@ -195,7 +196,7 @@ function init(date) {
         // previously active fires API call
         var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
         d3.json(previously_active_fire_url).then(function (data2) {
-            console.log(data2.features.length);
+            // console.log(data2.features.length);
             var prev_active_fire_marker;
             for (var i = 0; i < data2.features.length; i++) {
                 try {
@@ -230,7 +231,7 @@ function init(date) {
                         else {
                             popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: ${(data2.features[i].attributes["GISAcres"]).toFixed(2)}`
                         }
-                        // push all previously active fire points to array and active fire array
+                        // push all previously active fire points to array and active fire layer
                         previously_active_fires.push(L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }).bindPopup(popup_prev_active_fires));
                         prev_active_fire_marker = L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }).bindPopup(popup_prev_active_fires);
                         activeFireLayer.addLayer(prev_active_fire_marker);
@@ -253,7 +254,7 @@ function init(date) {
             // contained fire data API call
             var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
             d3.json(contained_fire_url).then(function (data) {
-                console.log(data.features.length);
+                // console.log(data.features.length);
                 var contained_fire_markers;
                 for (var i = 0; i < data.features.length; i++) {
                     try {
