@@ -54,6 +54,7 @@ var state = null;
 var compare_coords = [];
 var compare_coords_active_fire = [];
 var compare_coords_prev_active_fire = [];
+var compare_coords_protests = [];
 var containedFireLayer = new L.LayerGroup();
 var activeFireLayer = new L.LayerGroup();
 var protestIconLayer = new L.LayerGroup();
@@ -124,6 +125,8 @@ function init(date) {
     // clearing active fire and previously active fire data
     compare_coords_active_fire.length = 0;
     compare_coords_prev_active_fire.length = 0;
+    // clearing protest data
+    compare_coords_protests.length = 0;
 
     // convert date for use in contained fire API call
     date_start = moment.unix(date / 1000).format('YYYY-MM-DD');
@@ -316,7 +319,7 @@ function init(date) {
                 d3.csv("../static/Resources/USA_2020_Sep19.csv").then(function (data) {
                     // filter for user selected date
                     var protest_marker;
-                   
+
                     // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
                     var filteredData = data.filter(function (d) {
                         if (d["EVENT_DATE"] == csv_date) {
@@ -326,16 +329,25 @@ function init(date) {
 
                     for (var i = 0; i < filteredData.length; i++) {
 
-                        // push protest markers to arrays (one for heat map and one for icons)
-                        protestMarkers_heat.push(
-                            ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]));
-                     
-                        protest_icons.push(
-                            L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`));
-                        protest_marker = L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`);
-                        protestIconLayer.addLayer(protest_marker);
+                        // create string arrays to identify duplicate protests
+                        var string_unique_protests = JSON.stringify(compare_coords_protests);
+                        var string_protests_locations = JSON.stringify([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]);
+                        // if protest is unique, add to protest array, which will be plotted
+                        if (string_unique_protests.indexOf(string_protests_locations) == -1) {
+                            compare_coords_protests.push([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]);
+
+                            // push protest markers to arrays (one for heat map, one for counting protests, and one for plotting layer)
+                            protestMarkers_heat.push(
+                                ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]));
+
+                            protest_icons.push(
+                                L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`));
+                            protest_marker = L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`);
+                            protestIconLayer.addLayer(protest_marker);
+                        }
+
                     }
-                    
+
                     // heat map information
                     var heat_layer = L.heatLayer(protestMarkers_heat, {
                         radius: 35,
