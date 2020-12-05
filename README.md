@@ -34,7 +34,7 @@ $ python app.py
 * [FiveThirtyEight](https://projects.fivethirtyeight.com/trump-approval-ratings/) for President Trump's approval ratings
 * [Getty Images](https://www.gettyimages.com/editorial-images) for 5-image slideshows for each month
 * [New York Times](https://www.nytimes.com/) (NYT) for front page headlines & images
-* [Armed Conflict Location & Event Data Project](https://acleddata.com/special-projects/us-crisis-monitor/) (ACLED) for protest location and times
+* [Armed Conflict Location & Event Data Project](https://acleddata.com/special-projects/us-crisis-monitor/) (ACLED) for protest location & times
 * [National Interagency Fire Center](https://data-nifc.opendata.arcgis.com/) (NIFC) for data on the spread & containment of wildfires
 * [Opportunity Insights Economic Tracker](https://github.com/OpportunityInsights/EconomicTracker) for national & state mobility data
 * [U.S. Bureau of Labor Statistics](https://www.bls.gov/) via [FRED, Federal Reserve Bank of St. Louis](https://fred.stlouisfed.org/series/UNRATE) for monthly national & state unemployment data
