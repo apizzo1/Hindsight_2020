@@ -128,7 +128,7 @@ d3.json(us_url).then((response) => {
             'avg_new_cases': new_cases_avg[us_dates.length - x - 1],
             'alpha': alphas[x],
             'bar_color': bar_colors[x],
-            'line_color': line_colors[x]
+            'line_color': line_colors[x],
         });
     }
 
@@ -168,6 +168,8 @@ d3.json(us_url).then((response) => {
     case_series.name = "daily new cases";
     case_series.showOnInit = true;
     case_series.tooltip.pointerOrientation = 'right';
+    case_series.columns.template.tooltipY = am4core.percent(50);
+    // case_series.tooltip.dy = 10;
 
     // create line for rolling 7-day avg of new cases
     var avg_series = chart.series.push(new am4charts.LineSeries());
@@ -181,7 +183,8 @@ d3.json(us_url).then((response) => {
     avg_series.propertyFields.fill = "line_color";
     avg_series.name = "7-day moving average";
     avg_series.showOnInit = true;
-    avg_series.tooltip.pointerOrientation = 'left';
+    avg_series.tooltip.pointerOrientation = 'right';
+    // avg_series.tooltip.dy = -50;
 
     // create line for selected date
     var range = dateAxis.axisRanges.create();

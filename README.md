@@ -30,21 +30,21 @@ $ python app.py
 ## Resources, Libraries, & Tools
 
 **Data sources:**
-* [The COVID Tracking Project](https://covidtracking.com/) for national data on COVID-19
+* [COVID Tracking Project](https://covidtracking.com/) for national & state data on COVID-19
 * [FiveThirtyEight](https://projects.fivethirtyeight.com/trump-approval-ratings/) for President Trump's approval ratings
-* [Getty Images](https://www.gettyimages.com/editorial-images) for a brief slideshow
-* The [New York Times](https://www.nytimes.com/) (NYT) for front page headlines & images
-* [ACLED](https://acleddata.com/special-projects/us-crisis-monitor/) for protest location and times
-* [NIFC](https://data-nifc.opendata.arcgis.com/) for data on the spread of wildfires
-* [Economic Recovery Tracker](https://github.com/OpportunityInsights/EconomicTracker) for mobility data
-* [U.S. Bureau of Labor Statistics, retrieved from FRED, Federal Reserve Bank of St. Louis](https://fred.stlouisfed.org/) for all unemployment data
+* [Getty Images](https://www.gettyimages.com/editorial-images) for 5-image slideshows for each month
+* [New York Times](https://www.nytimes.com/) (NYT) for front page headlines & images
+* [Armed Conflict Location & Event Data Project](https://acleddata.com/special-projects/us-crisis-monitor/) (ACLED) for protest location and times
+* [National Interagency Fire Center](https://data-nifc.opendata.arcgis.com/) (NIFC) for data on the spread & containment of wildfires
+* [Opportunity Insights Economic Tracker](https://github.com/OpportunityInsights/EconomicTracker) for national & state mobility data
+* [U.S. Bureau of Labor Statistics](https://www.bls.gov/) via [FRED, Federal Reserve Bank of St. Louis](https://fred.stlouisfed.org/series/UNRATE) for monthly national & state unemployment data
 * [Finnhub Stock API](https://finnhub.io/) for stock data
 
 **Libraries:**
 * [noUIslider](https://refreshless.com/nouislider/), [wNumb](https://github.com/leongersen/wnumb/releases) for slider build & optimization
 * [Leaflet](https://leafletjs.com/index.html), [Leaflet PointInPolygon](https://github.com/hayeswise/Leaflet.PointInPolygon), [Leaflet Heat Map](https://github.com/Leaflet/Leaflet.heat), [Leaflet US Choropleth](https://leafletjs.com/examples/choropleth/us-states.js), [Mapbox](https://docs.mapbox.com/api/maps/#styles) for mapping
 * [Font Awesome](https://fontawesome.com/) for map icon symbols
-* [Plotly for JavaScript](https://plotly.com/javascript/), [jQuery Sparklines](https://omnipotent.net/jquery.sparkline/) for charting visualizations
+* [Plotly for JavaScript](https://plotly.com/javascript/), [amCharts](https://www.amcharts.com/), [jQuery Sparklines](https://omnipotent.net/jquery.sparkline/) for charting visualizations
 * [moment.js](https://momentjs.com/) for time manipulation
 
 **Tools & languages:** JavaScript, HTML, CSS, Python Flask, Jupyter Notebook, PostgreSQL
@@ -54,11 +54,11 @@ $ python app.py
 ## Features
 After running the Flask application, begin exploring the data by dragging the timeline slider and selecting a date at the upper-right corner of the page. This slider will continue to be available at the top of the page even after scrolling down. Below, you should see the visualizations respond.
 
-The image at the top of the page and the headline will reflect the front page article of the **New York Times**. The images (courtesy of Getty Images) in the slideshow are static; just a glimpse of major photos from the year.
+The image at the top of the page and the headline will reflect the **New York Times front page article**. More images are available in a five-image **Getty Images slideshow** that changes based on the month of the selected date.
 
 **Presidential approval and disapproval ratings** are fully visible and interactive, and the selected date is emphasized.
 
-**Ongoing wildfires, contained wildfires, and protests** can be viewed and toggled on the interactive map. State borders are also visible and hoverable. If you click on a state, the panel next to it will populate state-specific values on COVID-19 growth, unemployment, and baseline changes in mobility, all specific to the selected date. A table below will display the total contained/active fires and total protests on the selected date, both nationally as well as for the selected state.
+**Ongoing wildfires, contained wildfires, and protests** can be viewed and toggled on the interactive map. State borders are also visible and hoverable. If a state is clicked, the panel next to it will populate **state-specific information** on COVID-19 growth, unemployment, and baseline changes in mobility, all specific to the selected date. A table below the map will display the total contained/active fires and total protests on the selected date, both nationally as well as for the selected state. *Note*: the map may require additional loading time.
 
 **National COVID-19 data** can be viewed by daily case increases or total cases and deaths up to the selected date. The mixed bar/line graph can be hovered over for details.
 
@@ -66,7 +66,7 @@ The image at the top of the page and the headline will reflect the front page ar
 
 **Select stock prices** are displayed in a line graph with the selected date highlighted, where they can be compared with up to two other stocks via dropdown menus.
 
-Finally, **national unemployment rates** are displayed by month. Data is highlighted from the beginning of 2020 to the selected date. The national average can be compared to other populations selected from a dropdown menu.
+Finally, **national unemployment rates** are displayed by month. The national average is shown first. Other demographic comparisons can be toggled via the legend below.
 
 ## Analyses & Discussion
 As a whole, our dashboard is equipped for you to draw numerous observations about interrelations among each of our featured sections. Given the vast amount of available trends, it is impractical to analyze every significant pattern. As such, we've only listed a handful of noteworthy examples of interrelations that we observed, but we encourage you all to go through the timeline and explore the data yourselves.
@@ -81,11 +81,10 @@ As a whole, our dashboard is equipped for you to draw numerous observations abou
 
 ## Future Considerations
 Some tasks we'd like to build on in future commits:
-* Making Getty image carousel dynamic based on the slider date
 * Making a loading screen for better transition when data is loading
 * Incorporating animation using anime.js
 * Optimizing SQL databases to integrate data more effectively and to pull data more efficiently
 * Incorporating media queries to make the dashboard responsive to different screen sizes
 * Allowing the user to select how to view the national unemployment data 
-* Finding more quantifiable/manageable data for tags trending online, air pollution (to add to our map), hate crimes, & other possibly interesting items
+* Finding more quantifiable/manageable data for tags trending online, air pollution (to add to our map), hate crimes, & other possibly interesting analyses
 * Broadening our scope of observation by allowing users to select a range of dates (rather than a single date), & exploring global data 
