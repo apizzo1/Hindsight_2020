@@ -10,7 +10,6 @@ var light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}
     accessToken: API_KEY
 });
 
-
 // grayscale layer
 var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -22,6 +21,7 @@ var grayscale = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}
 });
 
 // map boundary styling
+// source: https://leafletjs.com/examples/choropleth/
 function style(feature) {
     return {
         fillColor: "white",
@@ -38,7 +38,7 @@ var contained_fires = [];
 var active_fires = [];
 var previously_active_fires = [];
 var total_active_fires = [];
-var protestMarkers = [];
+var protestMarkers_heat = [];
 var protest_icons = [];
 var slider_div = d3.select("#slider-date");
 var dateSlider = document.getElementById('slider-date');
@@ -54,14 +54,12 @@ var state = null;
 var compare_coords = [];
 var compare_coords_active_fire = [];
 var compare_coords_prev_active_fire = [];
-
-// / create map object
-var myMap = L.map("map", {
-    // center of the United States
-    center: [39.8, -98.6],
-    zoom: 4,
-    layers: light
-});
+var compare_coords_protests = [];
+// map layer groups 
+var containedFireLayer = new L.LayerGroup();
+var activeFireLayer = new L.LayerGroup();
+var protestIconLayer = new L.LayerGroup();
+var heat = new L.LayerGroup();
 
 // set basemaps
 var baseMaps = {
@@ -69,8 +67,21 @@ var baseMaps = {
     Dark: grayscale
 };
 
-// initialize overlay maps
-var overlayMaps = {};
+// set overlay maps
+var overlayMaps = {
+    "Active Fires": activeFireLayer,
+    "Fires Contained": containedFireLayer,
+    Protests: protestIconLayer,
+    "Protests heat map": heat
+};
+
+// / create map object
+var myMap = L.map("map", {
+    // center of the United States
+    center: [39.8, -98.6],
+    zoom: 4,
+    layers: [light, activeFireLayer]
+});
 
 // adding layer control to map
 var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);;
@@ -96,43 +107,27 @@ var protest_icon = L.divIcon({
     className: 'protestIcon'
 });
 
-// create map function
-function makeMap(layer1, layer2, layer3, layer4) {
-
-    // heat map information
-    var heat = L.heatLayer(layer2, {
-        radius: 35,
-        blur: 15,
-    });
-
-    //   remove previous layer control box
-    layerControl.remove(overlayMaps);
-
-    // adding overlay layers for user to select
-    var overlayMaps = {
-        "Active Fires": layer3,
-        "Fires Contained": layer1,
-        Protests: layer4,
-        "Protests heat map": heat
-    };
-
-    layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(myMap);
-
-}
-
-
 // call init function when page loads with 1/1/20
 init(1577923200000);
 
 function init(date) {
     // set date to pass to other functions (from slider handle read)
     datetoPass = date;
+
+    // clear existing layers
+    containedFireLayer.clearLayers();
+    activeFireLayer.clearLayers();
+    heat.clearLayers();
+    protestIconLayer.clearLayers();
+
     // clearing previous contained fire data
     contained_fires.length = 0;
     compare_coords.length = 0;
     // clearing active fire and previously active fire data
     compare_coords_active_fire.length = 0;
     compare_coords_prev_active_fire.length = 0;
+    // clearing protest data
+    compare_coords_protests.length = 0;
 
     // convert date for use in contained fire API call
     date_start = moment.unix(date / 1000).format('YYYY-MM-DD');
@@ -141,68 +136,19 @@ function init(date) {
     var plus_one_day = parseInt(date) + (60 * 60 * 24 * 1000);
     date_end = moment.unix(plus_one_day / 1000).format('YYYY-MM-DD');
 
-    // contained fire data API call
-    var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-    d3.json(contained_fire_url).then(function (data) {
-        // console.log(data);
-        for (var i = 0; i < data.features.length; i++) {
-            try {
-                // get coordinates from first polygon ring for each fire
-                var polygon_array = data.features[i].geometry.rings[0];
+    // active fires API call
 
-                // switching lat and lng positions for plotting
-                var new_poly_array = [];
-                for (var j = 0; j < polygon_array.length; j++) {
-                    var latlng = [polygon_array[j][1], polygon_array[j][0]];
-                    new_poly_array.push(latlng);
-                }
-
-                // create polygon for each fire's first geometry ring
-                var polygon = L.polygon(new_poly_array);
-
-                // get center of polygon ring for plotting
-                var polygon_center = polygon.getBounds().getCenter();
-
-                // create string arrays to identify duplicate fires
-                // https://stackoverflow.com/questions/19543514/check-whether-an-array-exists-in-an-array-of-arrays
-                var string_unique_contained_fires = JSON.stringify(compare_coords);
-                var string_poly_center = JSON.stringify([polygon_center.lat, polygon_center.lng]);
-                // if fire is unique, add to contained fires array, which will be plotted
-                if (string_unique_contained_fires.indexOf(string_poly_center) == -1) {
-                    compare_coords.push([polygon_center.lat, polygon_center.lng]);
-                    // create popup for contained fires
-                    var popup_contained_fires = '';
-                    // if acres value is null, set to "unknown"
-                    if (data.features[i].attributes["GISAcres"] == null) {
-                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
-                    }
-                    else {
-                        popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: ${(data.features[i].attributes["GISAcres"]).toFixed(2)}`
-                    }
-                    // push all contained fire points to array
-                    contained_fires.push(L.marker([polygon_center.lat, polygon_center.lng], { icon: contained_fire_icon }).bindPopup(popup_contained_fires));
-                }
-
-            }
-            // if no contained fires, catch error
-            catch (err) {
-                console.log("no contained fires");
-            }
-
+    // clearing active fire data
+    active_fires.length = 0;
+    var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+    d3.json(active_fire_url).then(function (response) {
+        // console.log(response.features.length);
+        // if no active fires, set array to dummy coords [0,0]
+        if (response.features.length == 0) {
+            var string_unique_active_fires = JSON.stringify([0, 0]);
         }
-        // console.log(contained_fires_test.length);
-        // console.log(contained_fires.length);
-
-        // update index.html with total contained fires for selected date
-        d3.select(".total_containted_fires").text(contained_fires.length);
-
-        // active fires API call
-
-        // clearing active fire data
-        active_fires.length = 0;
-        var active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Public_Wildfire_Perimeters_View/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-        d3.json(active_fire_url).then(function (response) {
-            // console.log(response.features);
+        else {
+            var active_fire_markers;
             for (var i = 0; i < response.features.length; i++) {
                 try {
                     // get coordinates from first polygon ring for each fire
@@ -236,26 +182,33 @@ function init(date) {
                         else {
                             popup_active_fires = `Fire Name: ${response.features[i].attributes["IncidentName"]}<br>Acres: ${(response.features[i].attributes["GISAcres"]).toFixed(2)}`
                         }
-                        // push all active fire points to array
+                        // push all active fire points to array active fire layer
                         active_fires.push(L.marker([polygon_center_active_fire.lat, polygon_center_active_fire.lng], { icon: fire_icon }).bindPopup(popup_active_fires));
+                        active_fire_markers = L.marker([polygon_center_active_fire.lat, polygon_center_active_fire.lng], { icon: fire_icon }).bindPopup(popup_active_fires);
+                        activeFireLayer.addLayer(active_fire_markers);
                     }
 
                 }
                 // if no active fires, catch error
                 catch (err) {
-                    console.log("no active fires_active page");
+                    // console.log("no active fires_active page");
                 }
             }
-            // console.log(active_fires_test.length);
-            // console.log(active_fires.length);
+        }
 
-            // clearing previously active fire data
-            previously_active_fires.length = 0;
+        // clearing previously active fire data
+        previously_active_fires.length = 0;
 
-            // previously active fires API call
-            var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
-            d3.json(previously_active_fire_url).then(function (data2) {
-                // console.log(data2.features);
+        // previously active fires API call
+        var previously_active_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=CreateDate%20%3E%3D%20TIMESTAMP%20'2020-01-01%2000%3A00%3A00'%20AND%20CreateDate%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'2021-01-01%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+        d3.json(previously_active_fire_url).then(function (data2) {
+            // console.log(data2.features.length);
+            // if no previously active fires, set array to dummy coords [0,0]
+            if (data2.features.length == 0) {
+                var string_unique_prev_active_fires = JSON.stringify([0, 0]);
+            }
+            else {
+                var prev_active_fire_marker;
                 for (var i = 0; i < data2.features.length; i++) {
                     try {
                         // get coordinates from first polygon ring for each fire
@@ -289,31 +242,97 @@ function init(date) {
                             else {
                                 popup_prev_active_fires = `Fire Name: ${data2.features[i].attributes["IncidentName"]}<br>Acres: ${(data2.features[i].attributes["GISAcres"]).toFixed(2)}`
                             }
-                            // push all previously active fire points to array
+                            // push all previously active fire points to array and active fire layer
                             previously_active_fires.push(L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }).bindPopup(popup_prev_active_fires));
+                            prev_active_fire_marker = L.marker([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng], { icon: fire_icon }).bindPopup(popup_prev_active_fires);
+                            activeFireLayer.addLayer(prev_active_fire_marker);
                         }
 
                     }
                     // if no previously active fires, catch error
                     catch (err) {
-                        console.log("no previously active fires_archive page");
+                        // console.log("no previously active fires_archive page");
+                    }
+                }
+            }
+
+            // clearing previous total fire data
+            total_active_fires.length = 0;
+            //    concat active fire and previously active fire arrays
+            total_active_fires = active_fires.concat(previously_active_fires);
+            // update index.html with total active fires for selected date
+            d3.select(".total_active_fires").text(total_active_fires.length);
+
+            // contained fire data API call
+            var contained_fire_url = `https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Archived_Wildfire_Perimeters2/FeatureServer/0/query?where=GDB_TO_DATE%20%3E%3D%20TIMESTAMP%20'${date_start}%2000%3A00%3A00'%20AND%20GDB_TO_DATE%20%3C%3D%20TIMESTAMP%20'${date_end}%2000%3A00%3A00'&outFields=*&outSR=4326&f=json`;
+            d3.json(contained_fire_url).then(function (data) {
+                // console.log(data.features.length);
+                var contained_fire_markers;
+                for (var i = 0; i < data.features.length; i++) {
+                    try {
+                        // get coordinates from first polygon ring for each fire
+                        var polygon_array = data.features[i].geometry.rings[0];
+
+                        // switching lat and lng positions for plotting
+                        var new_poly_array = [];
+                        for (var j = 0; j < polygon_array.length; j++) {
+                            var latlng = [polygon_array[j][1], polygon_array[j][0]];
+                            new_poly_array.push(latlng);
+                        }
+
+                        // create polygon for each fire's first geometry ring
+                        var polygon = L.polygon(new_poly_array);
+
+                        // get center of polygon ring for plotting
+                        var polygon_center = polygon.getBounds().getCenter();
+
+                        // create string arrays to identify duplicate fires
+                        // https://stackoverflow.com/questions/19543514/check-whether-an-array-exists-in-an-array-of-arrays
+                        var string_unique_contained_fires = JSON.stringify(compare_coords);
+                        var string_poly_center = JSON.stringify([polygon_center.lat, polygon_center.lng]);
+                        // if fire is unique, add to contained fires array, which will be plotted
+                        // also verifying that contained fire does not match any active fire locations
+                        if ((string_unique_contained_fires.indexOf(string_poly_center) == -1) && (string_unique_prev_active_fires.indexOf(string_poly_center) == -1) && (string_unique_active_fires.indexOf(string_poly_center) == -1)) {
+                            compare_coords.push([polygon_center.lat, polygon_center.lng]);
+                            // create popup for contained fires
+                            var popup_contained_fires = '';
+                            // if acres value is null, set to "unknown"
+                            if (data.features[i].attributes["GISAcres"] == null) {
+                                // if fire name is unknown
+                                if (data.features[i].attributes["IncidentName"] == null) {
+                                    popup_contained_fires = `Fire Name: Unnamed<br>Acres: Unknown`;
+                                }
+                                else {
+                                    popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: Unknown`;
+                                }
+                            }
+                            else {
+                                // if fire name is unknown
+                                if (data.features[i].attributes["IncidentName"] == null) {
+                                    popup_contained_fires = `Fire Name: Unnamed<br>Acres: ${(data.features[i].attributes["GISAcres"]).toFixed(2)}`;
+                                }
+                                popup_contained_fires = `Fire Name: ${data.features[i].attributes["IncidentName"]}<br>Acres: ${(data.features[i].attributes["GISAcres"]).toFixed(2)}`;
+                            }
+                            // push all contained fire points to array and contained fire layer
+                            contained_fires.push(L.marker([polygon_center.lat, polygon_center.lng], { icon: contained_fire_icon }).bindPopup(popup_contained_fires));
+                            contained_fire_markers = L.marker([polygon_center.lat, polygon_center.lng], { icon: contained_fire_icon }).bindPopup(popup_contained_fires);
+                            containedFireLayer.addLayer(contained_fire_markers);
+                        }
+
+                    }
+                    // if no contained fires, catch error
+                    catch (err) {
+                        // console.log("no contained fires");
                     }
                 }
 
-                // console.log(prev_active_fire_test.length);
-                // console.log(previously_active_fires.length);
-
-                // clearing previous total fire data
-                total_active_fires.length = 0;
-                //    concat active fire and previously active fire arrays
-                total_active_fires = active_fires.concat(previously_active_fires);
-                // update index.html with total active fires for selected date
-                d3.select(".total_active_fires").text(total_active_fires.length);
+                // update index.html with total contained fires for selected date
+                d3.select(".total_containted_fires").text(contained_fires.length);
 
                 // protest data
 
                 // clearing previous protest data
-                protestMarkers.length = 0;
+                protestMarkers_heat.length = 0;
                 protest_icons.length = 0;
 
                 // convert date into csv date format
@@ -322,6 +341,8 @@ function init(date) {
                 //  Bring in protest data
                 d3.csv("../static/Resources/USA_2020_Sep19.csv").then(function (data) {
                     // filter for user selected date
+                    var protest_marker;
+
                     // source: https://stackoverflow.com/questions/23156864/d3-js-filter-from-csv-file-using-multiple-columns
                     var filteredData = data.filter(function (d) {
                         if (d["EVENT_DATE"] == csv_date) {
@@ -331,34 +352,42 @@ function init(date) {
 
                     for (var i = 0; i < filteredData.length; i++) {
 
-                        // push protest markers to arrays (one for heat map and one for icons)
-                        protestMarkers.push(
-                            ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]))
-                        protest_icons.push(
-                            L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`))
+                        // create string arrays to identify duplicate protests
+                        var string_unique_protests = JSON.stringify(compare_coords_protests);
+                        var string_protests_locations = JSON.stringify([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]);
+                        // if protest is unique, add to protest array, which will be plotted
+                        if (string_unique_protests.indexOf(string_protests_locations) == -1) {
+                            compare_coords_protests.push([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]);
+
+                            // push protest markers to arrays (one for heat map, one for counting protests, and one for plotting layer)
+                            protestMarkers_heat.push(
+                                ([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]]));
+
+                            protest_icons.push(
+                                L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`));
+                            protest_marker = L.marker([filteredData[i]["LATITUDE"], filteredData[i]["LONGITUDE"]], { icon: protest_icon }).bindPopup(`Protest Location: ${filteredData[i]["LOCATION"]}<br>Event Type: ${filteredData[i]["EVENT_TYPE"]}`);
+                            protestIconLayer.addLayer(protest_marker);
+                        }
+
                     }
 
+                    // heat map information
+                    var heat_layer = L.heatLayer(protestMarkers_heat, {
+                        radius: 35,
+                        blur: 15,
+                    });
+
+                    // add heat layer to map
+                    heat.addLayer(heat_layer);
+
                     // update index.html with total protests for selected date
-                    d3.select(".total_protests").text(protestMarkers.length);
-
-                    // creating protest layers
-                    var protestLayer = L.layerGroup(protestMarkers);
-                    var protestLayer_icon = L.layerGroup(protest_icons);
-
-                    // creating contained fire layer
-                    var containedFireLayer = L.layerGroup(contained_fires);
-
-                    // creating active fire layer
-                    var activeFireLayer = L.layerGroup(total_active_fires);
-
-                    // call makeMap function
-                    makeMap(containedFireLayer, protestMarkers, activeFireLayer, protestLayer_icon);
+                    d3.select(".total_protests").text(protestMarkers_heat.length);
 
                     // call function to update state info row when new date is selected
                     if (d3.select(".state")._groups[0][0].innerText != "State") {
                         dateUpdate(d3.select(".state")._groups[0][0].innerText);
                     }
-                    
+
                     // make map interactive 
                     // source: https://leafletjs.com/examples/choropleth/
 
@@ -487,15 +516,15 @@ function init(date) {
 
                     // function to update state information when new date is clicked
                     function dateUpdate(state) {
-                        
+
                         // reset counters;
                         contained_fires_counter = 0;
                         active_fires_counter = 0;
                         protest_counter = 0;
-                     
+
                         // getting state polygon coordinates using state dictionary
                         var state_index = state_dict[state];
-                        
+
                         var polygon_coords = statesData.features[state_index].geometry.coordinates;
                         var final_coords = [];
                         // switching lat and long for final coords
@@ -699,16 +728,6 @@ dateSlider.noUiSlider.on('change', function (values, handle) {
     // update date shown on index.html (user date in human readable format)
     d3.select("#date_select").text(`Date selected: ${display_date_main_page}`);
     slider_div.attr("current_time", date_select);
-
-    // remove all layers from the map
-    // source: https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
-    myMap.eachLayer(function (layer) {
-        if ((layer !== grayscale)) {
-            if (layer !== light) {
-                myMap.removeLayer(layer);
-            }
-        }
-    });
 
     // call map update
     init(date_select);
