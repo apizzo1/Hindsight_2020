@@ -34,6 +34,7 @@ function style(feature) {
 
 // variable initialize
 var datetoPass;
+var map_add_counter = 0;
 var contained_fires = [];
 var active_fires = [];
 var previously_active_fires = [];
@@ -169,10 +170,10 @@ function init(date) {
 
                     // create string arrays to identify duplicate fires
                     var string_unique_active_fires = JSON.stringify(compare_coords_active_fire);
-                    var string_poly_center_active_fire = JSON.stringify([polygon_center_active_fire.lat, polygon_center_active_fire.lng]);
+                    var string_poly_center_active_fire = JSON.stringify([polygon_center_active_fire.lat.toFixed(4), polygon_center_active_fire.lng.toFixed(4)]);
                     // if fire is unique, add to active fires array, which will be plotted
                     if (string_unique_active_fires.indexOf(string_poly_center_active_fire) == -1) {
-                        compare_coords_active_fire.push([polygon_center_active_fire.lat, polygon_center_active_fire.lng]);
+                        compare_coords_active_fire.push([polygon_center_active_fire.lat.toFixed(4), polygon_center_active_fire.lng.toFixed(4)]);
                         // create popup for active fires
                         var popup_active_fires = '';
                         // if acres value is null, set to "unknown"
@@ -229,10 +230,10 @@ function init(date) {
 
                         // create string arrays to identify duplicate fires
                         var string_unique_prev_active_fires = JSON.stringify(compare_coords_prev_active_fire);
-                        var string_poly_center_prev_active_fire = JSON.stringify([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng]);
+                        var string_poly_center_prev_active_fire = JSON.stringify([polygon_center_prev_active_fire.lat.toFixed(4), polygon_center_prev_active_fire.lng.toFixed(4)]);
                         // if fire is unique, add to previously active fires array, which will be plotted
                         if (string_unique_prev_active_fires.indexOf(string_poly_center_prev_active_fire) == -1) {
-                            compare_coords_prev_active_fire.push([polygon_center_prev_active_fire.lat, polygon_center_prev_active_fire.lng]);
+                            compare_coords_prev_active_fire.push([polygon_center_prev_active_fire.lat.toFixed(4), polygon_center_prev_active_fire.lng.toFixed(4)]);
                             // create popup for previously active fires
                             var popup_prev_active_fires = '';
                             // if acres value is null, set to "unknown"
@@ -289,11 +290,11 @@ function init(date) {
                         // create string arrays to identify duplicate fires
                         // https://stackoverflow.com/questions/19543514/check-whether-an-array-exists-in-an-array-of-arrays
                         var string_unique_contained_fires = JSON.stringify(compare_coords);
-                        var string_poly_center = JSON.stringify([polygon_center.lat, polygon_center.lng]);
+                        var string_poly_center = JSON.stringify([polygon_center.lat.toFixed(4), polygon_center.lng.toFixed(4)]);
                         // if fire is unique, add to contained fires array, which will be plotted
                         // also verifying that contained fire does not match any active fire locations
                         if ((string_unique_contained_fires.indexOf(string_poly_center) == -1) && (string_unique_prev_active_fires.indexOf(string_poly_center) == -1) && (string_unique_active_fires.indexOf(string_poly_center) == -1)) {
-                            compare_coords.push([polygon_center.lat, polygon_center.lng]);
+                            compare_coords.push([polygon_center.lat.toFixed(4), polygon_center.lng.toFixed(4)]);
                             // create popup for contained fires
                             var popup_contained_fires = '';
                             // if acres value is null, set to "unknown"
@@ -664,13 +665,15 @@ function init(date) {
                     }
 
                     // add state boundaries
-                    // source: https://leafletjs.com/examples/choropleth/
-                    stategeoJson = L.geoJson(statesData, {
-                        style: style,
-                        onEachFeature: onEachFeature
-                    }).addTo(myMap);
-
-
+                    // ensure map boundaries only added one time
+                    if (map_add_counter == 0) {
+                        // source: https://leafletjs.com/examples/choropleth/
+                        stategeoJson = L.geoJson(statesData, {
+                            style: style,
+                            onEachFeature: onEachFeature
+                        }).addTo(myMap);
+                    }
+                    map_add_counter = 1;
                 })
             })
         })
