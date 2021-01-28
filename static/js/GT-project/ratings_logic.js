@@ -1,6 +1,3 @@
-// create fxn to output dis/approval line graph, takes date as input
-// function approval_fxn(date) {
-
 // convert date to moment.js object; add/subtract for charting
 var first_date_moment = moment.unix(1577880000);
 var chart_date = first_date_moment.add(1, 'days').format('M/DD/YY');
@@ -137,6 +134,7 @@ d3.csv(approval_csv).then((response) => {
     chart.cursor.lineY.disabled = true;
     chart.cursor.behavior = 'zoomX';
 
+    // fxn called when slider is moved
     function rating_change(new_date) {
         var new_date_moment = moment.unix(new_date / 1000);
         var new_chart_date = new_date_moment.add(1, 'days').format('M/DD/YY');
@@ -176,18 +174,6 @@ d3.csv(approval_csv).then((response) => {
 
         chart.data = '';
         chart.data = new_poll_data;
-
-        // console.log (approval_series);
-
-        // approval_series.segments.each(function (segment) {
-        //     segment.template.propertyFields.fill = new_a_colors[segment.dataItem.index];
-        //     segment.template.propertyFields.stroke = new_a_colors[segment.dataItem.index];
-        // })
-
-        // disapproval_series.segments.each(function (segment) {
-        //     segment.template.propertyFields.fill = new_d_colors[segment.dataItem.index];
-        //     segment.template.propertyFields.stroke = new_d_colors[segment.dataItem.index];
-        // })
     }
 
     // create fxn to change displayed getty carousel based on month

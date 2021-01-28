@@ -9,9 +9,6 @@ function find_avg(array) {
     return avg;
 }
 
-// fxn to output US data that takes date input
-// function us_fxn(date) {
-
 // set a minimum date (1/22/2020) to accept; use moment.js for date parsing/formatting
 var first_date = moment.unix(1579737600);
 
@@ -35,6 +32,7 @@ d3.json(us_url).then((response) => {
     var bar_colors = [];
     var line_colors = [];
 
+    // begin looping through response
     for (var x = 0; x < response.length; x++) {
         var test_date = moment(response[x].date, 'YYYY-MM-DD')
         var date = test_date.format('M/DD/YY');
@@ -133,7 +131,6 @@ d3.json(us_url).then((response) => {
     }
 
     // begin plotting bar/line chart
-    // am4core.ready(function () {
 
     // amcore theme for animation; removed d/t loading
     // am4core.useTheme(am4themes_animated);
@@ -202,8 +199,7 @@ d3.json(us_url).then((response) => {
     // dateAxis.keepSelection = true;
     // chart.legend = new am4charts.Legend();
 
-    // });
-
+    // fxn called when slider is moved
     function covid_change(new_date) {
         if (new_date < 1579737600000) { var moment_date = moment.unix(1579737600); }
         else { var moment_date = moment.unix(new_date / 1000); }
@@ -255,8 +251,10 @@ d3.json(us_url).then((response) => {
             }
         }
         
+        // change highlighted date to slider date
         range.date = new Date(chart_date);
 
+        // re-plot data to update colors
         var new_us_data = [];
 
         for (var x = us_dates.length - 1; x > -1; x--) {
