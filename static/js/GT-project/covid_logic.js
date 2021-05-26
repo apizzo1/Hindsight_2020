@@ -13,7 +13,7 @@ function find_avg(array) {
 var first_date = moment.unix(1579737600);
 
 // define url for US COVID data
-var us_url = 'https://api.covidtracking.com/v1/us/daily.json';
+var us_url = 'https://api.covidtracking.com/v2/us/daily.json';
 
 // begin API call
 d3.json(us_url).then((response) => {
@@ -36,8 +36,8 @@ d3.json(us_url).then((response) => {
     for (var x = 0; x < response.length; x++) {
         var test_date = moment(response[x].date, 'YYYY-MM-DD')
         var date = test_date.format('M/DD/YY');
-        var cases = response[x].positive;
-        var deaths = response[x].death;
+        var cases = response[x].cases.total;
+        var deaths = response[x].outcomes.death.cumulative;
 
         // skip over data not in 2020; json data starts at most recent date then backwards
         if (test_date > moment('2020-12-31', 'YYYY-MM-DD')) {
