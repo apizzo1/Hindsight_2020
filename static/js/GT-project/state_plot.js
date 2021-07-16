@@ -183,12 +183,11 @@ function single_state_fxn(full_state, date) {
 
     // format date, end result should be yyyymmdd for API calls; set minimum date
     if (date < 1579651200000) {var moment_date = moment.unix(1579651200).add(1, 'days');}
-    else {var moment_date = moment.unix(date/1000);}
-    
-    var api_date = moment_date.format('YYYYMMDD');
+    else {var moment_date = moment.unix(date / 1000);}
 
     // define url for state COVID API calls
-    var state_url = `https://api.covidtracking.com/v2/states/${state}/daily.json`;
+    // var state_url = `https://api.covidtracking.com/v2/states/${state}/daily.json`;
+    var state_path = '../static/Resources/state_covid_data.csv';
 
     // define blank arrays to push data into
     var case_array = [];
@@ -196,22 +195,28 @@ function single_state_fxn(full_state, date) {
     // var death_array = [];
 
     // begin API call; all "death" related/date-specific COVID data can be uncommented if desired
-    d3.json(state_url).then((response) => {
+    // d3.json(state_url).then((response) => {
+    d3.csv(state_path).then((response) => {
         for (var x = 0; x < response.length; x++) {
 
             // skip data past selected date
-            if (moment(response[x]['date'], 'YYYY-MM-DD') > moment_date) {
+            if (moment(response[x].date, 'YYYY-MM-DD') > moment_date) {
                 continue;
             }
 
-            date_array.push(response[x]['date']);
-            case_array.push(response[x]['positive']);
+            // skip data not pertaining to selected state
+            if (response[x].state != state) {
+                continue;
+            }
+
+            date_array.push(response[x].date);
+            case_array.push(response[x].positive);
             // death_array.push(response[x]['death']);
 
             // isolate data for selected date if desired
-            // if (response[x]['date'] == api_date) {
-            //     var select_cases = response[x]['positive'];
-            //     var select_deaths = response[x]['death'];
+            // if (response[x].date == api_date) {
+            //     var select_cases = response[x].positive;
+            //     var select_deaths = response[x].death;
             // }
         }
 
@@ -248,7 +253,7 @@ function single_state_fxn(full_state, date) {
             d3.select('#state_covid_text').text("");
 
             // fxn to plot sparkline on HTML
-            $(function () {
+            $(function() {
                 $(`#state_cases`).sparkline(new_cases_avg, {
                     width: '200',
                     height: '60',
@@ -274,7 +279,7 @@ function single_state_fxn(full_state, date) {
 
 // draw state mobility graph
 function optionChanged(state, date) {
-    d3.json('/api/v1.0/state_mobility').then(function (inputdata) {
+    d3.json('/api/v1.0/state_mobility').then(function(inputdata) {
         // format date
         var e_conv=moment.unix(date/1000).format("M/D/YYYY");
     
