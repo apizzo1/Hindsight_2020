@@ -188,7 +188,7 @@ function single_state_fxn(full_state, date) {
     var api_date = moment_date.format('YYYYMMDD');
 
     // define url for state COVID API calls
-    var state_url = `https://api.covidtracking.com/v1/states/${state}/daily.json`;
+    var state_url = `https://api.covidtracking.com/v2/states/${state}/daily.json`;
 
     // define blank arrays to push data into
     var case_array = [];

@@ -9,14 +9,16 @@ function find_avg(array) {
     return avg;
 }
 
-// set a minimum date (1/22/2020) to accept; use moment.js for date parsing/formatting
-var first_date = moment.unix(1579737600);
+// set a minimum date (1/13/2020) to accept; use moment.js for date parsing/formatting
+var first_date = moment.unix(1578934800);
 
 // define url for US COVID data
-var us_url = 'https://api.covidtracking.com/v2/us/daily.json';
+// var us_url = 'https://api.covidtracking.com/v2/us/daily.json';
+var us_path = '../static/Resources/us_covid_data.csv';
 
 // begin API call
-d3.json(us_url).then((response) => {
+// d3.json(us_url).then((response) => {
+d3.csv(us_path).then((response) => {
 
     // format date; yyyy-mm-dd for plotting, yyyymmdd for API calls; adding/subtracting for chart debugging
     var first_chart_date = first_date.add(1, 'days').format('YYYY-MM-DD');
@@ -36,8 +38,8 @@ d3.json(us_url).then((response) => {
     for (var x = 0; x < response.length; x++) {
         var test_date = moment(response[x].date, 'YYYY-MM-DD')
         var date = test_date.format('M/DD/YY');
-        var cases = response[x].cases.total;
-        var deaths = response[x].outcomes.death.cumulative;
+        var cases = response[x].positive;
+        var deaths = response[x].death;
 
         // skip over data not in 2020; json data starts at most recent date then backwards
         if (test_date > moment('2020-12-31', 'YYYY-MM-DD')) {
@@ -50,30 +52,15 @@ d3.json(us_url).then((response) => {
             us_cases.push(cases);
             us_deaths.push (deaths);
 
-            // push grayscale colors for values after selected date
-            if (response[x].date > first_api_date) {
-                alphas.push(0.8);
-                bar_colors.push(am4core.color('#CBCBCB'));
-                line_colors.push(am4core.color('#B4B4B4'));
-            }
+            // push grayscale colors for initialized graph
+            alphas.push(0.8);
+            bar_colors.push(am4core.color('#CBCBCB'));
+            line_colors.push(am4core.color('#B4B4B4'));
 
-            // isolate totals to date on selected date
-            else if (response[x].date == first_api_date) {
-                
-                // push brighter colors for values before selected date
-                alphas.push(1.0);
-                bar_colors.push(am4core.color('#F0B27A'));
-                line_colors.push(am4core.color('#1A5276'));
-
+            if (x == 0) {
                 // initialize totals to 0
                 d3.select('#total_cases').text("0");
                 d3.select('#total_deaths').text("0");
-            }
-
-            else {
-                alphas.push(1.0);
-                bar_colors.push(am4core.color('#F0B27A'));
-                line_colors.push(am4core.color('#1A5276'));
             }
         }
     }
@@ -234,8 +221,8 @@ d3.json(us_url).then((response) => {
 
                 // push select values to HTML
                 try {
-                    d3.select('#total_cases').text(select_cases.toLocaleString('en'));
-                    d3.select('#total_deaths').text(select_deaths.toLocaleString('en'));
+                    d3.select('#total_cases').text(Number(select_cases).toLocaleString('en'));
+                    d3.select('#total_deaths').text(Number(select_deaths).toLocaleString('en'));
                 }
 
                 catch (err) {
